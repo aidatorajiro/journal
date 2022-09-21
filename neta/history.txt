@@ -1,0 +1,8 @@
+Journal History
+
+[2022-09-22]
+when i open VSCode i couldnt use extension...
+git init
+gibo dump macos rust >> .gitignore
+
+Read https://bevy-cheatbook.github.io/input/dnd.html

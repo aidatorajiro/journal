@@ -1,0 +1,12 @@
+Stable Diffusion concepts library
+https://huggingface.co/sd-concepts-library
+
+hitokomoru-style-nao
+https://huggingface.co/sd-concepts-library/hitokomoru-style-nao
+
+waifu-diffusion - Diffusion for Weebs
+https://huggingface.co/hakurei/waifu-diffusion
+
+colab: stable conceptualizer inference
+https://colab.research.google.com/github/huggingface/notebooks/blob/main/diffusers/stable_conceptualizer_inference.ipynb
+looks interesting !

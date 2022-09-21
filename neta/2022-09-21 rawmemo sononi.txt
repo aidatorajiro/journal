@@ -1,0 +1,7 @@
+[First Batch of Color Fonts Arrives on Google Fonts - Material Design](https://material.io/blog/color-fonts-are-here)
+
+[freetype/ftcolor.h at 3414fef74f9dd1858aca521f93ebadca9ab36f96 · freetype/freetype](https://github.com/freetype/freetype/blob/3414fef74f9dd1858aca521f93ebadca9ab36f96/include/freetype/ftcolor.h)
+
+特にCSSを使ってフォントの色をグラデーションや複数色に変更できるのがすごいね。Freetypeのソースコードを見たら何やらXORとかPLUSとか出てきたので回路を組めるみたい？(もとからSVGにあった仕様を流用しているようだ)
+
+この前にフォントについて調べていたけど、Soundfontとかは波形をそのまま保存することもできるけど回路を組んでファイルサイズを圧縮することもできるし、そもそも昔はシンセサイザーみたいに電子回路を使ってフォントを組んでいた時代もあるようなのでまあ当然のことではあるのかも
