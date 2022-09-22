@@ -6,3 +6,9 @@ git init
 gibo dump macos rust >> .gitignore
 
 Read https://bevy-cheatbook.github.io/input/dnd.html
+
+[2022-09-23]
+Figuring out what can be used in the framework
+Playing https://ramirezmike2.itch.io/usa-football-league-scouting-combine-xlv (winner of Bevy Jam #2 : https://itch.io/jam/bevy-jam-2/results)
+    finding out it's quite slow...
+    returning to old days of internet?

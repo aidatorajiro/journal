@@ -1,0 +1,4 @@
+"What is tool?" "What is Operation System?" "What is Game?"
+Questioning border between tool (such as memo app), Operation System, and game (Such as Hades).
+
+
