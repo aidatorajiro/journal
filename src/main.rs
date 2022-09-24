@@ -3,33 +3,38 @@
 use std::fs::File;
 
 use bevy::{prelude::*, text::Text2dBounds};
+use bevy_egui::{egui, EguiContext, EguiPlugin};
 
 #[derive(Component)]
 struct MyComponent;
 
+#[derive(Default)]
+struct MyState {
+    textarea: String,
+}
+
 fn main() {
     App::new()
+        .init_resource::<MyState>()
         .add_plugins(DefaultPlugins)
+        .add_plugin(EguiPlugin)
         .add_startup_system(setup)
         .add_system(system_drag_and_drop)
+        .add_system(ui_example)
+        .add_system(update_text)
         .run();
 }
 
-fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
-    let font = asset_server.load("NotoSansJP-Thin.otf");
-
-    let text_style = TextStyle {
-        font,
-        font_size: 60.0,
-        color: Color::WHITE,
-    };
-    let text_alignment = TextAlignment::CENTER;
-
+fn setup(mut my_state: ResMut<MyState>, mut commands: Commands, asset_server: Res<AssetServer>) {
     // 2d camera
     commands.spawn_bundle(Camera2dBundle::default());
     
     commands.spawn_bundle(Text2dBundle {
-        text: Text::from_section("あああああああ", text_style.clone()).with_alignment(text_alignment),
+        text: Text::from_section("", TextStyle {
+            font: asset_server.load("NotoSansJP-Thin.otf"),
+            font_size: 60.0,
+            color: Color::WHITE,
+        }).with_alignment(TextAlignment::CENTER),
         transform: Transform::from_xyz(
             0.0,
             0.0,
@@ -37,6 +42,23 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         ),
         ..default()
     }).insert(MyComponent);
+}
+
+fn update_text(asset_server: Res<AssetServer>, mut my_state: ResMut<MyState>, mut query: Query<&mut Text, With<MyComponent>>) {
+    for mut txt in &mut query {
+        txt.apply(&Text::from_section(my_state.textarea.clone(), TextStyle {
+            font: asset_server.load("NotoSansJP-Thin.otf"),
+            font_size: 60.0,
+            color: Color::WHITE,
+        }).with_alignment(TextAlignment::CENTER));
+    }
+}
+
+fn ui_example(mut my_state: ResMut<MyState>, mut egui_context: ResMut<EguiContext>) {
+    egui::Window::new("Hello").show(egui_context.ctx_mut(), |ui| {
+        ui.label("world");
+        ui.text_edit_multiline(&mut my_state.textarea)
+    });
 }
 
 fn system_drag_and_drop(
@@ -54,3 +76,4 @@ fn system_drag_and_drop(
         }
     }
 }
+
