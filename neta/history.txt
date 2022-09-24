@@ -14,4 +14,5 @@ Playing https://ramirezmike2.itch.io/usa-football-league-scouting-combine-xlv (w
     returning to old days of internet?
 Search documentation -https://docs.rs/bevy/latest/bevy/?search=bundle
     Looking for "bundle" to see what can be used (such as texts, buttons, etc.)
-    
+seems like Bevy doesn't have text input...
+    But looking MIDI section on the unofficial cookbook, maybe there's a possibility of 3rd-party extension library? → found bevy_egui! https://github.com/mvlabat/bevy_egui
