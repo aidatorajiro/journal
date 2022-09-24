@@ -12,3 +12,6 @@ Figuring out what can be used in the framework
 Playing https://ramirezmike2.itch.io/usa-football-league-scouting-combine-xlv (winner of Bevy Jam #2 : https://itch.io/jam/bevy-jam-2/results)
     finding out it's quite slow...
     returning to old days of internet?
+Search documentation -https://docs.rs/bevy/latest/bevy/?search=bundle
+    Looking for "bundle" to see what can be used (such as texts, buttons, etc.)
+    
