@@ -19,7 +19,7 @@ pub mod component {
 
 pub mod state {
     //! Type definitions (State).
-    use std::collections::HashMap;
+    use std::collections::{HashMap, HashSet};
 
     use bevy::window::WindowId;
     use serde::{Serialize, Deserialize};
@@ -29,18 +29,9 @@ pub mod state {
     pub struct GameState {
         pub textarea: String,
         pub textarea2: String,
-        pub database: Database,
-        pub second_window: SecondWindowState
+        pub database: Database
     }
-
-    /// Local Window State.
-    #[derive(Default, Debug)]
-    pub struct SecondWindowState {
-        pub initialized: bool,
-        pub opened: bool,
-        pub id: Option<WindowId>
-    }
-
+    
     /// A part of the structure for the journal database.
     #[derive(Serialize, Deserialize, Default, Debug)]
     pub struct JournalEntryMetadata {

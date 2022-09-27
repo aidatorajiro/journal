@@ -2,14 +2,12 @@
 
 pub mod constants;
 pub mod typedef;
-pub mod second_window;
 pub mod subwindow;
 
 use constants::constants::*;
 use subwindow::subwindow::*;
 use typedef::state::*;
 use typedef::event::*;
-use second_window::second_window::*;
 
 use std::{fs::File, borrow::Cow, collections::HashMap};
 use serde::{Deserialize, Serialize};
@@ -34,7 +32,7 @@ fn main() {
         .add_system(system_drag_and_drop)
         //.add_system(ui_second_window)
         //.add_system(second_window_event_handler)
-        .add_system_to_stage(CoreStage::PreUpdate, subwindow_event)
+        .add_system_to_stage(CoreStage::First, subwindow_event)
         .add_system(subwindow_ui);
     
     let mut render_app = app.sub_app_mut(RenderApp);
@@ -61,7 +59,6 @@ fn system_drag_and_drop(
         match ev {
             FileDragAndDrop::DroppedFile { id, path_buf } => {
                 commands.spawn().insert(SubWindow{window_type: WindowType::MemoField, ..default()});
-                commands.spawn().insert(SubWindow{window_type: WindowType::SomeTestPage, ..default()});
             }
             FileDragAndDrop::HoveredFile { id, path_buf } => {
             }

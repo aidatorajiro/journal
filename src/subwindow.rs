@@ -79,28 +79,20 @@ pub mod subwindow {
     pub fn subwindow_event (
         query: Query<(Entity, &SubWindow)>,
         mut ev_close: EventReader<WindowClosed>,
+        mut gamestate: ResMut<GameState>,
         mut commands: Commands) {
         
         for ev in ev_close.iter() {
             for (ent, win) in query.iter() {
                 if (ev.id == win.window_id.unwrap()) {
                     commands.entity(ent).remove::<SubWindow>();
+                    println!("triggered remove SubWindow {:?}", ev.id);
                 }
             }
         }
     }
 
-    pub fn subwindow_subapp_system (mut world: ResMut<MainWorld>, mut graph: ResMut<RenderGraph>) {
-        let subwin_comp_id = world.component_id::<SubWindow>().unwrap();
-        let iter_rem = world.removed_with_id(subwin_comp_id);
-        
-        for x in iter_rem {
-            let ent = world.get_entity(x).unwrap();
-            let sw = ent.get::<SubWindow>().unwrap();
-            println!("delete window id {:?}", sw.window_id);
-            graph.remove_node(SECONDARY_EGUI_PASS);
-        }
-        
+    pub fn subwindow_subapp_system (mut world: ResMut<MainWorld>, mut graph: ResMut<RenderGraph>) {        
         let mut binding_subwin = world.query::<&mut SubWindow>();
         
         let windowids = binding_subwin.iter_mut(&mut world).map(|mut x| {
