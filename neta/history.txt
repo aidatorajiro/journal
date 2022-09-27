@@ -12,7 +12,13 @@ Figuring out what can be used in the framework
 Playing https://ramirezmike2.itch.io/usa-football-league-scouting-combine-xlv (winner of Bevy Jam #2 : https://itch.io/jam/bevy-jam-2/results)
     finding out it's quite slow...
     returning to old days of internet?
-Search documentation -https://docs.rs/bevy/latest/bevy/?search=bundle
+Search documentation - https://docs.rs/bevy/latest/bevy/?search=bundle
     Looking for "bundle" to see what can be used (such as texts, buttons, etc.)
 seems like Bevy doesn't have text input...
     But looking MIDI section on the unofficial cookbook, maybe there's a possibility of 3rd-party extension library? → found bevy_egui! https://github.com/mvlabat/bevy_egui
+❌ TODO: Looking for typesetting and hopefully COLR support...
+    oh! that looks nice!  https://github.com/dfrg/swash
+❌ TODO: Making 3D atmosphere?
+Bevy's "data-driven" way is similar to Modding! (especially that of X series. )
+❌ TODO: id 付番 => mozc dict をベースにする
+    無機的なIDではなく、さまざまな文脈と繋がることのできるID。一方でuniquenessなどの用件も携えている
