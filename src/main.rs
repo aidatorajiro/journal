@@ -9,12 +9,8 @@ use subwindow::subwindow::*;
 use typedef::state::*;
 use typedef::event::*;
 
-use std::{fs::File, borrow::Cow, collections::HashMap};
-use serde::{Deserialize, Serialize};
-use rmp_serde::{Serializer, Deserializer};
-use bevy::{prelude::*, text::Text2dBounds, render::{render_graph::RenderGraph, once_cell::sync::Lazy, RenderApp, camera::RenderTarget}, window::{WindowId, CreateWindow, PresentMode}};
-use bevy_egui::{EguiContext, EguiPlugin};
-use egui::{self, FontFamily, FontData, FontTweak, FontDefinitions};
+use bevy::{prelude::*, render::RenderApp};
+use bevy_egui::EguiPlugin;
 use bevy_render::{RenderStage};
 
 use crate::typedef::component::SubWindow;
@@ -25,7 +21,6 @@ fn main() {
     let mut app = App::new();
     
     app.init_resource::<GameState>()
-        .add_event::<OpenSecondWindow>()
         .add_plugins(DefaultPlugins)
         .add_plugin(EguiPlugin)
         .add_startup_system(setup)
@@ -43,7 +38,7 @@ fn main() {
 }
 
 /// setup function for bevy
-fn setup(mut global_state: ResMut<GameState>, mut commands: Commands, asset_server: Res<AssetServer>) {
+fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     // 2d camera
     commands.spawn_bundle(Camera2dBundle::default());
 }
@@ -51,7 +46,6 @@ fn setup(mut global_state: ResMut<GameState>, mut commands: Commands, asset_serv
 /// Event listener for file drag and drop event.
 fn system_drag_and_drop(
     mut dnd_ev: EventReader<FileDragAndDrop>,
-    mut evw: EventWriter<OpenSecondWindow>,
     mut commands: Commands
 ) {
     for ev in dnd_ev.iter() {
@@ -60,10 +54,8 @@ fn system_drag_and_drop(
             FileDragAndDrop::DroppedFile { id, path_buf } => {
                 commands.spawn().insert(SubWindow{window_type: WindowType::MemoField, ..default()});
             }
-            FileDragAndDrop::HoveredFile { id, path_buf } => {
-            }
-            FileDragAndDrop::HoveredFileCancelled { id } => {
-            }
+            FileDragAndDrop::HoveredFile { .. } => {},
+            FileDragAndDrop::HoveredFileCancelled { .. } => {},
         }
     }
 }

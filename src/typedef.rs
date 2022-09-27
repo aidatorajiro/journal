@@ -1,5 +1,5 @@
 pub mod component {
-    use bevy::{prelude::Component, window::WindowId, ecs::query::WorldQuery};
+    use bevy::{prelude::Component, window::WindowId};
 
     #[derive(Component, Default)]
     pub struct SubWindow {
@@ -19,9 +19,8 @@ pub mod component {
 
 pub mod state {
     //! Type definitions (State).
-    use std::collections::{HashMap, HashSet};
+    use std::collections::HashMap;
 
-    use bevy::window::WindowId;
     use serde::{Serialize, Deserialize};
 
     /// Global Game State.
@@ -67,12 +66,4 @@ pub mod state {
 
 
 pub mod event {
-    use std::collections::HashMap;
-
-    use bevy::ecs::event::Event;
-    use serde::{Serialize, Deserialize};
-
-    /// Event for second window.
-    #[derive(Default, Debug)]
-    pub struct OpenSecondWindow;
 }

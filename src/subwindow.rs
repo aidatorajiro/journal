@@ -17,17 +17,17 @@ pub mod subwindow {
                 None => continue,
                 Some(ctx) => ctx
             };
-            if (sw.window_type == WindowType::BlankPage) {
-                egui::CentralPanel::default().show(ctx, |ui| {});
+            if sw.window_type == WindowType::BlankPage {
+                egui::CentralPanel::default().show(ctx, |_| {});
             }
-            if (sw.window_type == WindowType::MemoField) {
+            if sw.window_type == WindowType::MemoField {
                 egui::CentralPanel::default()
                 .show(ctx, |ui| {
                     egui::ScrollArea::vertical().show(ui, |ui| {
                         ui.button("Hello");
                         ui.add_sized(ui.available_size(), egui::TextEdit::multiline(&mut global_state.textarea));
                     });
-                    if (sw.initialized == false) {
+                    if sw.initialized == false {
                         println!("initializing second window....");
 
                         let mut fonts = egui::text::FontDefinitions::default();
@@ -46,7 +46,7 @@ pub mod subwindow {
                     }
                 });
             }
-            if (sw.window_type == WindowType::SomeTestPage) {
+            if sw.window_type == WindowType::SomeTestPage {
                 egui::CentralPanel::default()
                 .show(ctx, |ui| {
                     egui::ScrollArea::vertical().show(ui, |ui| {
@@ -54,7 +54,7 @@ pub mod subwindow {
                         ui.button("World");
                         ui.add_sized(ui.available_size(), egui::TextEdit::multiline(&mut global_state.textarea2));
                     });
-                    if (sw.initialized == false) {
+                    if sw.initialized == false {
                         println!("initializing second window....");
 
                         let mut fonts = egui::text::FontDefinitions::default();
@@ -79,12 +79,11 @@ pub mod subwindow {
     pub fn subwindow_event (
         query: Query<(Entity, &SubWindow)>,
         mut ev_close: EventReader<WindowClosed>,
-        mut gamestate: ResMut<GameState>,
         mut commands: Commands) {
         
         for ev in ev_close.iter() {
             for (ent, win) in query.iter() {
-                if (ev.id == win.window_id.unwrap()) {
+                if ev.id == win.window_id.unwrap() {
                     commands.entity(ent).remove::<SubWindow>();
                     println!("triggered remove SubWindow {:?}", ev.id);
                 }
@@ -96,7 +95,7 @@ pub mod subwindow {
         let mut binding_subwin = world.query::<&mut SubWindow>();
         
         let windowids = binding_subwin.iter_mut(&mut world).map(|mut x| {
-            if (x.window_id.is_none()) {
+            if x.window_id.is_none() {
                 let wid = WindowId::new();
                 x.window_id = Some(wid);
                 
