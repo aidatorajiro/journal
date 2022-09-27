@@ -4,17 +4,14 @@ pub mod component {
     #[derive(Component, Default)]
     pub struct SubWindow {
         pub initialized: bool,
-        pub window_id: Option<WindowId>,
-        pub window_type: WindowType
+        pub window_id: Option<WindowId>
     }
 
-    #[derive(Default, PartialEq)]
-    pub enum WindowType {
-        #[default]
-        BlankPage,
-        MemoField,
-        SomeTestPage
-    }
+    #[derive(Component, Default)]
+    pub struct MemoField;
+
+    #[derive(Component, Default)]
+    pub struct BlankPage;
 }
 
 pub mod state {
