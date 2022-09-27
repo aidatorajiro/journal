@@ -20,5 +20,15 @@ seems like Bevy doesn't have text input...
     oh! that looks nice!  https://github.com/dfrg/swash
 ❌ TODO: Making 3D atmosphere?
 Bevy's "data-driven" way is similar to Modding! (especially that of X series. )
+
+[2022-09-27]
 ❌ TODO: id 付番 => mozc dict をベースにする
     無機的なIDではなく、さまざまな文脈と繋がることのできるID。一方でuniquenessなどの用件も携えている
+https://github.com/bevyengine/bevy/blob/main/examples/ecs/ecs_guide.rs
+    Stage についてべんきょうしたよ
+Sub-apps and multiple window
+    もはやドキュメントすら書かれていない領域に突入したか...
+Meaning of Equal and Labels (like x, y, z) classifies language
+    haskell - definition → Free to split (pattern-match), fuse numbers and apply functions to labels (it is functional language, so "labels" aren't "variables"), like "x = (y, z)" or "(a, b) = c" or "y = f(x)". The notation "x =" is just the same as replacement of a code thereafter and even itself. Therefore, one may be able to fuse the whole program into one function without using any labels other than "main = ...".
+    python - normal? language → You can freely apply functions, split or merge variables.  The notation "x =" is NOT the same as replacement of code thereafter. For example, x = [1, 2, 3]; y = func(x); z = x + [4, 5] may not result in z = [1, 2, 3, 4, 5]. The first line does not promise that you can replace "x" with "[1, 2, 3]" in the last line ("z = x + [4, 5]"). In a simpler case, "x = x + 1" just means "add 1 to x" in Python, while in Haskell, it guarantees that you can replace "x" with "x + 1" in the very sentence "x = x + 1", therefore same as "x = (...(... + 1) + 1) + 1) + 1) + 1" (fixpoint operation).
+    rust - borrowing → The notation "x =" is NOT the same as replacement of code thereafter. In addition to the discussion on Python above, "=" also determines which variable is "borrow" and which variable is "move", deciding the timing these variables are freed. Therefore, you cannot freely merge or split variables through pattern-match or even applying function. Every time you apply function or pattern-match variables, you have to follow borrowing rules...
