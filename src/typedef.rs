@@ -1,22 +1,26 @@
 
-pub mod typedef {
-    //! Type definitions.
+pub mod state {
+    //! Type definitions (State).
 
     use std::collections::HashMap;
 
+    use bevy::window::WindowId;
     use serde::{Serialize, Deserialize};
 
     /// Global Game State.
     #[derive(Default, Debug)]
     pub struct GameState {
         pub textarea: String,
-        pub database: Database
+        pub database: Database,
+        pub second_window: SecondWindowState
     }
 
     /// Local Window State.
-    #[derive(Default)]
-    pub struct GameWindowState {
-        pub initialized: bool
+    #[derive(Default, Debug)]
+    pub struct SecondWindowState {
+        pub initialized: bool,
+        pub opened: bool,
+        pub id: Option<WindowId>
     }
 
     /// A part of the structure for the journal database.
@@ -50,4 +54,16 @@ pub mod typedef {
         pub decomposed: HashMap<String, JournalEntry>,
         pub reassembled: HashMap<String, JournalEntry>
     }
+}
+
+
+pub mod event {
+    use std::collections::HashMap;
+
+    use bevy::ecs::event::Event;
+    use serde::{Serialize, Deserialize};
+
+    /// Event for second window.
+    #[derive(Default, Debug)]
+    pub struct OpenSecondWindow;
 }
