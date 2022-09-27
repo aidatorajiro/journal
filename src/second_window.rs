@@ -1,14 +1,17 @@
 pub mod second_window {
     use std::borrow::Cow;
 
-    use bevy::{prelude::{ResMut, Local, EventReader, EventWriter}, window::{WindowDescriptor, CreateWindow, PresentMode, WindowClosed, WindowId}};
+    use bevy::{prelude::*, window::{WindowDescriptor, CreateWindow, PresentMode, WindowClosed, WindowId}};
     use bevy_egui::{EguiContext, egui::{FontTweak, FontData, FontFamily}};
     use bevy_render::{MainWorld, render_graph::RenderGraph};
 
-    use crate::{typedef::{state::*, event::*}, constants::constants::*};
+    use crate::{typedef::{state::*, event::*, component::SubWindow}, constants::constants::*};
 
     /// Second window handler.
-    pub fn ui_second_window(mut egui_ctx: ResMut<EguiContext>, mut global_state: ResMut<GameState>) {
+    pub fn ui_second_window(
+            mut egui_ctx: ResMut<EguiContext>,
+            mut global_state: ResMut<GameState>) {
+        
         let second_window_id = match global_state.second_window.id {
             None => return,
             Some(a) => a
@@ -93,8 +96,6 @@ pub mod second_window {
                     ..Default::default()
                 },
             });
-
-            println!("Heyyy!");
         }
     }
 

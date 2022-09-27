@@ -1,7 +1,24 @@
+pub mod component {
+    use bevy::{prelude::Component, window::WindowId, ecs::query::WorldQuery};
+
+    #[derive(Component, Default)]
+    pub struct SubWindow {
+        pub initialized: bool,
+        pub window_id: Option<WindowId>,
+        pub window_type: WindowType
+    }
+
+    #[derive(Default, PartialEq)]
+    pub enum WindowType {
+        #[default]
+        BlankPage,
+        MemoField,
+        SomeTestPage
+    }
+}
 
 pub mod state {
     //! Type definitions (State).
-
     use std::collections::HashMap;
 
     use bevy::window::WindowId;
@@ -11,6 +28,7 @@ pub mod state {
     #[derive(Default, Debug)]
     pub struct GameState {
         pub textarea: String,
+        pub textarea2: String,
         pub database: Database,
         pub second_window: SecondWindowState
     }

@@ -1,10 +1,12 @@
 //! Main Program
 
-mod constants;
-mod typedef;
-mod second_window;
+pub mod constants;
+pub mod typedef;
+pub mod second_window;
+pub mod subwindow;
 
 use constants::constants::*;
+use subwindow::subwindow::*;
 use typedef::state::*;
 use typedef::event::*;
 use second_window::second_window::*;
@@ -17,6 +19,9 @@ use bevy_egui::{EguiContext, EguiPlugin};
 use egui::{self, FontFamily, FontData, FontTweak, FontDefinitions};
 use bevy_render::{RenderStage};
 
+use crate::typedef::component::SubWindow;
+use crate::typedef::component::WindowType;
+
 /// Main function
 fn main() {
     let mut app = App::new();
@@ -27,11 +32,14 @@ fn main() {
         .add_plugin(EguiPlugin)
         .add_startup_system(setup)
         .add_system(system_drag_and_drop)
-        .add_system(ui_second_window)
-        .add_system(second_window_event_handler);
+        //.add_system(ui_second_window)
+        //.add_system(second_window_event_handler)
+        .add_system_to_stage(CoreStage::PreUpdate, subwindow_event)
+        .add_system(subwindow_ui);
     
     let mut render_app = app.sub_app_mut(RenderApp);
-    render_app.add_system_to_stage(RenderStage::Extract, second_window_subapp_system);
+    //render_app.add_system_to_stage(RenderStage::Extract, second_window_subapp_system);
+    render_app.add_system_to_stage(RenderStage::Extract, subwindow_subapp_system);
 
     app.run();
 }
@@ -45,13 +53,15 @@ fn setup(mut global_state: ResMut<GameState>, mut commands: Commands, asset_serv
 /// Event listener for file drag and drop event.
 fn system_drag_and_drop(
     mut dnd_ev: EventReader<FileDragAndDrop>,
-    mut evw: EventWriter<OpenSecondWindow>
+    mut evw: EventWriter<OpenSecondWindow>,
+    mut commands: Commands
 ) {
     for ev in dnd_ev.iter() {
         println!("{:?}", ev);
         match ev {
             FileDragAndDrop::DroppedFile { id, path_buf } => {
-                evw.send(OpenSecondWindow {});
+                commands.spawn().insert(SubWindow{window_type: WindowType::MemoField, ..default()});
+                commands.spawn().insert(SubWindow{window_type: WindowType::SomeTestPage, ..default()});
             }
             FileDragAndDrop::HoveredFile { id, path_buf } => {
             }
