@@ -1,66 +1,64 @@
-//! Main program dayo
+//! Main Program
 
-use std::fs::File;
+mod constants;
+mod typedef;
+mod second_window;
 
-use bevy::{prelude::*, text::Text2dBounds};
-use bevy_egui::{egui, EguiContext, EguiPlugin};
+use crate::constants::constants::*;
+use crate::typedef::typedef::*;
+use crate::second_window::second_window::*;
 
-#[derive(Component)]
-struct MyComponent;
+use std::{fs::File, borrow::Cow, collections::HashMap};
+use serde::{Deserialize, Serialize};
+use rmp_serde::{Serializer, Deserializer};
+use bevy::{prelude::*, text::Text2dBounds, render::{render_graph::RenderGraph, once_cell::sync::Lazy, RenderApp, camera::RenderTarget}, window::{WindowId, CreateWindow, PresentMode}};
+use bevy_egui::{EguiContext, EguiPlugin};
+use egui::{self, FontFamily, FontData, FontTweak, FontDefinitions};
 
-#[derive(Default)]
-struct MyState {
-    textarea: String,
-}
-
+/// Main function
 fn main() {
-    App::new()
-        .init_resource::<MyState>()
+    let mut app = App::new();
+    
+    app.init_resource::<GameState>()
         .add_plugins(DefaultPlugins)
         .add_plugin(EguiPlugin)
         .add_startup_system(setup)
         .add_system(system_drag_and_drop)
-        .add_system(ui_example)
-        .add_system(update_text)
-        .run();
+        .add_system(ui_second_window);
+    
+    let render_app = app.sub_app_mut(RenderApp);
+
+    let mut graph = render_app.world.get_resource_mut::<RenderGraph>().unwrap();
+
+    bevy_egui::setup_pipeline(
+        &mut graph,
+        bevy_egui::RenderGraphConfig {
+            window_id: *SECOND_WINDOW_ID,
+            egui_pass: SECONDARY_EGUI_PASS,
+        },
+    );
+
+    app.run();
 }
 
-fn setup(mut my_state: ResMut<MyState>, mut commands: Commands, asset_server: Res<AssetServer>) {
+/// setup function for bevy
+fn setup(mut create_window_events: EventWriter<CreateWindow>, mut global_state: ResMut<GameState>, mut commands: Commands, asset_server: Res<AssetServer>) {
     // 2d camera
     commands.spawn_bundle(Camera2dBundle::default());
-    
-    commands.spawn_bundle(Text2dBundle {
-        text: Text::from_section("", TextStyle {
-            font: asset_server.load("NotoSansJP-Thin.otf"),
-            font_size: 60.0,
-            color: Color::WHITE,
-        }).with_alignment(TextAlignment::CENTER),
-        transform: Transform::from_xyz(
-            0.0,
-            0.0,
-            1.0,
-        ),
-        ..default()
-    }).insert(MyComponent);
-}
 
-fn update_text(asset_server: Res<AssetServer>, mut my_state: ResMut<MyState>, mut query: Query<&mut Text, With<MyComponent>>) {
-    for mut txt in &mut query {
-        txt.apply(&Text::from_section(my_state.textarea.clone(), TextStyle {
-            font: asset_server.load("NotoSansJP-Thin.otf"),
-            font_size: 60.0,
-            color: Color::WHITE,
-        }).with_alignment(TextAlignment::CENTER));
-    }
-}
-
-fn ui_example(mut my_state: ResMut<MyState>, mut egui_context: ResMut<EguiContext>) {
-    egui::Window::new("Hello").show(egui_context.ctx_mut(), |ui| {
-        ui.label("world");
-        ui.text_edit_multiline(&mut my_state.textarea)
+    create_window_events.send(CreateWindow {
+        id: *SECOND_WINDOW_ID,
+        descriptor: WindowDescriptor {
+            width: 800.,
+            height: 600.,
+            present_mode: PresentMode::AutoVsync,
+            title: "Second window".to_string(),
+            ..Default::default()
+        },
     });
 }
 
+/// Event listener for file drag and drop event.
 fn system_drag_and_drop(
     mut dnd_ev: EventReader<FileDragAndDrop>
 ) {
@@ -76,4 +74,3 @@ fn system_drag_and_drop(
         }
     }
 }
-
