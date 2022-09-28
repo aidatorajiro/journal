@@ -2,6 +2,10 @@ pub mod component {
     use bevy::{prelude::Component, window::WindowId};
 
     #[derive(Component, Default)]
+    pub struct SwashText {
+    }
+
+    #[derive(Component, Default)]
     pub struct SubWindow {
         pub initialized: bool,
         pub window_id: Option<WindowId>
@@ -19,6 +23,11 @@ pub mod state {
     use std::collections::HashMap;
 
     use serde::{Serialize, Deserialize};
+
+    #[derive(Default, Debug)]
+    pub struct SimpleState {
+        pub switch: bool
+    }
 
     /// Global Game State.
     #[derive(Default, Debug)]
