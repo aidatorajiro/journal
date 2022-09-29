@@ -1,4 +1,6 @@
 pub mod subwindow {
+    //! Second window management.
+    
     use std::borrow::Cow;
 
     use egui::{self, FontTweak, FontData, FontFamily};
@@ -6,8 +8,9 @@ pub mod subwindow {
     use bevy::{prelude::*, window::{WindowClosed, CreateWindow, PresentMode, WindowId}};
     use bevy_egui::EguiContext;
     use bevy_render::{MainWorld, render_graph::RenderGraph};
-    use crate::{typedef::{state::*, component::*}, constants::constants::SECONDARY_EGUI_PASS};
+    use crate::{typedef::{state::*, component::*, event::*}, constants::constants::SECONDARY_EGUI_PASS};
 
+    /// Blank window UI definition.
     pub fn subwindow_ui_blank_page (mut egui_ctx: ResMut<EguiContext>, query: Query<&SubWindow, With<BlankPage>>) {
         for sw in query.iter() {
             let wid = match sw.window_id {None => continue, Some(a) => a};
@@ -17,16 +20,21 @@ pub mod subwindow {
         }
     }
 
-    pub fn subwindow_ui_memo_field (mut egui_ctx: ResMut<EguiContext>, mut query: Query<&mut SubWindow, With<MemoField>>, mut global_state: ResMut<GameState>) {
+    /// Memo window UI definition. You can write texts, attach tags and add memo to the database here.
+    pub fn subwindow_ui_memo_field (
+        mut egui_ctx: ResMut<EguiContext>,
+        mut query: Query<&mut SubWindow, With<MemoField>>,
+        mut global_state: ResMut<GameState>,
+        mut add_memo_ev: EventWriter<AddJournal>) {
         for mut sw in query.iter_mut() {
             let wid = match sw.window_id {None => continue, Some(a) => a};
-            let ctx = match egui_ctx.try_ctx_for_window_mut(wid) {None => continue,Some(ctx) => ctx};
+            let ctx = match egui_ctx.try_ctx_for_window_mut(wid) {None => continue, Some(ctx) => ctx};
 
             egui::CentralPanel::default()
-            .show(ctx, |ui| {
+                .show(ctx, |ui| {
                 egui::ScrollArea::vertical().show(ui, |ui| {
                     if ui.button("💾 Add Memo 💾").clicked() {
-                        
+                        add_memo_ev.send(AddJournal {text: global_state.textarea.clone()});
                     }
                     ui.add_sized(ui.available_size(), egui::TextEdit::multiline(&mut global_state.textarea).margin(egui::Vec2{x:9.0, y:6.0}));
                 });
@@ -60,12 +68,14 @@ pub mod subwindow {
         }
     }
 
+    /// Returns a set of Subwindow UIs that will be added to the App object.
     pub fn subwindow_ui_set () -> SystemSet {
         SystemSet::new()
             .with_system(subwindow_ui_blank_page)
             .with_system(subwindow_ui_memo_field)
     }
 
+    /// A event handler for WindowClosed event. Detects window close and delete the entity corresponding with the window.
     pub fn subwindow_event (
         query: Query<(Entity, &SubWindow)>,
         mut ev_close: EventReader<WindowClosed>,
@@ -81,6 +91,7 @@ pub mod subwindow {
         }
     }
 
+    /// A system with stage beby_render::RenderStage::Extract. Create windowid when a window entity is created in the "main" world. Then, setup pipeline to enable the rendering, and send a CreateWindow event.
     pub fn subwindow_subapp_system (mut world: ResMut<MainWorld>, mut graph: ResMut<RenderGraph>) {        
         let mut binding_subwin = world.query::<&mut SubWindow>();
         

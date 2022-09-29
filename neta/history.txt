@@ -16,10 +16,10 @@ Search documentation - https://docs.rs/bevy/latest/bevy/?search=bundle
     Looking for "bundle" to see what can be used (such as texts, buttons, etc.)
 seems like Bevy doesn't have text input...
     But looking MIDI section on the unofficial cookbook, maybe there's a possibility of 3rd-party extension library? → found bevy_egui! https://github.com/mvlabat/bevy_egui
-❌ TODO: Looking for typesetting and hopefully COLR support...
+🔺一旦諦め TODO: Looking for typesetting and hopefully COLR support...
     oh! that looks nice!  https://github.com/dfrg/swash
 ❌ TODO: Making 3D atmosphere?
-Bevy's "data-driven" way is similar to Modding! (especially that of X series. )
+Bevy's "data-driven" way is similar to Modding! (especially that of X series, or maybe civilization or stellaris?)
 
 [2022-09-27]
 ❌ TODO: id 付番 => mozc dict をベースにする
@@ -32,3 +32,26 @@ Meaning of Equal and Labels (like x, y, z) classifies language
     haskell - definition → Free to split (pattern-match), fuse numbers and apply functions to labels (it is functional language, so "labels" aren't "variables"), like "x = (y, z)" or "(a, b) = c" or "y = f(x)". The notation "x =" is just the same as replacement of a code thereafter and even itself. Therefore, one may be able to fuse the whole program into one function without using any labels other than "main = ...".
     python - normal? language → You can freely apply functions, split or merge variables.  The notation "x =" is NOT the same as replacement of code thereafter. For example, x = [1, 2, 3]; y = func(x); z = x + [4, 5] may not result in z = [1, 2, 3, 4, 5]. The first line does not promise that you can replace "x" with "[1, 2, 3]" in the last line ("z = x + [4, 5]"). In a simpler case, "x = x + 1" just means "add 1 to x" in Python, while in Haskell, it guarantees that you can replace "x" with "x + 1" in the very sentence "x = x + 1", therefore same as "x = (...(... + 1) + 1) + 1) + 1) + 1" (fixpoint operation).
     rust - borrowing → The notation "x =" is NOT the same as replacement of code thereafter. In addition to the discussion on Python above, "=" also determines which variable is "borrow" and which variable is "move", deciding the timing these variables are freed. Therefore, you cannot freely merge or split variables through pattern-match or even applying function. Every time you apply function or pattern-match variables, you have to follow borrowing rules...
+
+    このような　言語ごとの縛りの違いもArchitectureの一つかも？
+Quite useful page! https://bevy-cheatbook.github.io/builtins.html#bundles
+
+[2022-09-28]
+❌ TODO: 分解やタグ付けなどの、データを整える作業を一種のゲームとして楽しむ、みたいな...
+
+[2022-09-29]
+やっぱりソフトウェアっていうのは、作る努力よりも使う努力の方が圧倒的に大きいというか、入力した情報によってソフトウェアは無限にさまざまな使われ方がされうるのが、ソフトウェアの「想定された使われ方」を打破することにもなる一方で、危険性でもあるよね...
+ソフトウェアを作る時、どういうふうにそれが使われるかというリスクをなかなか考えづらいというのがある
+(cif fileについて調べていて思ったこと...結晶構造一つとっても、アプリケーション自体は自動的にファイルを読み取って点や線を記述にしたがって描画するだけだが、そのアプリケーションが描画しうる構造には無数にさまざまなものがあって、プログラマーはそのさまざまな構造を全て把握することはできない...)
+
+Why Rust is Rusty? → 
+    There are so many "sugar syntaxes" in Rust.
+    Rust's language specificaitons aren't simple, rather, some of the specificaitons seem to exist for a specific purpose...
+    For example, things like "MemoField {..default()}". Where default() comes from!? → actually this is from Bevy, not Rust. Through importing Bevy, you can simplify Default:default to just default...
+    And there are many different ways to do similar or same thing. (For example, how to unpack Option? You can match, or use unpack function, or use ? notation. (probably there's other methods that I don't know...)
+    If you match, you can nest the whole block of code with match, or otherwise, you can write the match on the first line and use break, continue or return.)
+    Unlike other languages, becoming able to read and analyze Rust code is itself a hard problem, because there are many syntaxes you don't know!
+    For Haskell, theoretically, it is enough to know several sugar syntaxes (like `div` and do) and how to define typeclass, to be able to read Haskell code, if you are keen to look the source code back and forth to analyze what it does.
+    In Haskell, even symbols that look like language features (such as . $ <$> =<< << >>), are actually one of normal functions with "infix" parameters. (Though, there are many so-called "extensions" that extend syntax to do weird things...) 
+    So, Rust is not a simple language. Rather, it's complex and rusty.
+
