@@ -23,10 +23,9 @@ pub mod subwindow {
     /// Memo window UI definition. You can write texts, attach tags and add memo to the database here.
     pub fn subwindow_ui_memo_field (
         mut egui_ctx: ResMut<EguiContext>,
-        mut query: Query<&mut SubWindow, With<MemoField>>,
-        mut global_state: ResMut<GameState>,
+        mut query: Query<(&mut SubWindow, &mut MemoField)>,
         mut add_memo_ev: EventWriter<AddJournal>) {
-        for mut sw in query.iter_mut() {
+        for (mut sw, mut mf) in query.iter_mut() {
             let wid = match sw.window_id {None => continue, Some(a) => a};
             let ctx = match egui_ctx.try_ctx_for_window_mut(wid) {None => continue, Some(ctx) => ctx};
 
@@ -34,9 +33,9 @@ pub mod subwindow {
                 .show(ctx, |ui| {
                 egui::ScrollArea::vertical().show(ui, |ui| {
                     if ui.button("💾 Add Memo 💾").clicked() {
-                        add_memo_ev.send(AddJournal {text: global_state.textarea.clone()});
+                        add_memo_ev.send(AddJournal {text: mf.textarea.clone()});
                     }
-                    ui.add_sized(ui.available_size(), egui::TextEdit::multiline(&mut global_state.textarea).margin(egui::Vec2{x:9.0, y:6.0}));
+                    ui.add_sized(ui.available_size(), egui::TextEdit::multiline(&mut mf.textarea).margin(egui::Vec2{x:9.0, y:6.0}));
                 });
                 if sw.initialized == false {
                     println!("initializing second window....");
