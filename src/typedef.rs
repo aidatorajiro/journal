@@ -1,4 +1,5 @@
 pub mod component {
+    //! Type definitions (Component).
     use bevy::{prelude::Component, window::WindowId};
 
     #[derive(Component, Default)]
@@ -12,10 +13,15 @@ pub mod component {
     }
 
     #[derive(Component, Default)]
-    pub struct MemoField;
+    pub struct MemoField {
+        pub textarea: String,
+        pub tags: Vec<String>
+    }
 
     #[derive(Component, Default)]
     pub struct BlankPage;
+
+
 }
 
 pub mod state {
@@ -32,8 +38,6 @@ pub mod state {
     /// Global Game State.
     #[derive(Default, Debug)]
     pub struct GameState {
-        pub textarea: String,
-        pub textarea2: String,
         pub database: Database
     }
     
@@ -72,4 +76,9 @@ pub mod state {
 
 
 pub mod event {
+    //! Type definitions (Events).
+    #[derive(Default, Debug)]
+    pub struct AddJournal {
+        pub text: String
+    }
 }

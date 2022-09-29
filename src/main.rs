@@ -14,6 +14,7 @@ use bevy_render::texture::CompressedImageFormats;
 use bevy_render::texture::ImageType;
 use subwindow::subwindow::*;
 use typedef::component::*;
+use typedef::event::*;
 use typedef::state::*;
 
 use bevy::{prelude::*, render::RenderApp};
@@ -25,6 +26,7 @@ fn main() {
     let mut app = App::new();
     
     app.init_resource::<GameState>()
+        .add_event::<AddJournal>()
         .add_plugins(DefaultPlugins)
         .add_plugin(EguiPlugin)
         .add_asset::<RawData>()
@@ -44,11 +46,7 @@ fn main() {
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     // 2d camera
     commands.spawn_bundle(Camera2dBundle::default());
-    commands.spawn_bundle((SubWindow::default(), MemoField));
-
-    commands.spawn()
-        .insert(SwashText {})
-        .insert(asset_server.load::<RawData, _>("Nabla-Regular-VariableFont_EDPT,EHLT.ttf"));
+    commands.spawn_bundle((SubWindow::default(), MemoField {..default()}));
 }
 
 /// Event listener for file drag and drop event.
