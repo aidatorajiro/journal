@@ -1,5 +1,14 @@
 Journal History
 
+[TODO]
+❌ TODO: 分解やタグ付けなどの、データを整える作業を一種のゲームとして楽しむ、みたいな...
+🔺一旦諦め TODO: Looking for typesetting and hopefully COLR support...
+    oh! that looks nice!  https://github.com/dfrg/swash
+❌ TODO: Making 3D atmosphere?
+❌ TODO: id 付番 => mozc dict をベースにする
+    無機的なIDではなく、さまざまな文脈と繋がることのできるID。一方でuniquenessなどの用件も携えている
+❌ 
+
 [2022-09-22]
 when i open VSCode i couldnt use extension...
 git init
@@ -16,14 +25,9 @@ Search documentation - https://docs.rs/bevy/latest/bevy/?search=bundle
     Looking for "bundle" to see what can be used (such as texts, buttons, etc.)
 seems like Bevy doesn't have text input...
     But looking MIDI section on the unofficial cookbook, maybe there's a possibility of 3rd-party extension library? → found bevy_egui! https://github.com/mvlabat/bevy_egui
-🔺一旦諦め TODO: Looking for typesetting and hopefully COLR support...
-    oh! that looks nice!  https://github.com/dfrg/swash
-❌ TODO: Making 3D atmosphere?
 Bevy's "data-driven" way is similar to Modding! (especially that of X series, or maybe civilization or stellaris?)
 
 [2022-09-27]
-❌ TODO: id 付番 => mozc dict をベースにする
-    無機的なIDではなく、さまざまな文脈と繋がることのできるID。一方でuniquenessなどの用件も携えている
 https://github.com/bevyengine/bevy/blob/main/examples/ecs/ecs_guide.rs
     Stage についてべんきょうしたよ
 Sub-apps and multiple window
@@ -36,9 +40,6 @@ Meaning of Equal and Labels (like x, y, z) classifies language
     このような　言語ごとの縛りの違いもArchitectureの一つかも？
 Quite useful page! https://bevy-cheatbook.github.io/builtins.html#bundles
 
-[2022-09-28]
-❌ TODO: 分解やタグ付けなどの、データを整える作業を一種のゲームとして楽しむ、みたいな...
-
 [2022-09-29]
 やっぱりソフトウェアっていうのは、作る努力よりも使う努力の方が圧倒的に大きいというか、入力した情報によってソフトウェアは無限にさまざまな使われ方がされうるのが、ソフトウェアの「想定された使われ方」を打破することにもなる一方で、危険性でもあるよね...
 ソフトウェアを作る時、どういうふうにそれが使われるかというリスクをなかなか考えづらいというのがある
@@ -48,10 +49,17 @@ Why Rust is Rusty? →
     There are so many "sugar syntaxes" in Rust.
     Rust's language specificaitons aren't simple, rather, some of the specificaitons seem to exist for a specific purpose...
     For example, things like "MemoField {..default()}". Where default() comes from!? → actually this is from Bevy, not Rust. Through importing Bevy, you can simplify Default:default to just default...
-    And there are many different ways to do similar or same thing. (For example, how to unpack Option? You can match, or use unpack function, or use ? notation. (probably there's other methods that I don't know...)
-    If you match, you can nest the whole block of code with match, or otherwise, you can write the match on the first line and use break, continue or return.)
+    And there are many different ways to do similar or same thing.
+    For example, how to unpack Option? You can match, or use unpack function, or use ? notation. (probably there's other methods that I don't know...)
+        If you use match, you can nest the whole block of code with match, or otherwise, you can write the match on the first line and use break, continue or return.
     Unlike other languages, becoming able to read and analyze Rust code is itself a hard problem, because there are many syntaxes you don't know!
     For Haskell, theoretically, it is enough to know several sugar syntaxes (like `div` and do) and how to define typeclass, to be able to read Haskell code, if you are keen to look the source code back and forth to analyze what it does.
     In Haskell, even symbols that look like language features (such as . $ <$> =<< << >>), are actually one of normal functions with "infix" parameters. (Though, there are many so-called "extensions" that extend syntax to do weird things...) 
     So, Rust is not a simple language. Rather, it's complex and rusty.
-
+Difference between Cloud Service and Web Services before cloud...
+    Perhaps, difference between cloud service and web services before the era of cloud is that cloud service is autonomous and running various micro-programs behind the user interface, making the platform more opaque than web services.
+    Contrary, web services are running according to user's command. In most cases, user is the originator of the program, like clicking a button and send some request through HTTP(S).
+    In other words, cloud service is like a simulation game. In a simulation game, numerous micro-programs are running behind the user interface and the player can only see what's happening on the surface. Also, the ways the player can interact with the game are limited.
+    In many cases, the player isn't the originator of these micro-programs. Instead, they are invoked by other programs, or periodic events, or happening randomly.
+    Working with bevy, I feel like writing bevy code is like making a Mod program for space-simulation games such as Stellaris (by Paradox Interactive, Sweden) or X series (by Egosoft, Germany).
+    Bevy's "data-driven" mechanism is 
