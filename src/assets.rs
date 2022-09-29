@@ -1,6 +1,5 @@
 pub mod assets {
-    use core::fmt;
-    use bevy::{prelude::*, reflect::TypeUuid, asset::*};
+    use bevy::{reflect::TypeUuid, asset::*};
 
     #[derive(Debug, TypeUuid)]
     #[uuid = "26c8669a-8a70-4266-a4d4-64b33c0199d7"]

@@ -1,46 +1,27 @@
 pub mod component {
     //! Type definitions (Component).
+    use std::collections::HashMap;
+
     use bevy::{prelude::Component, window::WindowId};
+    use serde::{Serialize, Deserialize};
 
-    #[derive(Component, Default)]
-    pub struct SwashText {
-    }
-
+    // A subwindow.
     #[derive(Component, Default)]
     pub struct SubWindow {
         pub initialized: bool,
         pub window_id: Option<WindowId>
     }
 
+    // A subwindow with memo field.
     #[derive(Component, Default)]
     pub struct MemoField {
-        pub textarea: String,
-        pub tags: Vec<String>
+        pub textarea: String
     }
 
+    // A subwindow with blank page.
     #[derive(Component, Default)]
     pub struct BlankPage;
 
-
-}
-
-pub mod state {
-    //! Type definitions (State).
-    use std::collections::HashMap;
-
-    use serde::{Serialize, Deserialize};
-
-    #[derive(Default, Debug)]
-    pub struct SimpleState {
-        pub switch: bool
-    }
-
-    /// Global Game State.
-    #[derive(Default, Debug)]
-    pub struct GameState {
-        pub database: Database
-    }
-    
     /// A part of the structure for the journal database.
     #[derive(Serialize, Deserialize, Default, Debug)]
     pub struct JournalEntryMetadata {
@@ -74,11 +55,20 @@ pub mod state {
     }
 }
 
+pub mod resource {
+    //! Type definitions (Resource).
+    
+    /// Global Game State, aside from entity components.
+    #[derive(Default, Debug)]
+    pub struct GameState {}
+}
+
 
 pub mod event {
     //! Type definitions (Events).
     #[derive(Default, Debug)]
     pub struct AddJournal {
-        pub text: String
+        pub text: String,
+        pub timestamp: u64
     }
 }

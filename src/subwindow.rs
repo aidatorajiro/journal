@@ -1,14 +1,14 @@
-pub mod subwindow {
+pub mod systems {
     //! Second window management.
     
     use std::borrow::Cow;
 
-    use egui::{self, FontTweak, FontData, FontFamily};
+    use egui::{self, FontTweak, FontData, FontFamily, TextEdit, style::Margin};
 
     use bevy::{prelude::*, window::{WindowClosed, CreateWindow, PresentMode, WindowId}};
     use bevy_egui::EguiContext;
     use bevy_render::{MainWorld, render_graph::RenderGraph};
-    use crate::{typedef::{state::*, component::*, event::*}, constants::constants::SECONDARY_EGUI_PASS};
+    use crate::{typedef::{component::*, event::*}, constants::constants::SECONDARY_EGUI_PASS, utils::utils::create_timestamp};
 
     /// Blank window UI definition.
     pub fn subwindow_ui_blank_page (mut egui_ctx: ResMut<EguiContext>, query: Query<&SubWindow, With<BlankPage>>) {
@@ -31,12 +31,8 @@ pub mod subwindow {
 
             egui::CentralPanel::default()
                 .show(ctx, |ui| {
-                egui::ScrollArea::vertical().show(ui, |ui| {
-                    if ui.button("💾 Add Memo 💾").clicked() {
-                        add_memo_ev.send(AddJournal {text: mf.textarea.clone()});
-                    }
-                    ui.add_sized(ui.available_size(), egui::TextEdit::multiline(&mut mf.textarea).margin(egui::Vec2{x:9.0, y:6.0}));
-                });
+                let spacing = ui.spacing_mut();
+                spacing.window_margin = Margin {left: 20.0, right: 20.0, top: 20.0, bottom: 20.0};
                 if sw.initialized == false {
                     println!("initializing second window....");
 
@@ -63,6 +59,17 @@ pub mod subwindow {
                     ui.ctx().set_fonts(fonts.clone());
                     sw.initialized = true;
                 }
+
+                egui::ScrollArea::vertical().show(ui, |ui| {
+                    if ui.button("💾 Add Memo 💾").clicked() {
+                        add_memo_ev.send(AddJournal {
+                            text: mf.textarea.clone(),
+                            timestamp: create_timestamp()
+                        });
+                    }
+                    ui.add_space(10.0);
+                    ui.add_sized(ui.available_size(), TextEdit::multiline(&mut mf.textarea).margin(egui::Vec2{x:9.0, y:6.0}));
+                });
             });
         }
     }

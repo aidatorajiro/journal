@@ -4,18 +4,17 @@ pub mod constants;
 pub mod typedef;
 pub mod subwindow;
 pub mod assets;
-
-use std::fs::File;
-use std::io::prelude::*;
+pub mod utils;
+pub mod journalmanage;
 
 use assets::assets::RawData;
 use assets::assets::RawDataLoader;
-use bevy_render::texture::CompressedImageFormats;
-use bevy_render::texture::ImageType;
-use subwindow::subwindow::*;
+
+use journalmanage::systems::*;
+use subwindow::systems::*;
 use typedef::component::*;
 use typedef::event::*;
-use typedef::state::*;
+use typedef::resource::*;
 
 use bevy::{prelude::*, render::RenderApp};
 use bevy_egui::EguiPlugin;
@@ -34,7 +33,8 @@ fn main() {
         .add_startup_system(setup)
         .add_system(system_drag_and_drop)
         .add_system(subwindow_event)
-        .add_system_set(subwindow_ui_set());
+        .add_system_set(subwindow_ui_set())
+        .add_system(handle_add_journal);
     
     let render_app = app.sub_app_mut(RenderApp);
     render_app.add_system_to_stage(RenderStage::Extract, subwindow_subapp_system);
@@ -43,7 +43,7 @@ fn main() {
 }
 
 /// setup function for bevy
-fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
+fn setup(mut commands: Commands) {
     // 2d camera
     commands.spawn_bundle(Camera2dBundle::default());
     commands.spawn_bundle((SubWindow::default(), MemoField {..default()}));
