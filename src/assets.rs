@@ -25,7 +25,7 @@ pub mod assets {
         }
 
         fn extensions(&self) -> &[&str] {
-            &["ttf", "otf"]
+            &["rawdata"]
         }
     }
 
