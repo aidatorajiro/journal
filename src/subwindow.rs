@@ -7,7 +7,7 @@ pub mod systems {
 
     use bevy::{prelude::*, window::{WindowClosed, CreateWindow, PresentMode, WindowId}};
     use bevy_egui::EguiContext;
-    use bevy_render::{MainWorld, render_graph::RenderGraph};
+    use bevy::render::{MainWorld, render_graph::RenderGraph};
     use crate::{typedef::{component::*, event::*}, constants::constants::SECONDARY_EGUI_PASS};
 
     /// Blank window UI definition.
