@@ -66,3 +66,10 @@ Difference between Cloud Service and Web Services before cloud...
     In many cases, the player isn't the originator of these micro-programs. Instead, they are invoked by other programs, or periodic events, or happening randomly.
     Working with bevy, I feel like writing bevy code is like making a Mod program for space-simulation games such as Stellaris (by Paradox Interactive, Sweden) or X series (by Egosoft, Germany).
     Bevy's "data-driven" mechanism is 
+
+[2022-10-04]
+Working with fragment, entry, history hierarchy, and tags.
+    list of fragments makes an entry.
+    the graph structure of fragments makes fragment history.
+    the graph structure of entries makes entry history.
+→ look for graph structure: discussion here https://github.com/bevyengine/bevy/issues/5430
