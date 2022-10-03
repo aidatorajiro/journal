@@ -107,12 +107,13 @@ pub mod event {
 
     use super::component::FragmentContents;
     
-    /// Add fragments to existing or new entry
+    /// This event will yield a new entry, from scratch or based on an existing entry.
     #[derive(Debug)]
     pub struct AddFragments {
         /// List of texts to add.
         pub contents: Vec<FragmentContents>,
-        /// None for creating new entry. Some for append to existing entry.
+        /// None for creating a new entry from scratch. Some for append to an existing entry (please provide Entity ID for the entry).
+        /// In both cases, a new entry will be created, because entries should be immutable.
         pub entry: Option<Entity>
     }
 }
