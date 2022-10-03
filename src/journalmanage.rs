@@ -8,8 +8,7 @@ pub mod systems {
         mut events: EventReader<AddFragments>,
         mut commands: Commands,
         entitylist: Query<&EntityList>,
-        mut global: ResMut<GameState>,
-        mut fragment_query: Query<&mut Fragment>
+        mut global: ResMut<GameState>
     ) {
         for ev in events.iter() {
             let ts = create_timestamp();
@@ -18,14 +17,14 @@ pub mod systems {
                 ev.contents
                 .iter()
                 .map(|x| {
-                    add_fragment(&mut commands, ts, x, &mut fragment_query, &mut global)
+                    add_fragment(&mut commands, ts, x,  &mut global)
                 })
                 .collect();
 
             if let Some(x) = ev.entry {
-                add_entry(&mut commands, &[entitylist.get(x).unwrap().entities.clone(), ents].concat(), ts, &mut global, &fragment_query.to_readonly());
+                add_entry(&mut commands, &[entitylist.get(x).unwrap().entities.clone(), ents].concat(), ts, &mut global);
             } else {
-                add_entry(&mut commands, &ents, ts, &mut global, &fragment_query.to_readonly());
+                add_entry(&mut commands, &ents, ts, &mut global);
             };
         }
     }
@@ -39,7 +38,6 @@ mod inner {
         commands: &mut Commands,
         ts: u64,
         fragment_contents: &FragmentContents,
-        fragment_query: &mut Query<&mut Fragment>,
         global: &mut ResMut<GameState>
     ) -> Entity {
         let entid = commands.spawn().insert(Fragment {
@@ -57,8 +55,7 @@ mod inner {
         commands: &mut Commands,
         entities: &Vec<Entity>,
         ts: u64,
-        global: &mut ResMut<GameState>,
-        fragment_query: &Query<&Fragment>
+        global: &mut ResMut<GameState>
     ) -> Entity {
         let id_entry = commands.spawn().insert(Entry {}).insert(EntityList { timestamp: ts, entities: entities.clone() }).id();
 
