@@ -44,15 +44,12 @@ mod inner {
     ) -> Entity {
         let entid = commands.spawn().insert(Fragment {
             timestamp: ts,
-            contents: fragment_contents.clone(),
-            neighbor_graph_index: None,
-            history_graph_index: None
+            contents: fragment_contents.clone()
         }).id();
-        let mut qmut = fragment_query.get_mut(entid).unwrap();
-        let neighbor_graph_index = global.neighbor_graph.add_node(entid);
-        qmut.neighbor_graph_index = Some(neighbor_graph_index);
-        let history_graph_index = global.history_graph.add_node(entid);
-        qmut.history_graph_index = Some(history_graph_index);
+        let a = global.neighbor_graph.add_node(entid);
+        global.neighbor_graph_ids.insert(entid, a);
+        let b = global.history_graph.add_node(entid);
+        global.history_graph_ids.insert(entid, b);
         entid
     }
 
@@ -67,8 +64,8 @@ mod inner {
 
         if let Some(mut id_from) = entities.get(0) {
             for id_to in entities.iter().skip(1) {
-                let a = fragment_query.get(*id_from).unwrap().neighbor_graph_index.unwrap();
-                let b = fragment_query.get(*id_to).unwrap().neighbor_graph_index.unwrap();
+                let a = global.neighbor_graph_ids[id_from];
+                let b = global.neighbor_graph_ids[id_to];
                 global.neighbor_graph.add_edge(a, b, id_entry);
                 id_from = id_to;
             }
