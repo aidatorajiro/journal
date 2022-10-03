@@ -1,7 +1,6 @@
 pub mod component {
     //! Type definitions (Component).
     use bevy::{prelude::*, window::WindowId, utils::HashSet};
-    use petgraph::{graph::NodeIndex};
     use serde::{Serialize, Deserialize};
 
     // A subwindow.
