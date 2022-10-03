@@ -10,6 +10,8 @@ pub mod journalmanage;
 use assets::assets::RawData;
 use assets::assets::RawDataLoader;
 
+use bevy::app::AppExit;
+use bevy::window::WindowClosed;
 use journalmanage::systems::*;
 use subwindow::systems::*;
 use typedef::event::*;
@@ -33,7 +35,8 @@ fn main() {
         .add_system(system_drag_and_drop)
         .add_system(subwindow_event)
         .add_system_set(subwindow_ui_set())
-        .add_system(handle_add_fragments);
+        .add_system(handle_add_fragments)
+        .add_system(window_closed_handler);
     
     let render_app = app.sub_app_mut(RenderApp);
     render_app.add_system_to_stage(RenderStage::Extract, subwindow_subapp_system);
@@ -45,6 +48,14 @@ fn main() {
 fn setup(mut commands: Commands) {
     // 2d camera
     commands.spawn_bundle(Camera2dBundle::default());
+}
+
+fn window_closed_handler(mut ev: EventReader<WindowClosed>, mut quit: EventWriter<AppExit>) {
+    for e in ev.iter() {
+        if e.id.is_primary() {
+            quit.send(AppExit);
+        }
+    }
 }
 
 /// Event listener for file drag and drop event.
