@@ -16,7 +16,6 @@ use bevy::winit::WinitSettings;
 use constants::constants::*;
 use journalmanage::systems::*;
 use subwindow::systems::*;
-use typedef::component::*;
 use typedef::event::*;
 use typedef::resource::*;
 
@@ -54,15 +53,17 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     // 2d camera
     commands.spawn_bundle(Camera2dBundle::default());
 
-    commands.spawn()
-        .insert(SubWindow { initialized: false, window_id: None })
-        .insert(MemoField { textarea: "Hello".to_string() });
+    //commands.spawn()
+    //    .insert(SubWindow { initialized: false, window_id: None })
+    //    .insert(MemoField { textarea: "Hello".to_string() });
 
     commands
         .spawn_bundle(NodeBundle {
             style: Style {
                 size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
-                justify_content: JustifyContent::SpaceBetween,
+                justify_content: JustifyContent::Center,
+                align_items: AlignItems::Center,
+                flex_wrap: FlexWrap::Wrap,
                 ..default()
             },
             color: Color::NONE.into(),
@@ -73,6 +74,82 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                 .spawn_bundle(ButtonBundle {
                     style: Style {
                         size: Size::new(Val::Percent(50.0), Val::Percent(50.0)),
+                        position: UiRect::all(Val::Auto),
+                        // horizontally center child text
+                        justify_content: JustifyContent::Center,
+                        // vertically center child text
+                        align_items: AlignItems::Center,
+                        ..default()
+                    },
+                    color: NORMAL_BUTTON.into(),
+                    ..default()
+                })
+                .with_children(|parent| {
+                    parent.spawn_bundle(TextBundle::from_section(
+                        "Button",
+                        TextStyle {
+                            font: asset_server.load("NotoSansJP-Bold.otf"),
+                            font_size: 40.0,
+                            color: Color::rgb(0.9, 0.9, 0.9),
+                        },
+                    ));
+                });
+
+            parent
+                .spawn_bundle(ButtonBundle {
+                    style: Style {
+                        size: Size::new(Val::Percent(50.0), Val::Percent(50.0)),
+                        position: UiRect::all(Val::Auto),
+                        // horizontally center child text
+                        justify_content: JustifyContent::Center,
+                        // vertically center child text
+                        align_items: AlignItems::Center,
+                        ..default()
+                    },
+                    color: NORMAL_BUTTON.into(),
+                    ..default()
+                })
+                .with_children(|parent| {
+                    parent.spawn_bundle(TextBundle::from_section(
+                        "Button",
+                        TextStyle {
+                            font: asset_server.load("NotoSansJP-Bold.otf"),
+                            font_size: 40.0,
+                            color: Color::rgb(0.9, 0.9, 0.9),
+                        },
+                    ));
+                });
+
+            parent
+                .spawn_bundle(ButtonBundle {
+                    style: Style {
+                        size: Size::new(Val::Percent(50.0), Val::Percent(50.0)),
+                        position: UiRect::all(Val::Auto),
+                        // horizontally center child text
+                        justify_content: JustifyContent::Center,
+                        // vertically center child text
+                        align_items: AlignItems::Center,
+                        ..default()
+                    },
+                    color: NORMAL_BUTTON.into(),
+                    ..default()
+                })
+                .with_children(|parent| {
+                    parent.spawn_bundle(TextBundle::from_section(
+                        "Button",
+                        TextStyle {
+                            font: asset_server.load("NotoSansJP-Bold.otf"),
+                            font_size: 40.0,
+                            color: Color::rgb(0.9, 0.9, 0.9),
+                        },
+                    ));
+                });
+            
+            parent
+                .spawn_bundle(ButtonBundle {
+                    style: Style {
+                        size: Size::new(Val::Percent(50.0), Val::Percent(50.0)),
+                        position: UiRect::all(Val::Auto),
                         // horizontally center child text
                         justify_content: JustifyContent::Center,
                         // vertically center child text
