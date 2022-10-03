@@ -9,8 +9,7 @@ pub mod systems {
         mut commands: Commands,
         entitylist: Query<&EntityList>,
         mut global: ResMut<GameState>,
-        mut fragment_query: Query<&mut Fragment>,
-        fragment_query_r: Query<&Fragment>
+        mut fragment_query: Query<&mut Fragment>
     ) {
         for ev in events.iter() {
             let ts = create_timestamp();
@@ -24,9 +23,9 @@ pub mod systems {
                 .collect();
 
             if let Some(x) = ev.entry {
-                add_entry(&mut commands, &[entitylist.get(x).unwrap().entities.clone(), ents].concat(), ts, &mut global, &fragment_query_r);
+                add_entry(&mut commands, &[entitylist.get(x).unwrap().entities.clone(), ents].concat(), ts, &mut global, &fragment_query.to_readonly());
             } else {
-                add_entry(&mut commands, &ents, ts, &mut global, &fragment_query_r);
+                add_entry(&mut commands, &ents, ts, &mut global, &fragment_query.to_readonly());
             };
         }
     }
