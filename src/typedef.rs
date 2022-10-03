@@ -35,9 +35,7 @@ pub mod component {
     #[derive(Component, Serialize, Deserialize, Debug)]
     pub struct Fragment {
         pub timestamp: u64,
-        pub contents: FragmentContents,
-        pub neighbor_graph_index: Option<NodeIndex>,
-        pub history_graph_index: Option<NodeIndex>
+        pub contents: FragmentContents
     }
 
     /// A list of entity with a timestamp when it is compiled.
@@ -77,8 +75,8 @@ pub mod component {
 pub mod resource {
     //! Type definitions (Resource).
 
-    use bevy::prelude::*;
-    use petgraph::Graph;
+    use bevy::{prelude::*, utils::HashMap};
+    use petgraph::{Graph, graph::NodeIndex};
     use serde::*;
     
     /// Global Game State, aside from entity components.
@@ -86,10 +84,12 @@ pub mod resource {
     pub struct GameState {
         /// A graph with Fragment entity as a node, and Entry entity as a edge. Represents continuation among fragments.
         pub neighbor_graph: Graph<Entity, Entity>,
+        pub neighbor_graph_ids: HashMap<Entity, NodeIndex>,
         /// A graph with Fragment, Entry or History as a node.
         /// Must be a directed acyclic graph with no duplicate edge, as it represents chronological history how these entities are modified, splitted or merged to make a new entity.
         /// Must not have connection between Fragment and Entry, Entry and History, or Fragment and History, as this violates conceptual hierarchy.
-        pub history_graph: Graph<Entity, ChangeType>
+        pub history_graph: Graph<Entity, ChangeType>,
+        pub history_graph_ids: HashMap<Entity, NodeIndex>
     }
 
     #[derive(Serialize, Deserialize, Debug)]
