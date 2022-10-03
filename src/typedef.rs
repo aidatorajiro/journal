@@ -82,13 +82,15 @@ pub mod resource {
     /// Global Game State, aside from entity components.
     #[derive(Serialize, Deserialize, Default, Debug)]
     pub struct GameState {
-        /// A graph with Fragment entity as a node, and Entry entity as a edge. Represents continuation among fragments.
+        /// A graph with Fragment entity as a node, and Entry entity as a edge. Represents spacial continuation among fragments.
         pub neighbor_graph: Graph<Entity, Entity>,
+        /// entity id to node id
         pub neighbor_graph_ids: HashMap<Entity, NodeIndex>,
         /// A graph with Fragment, Entry or History as a node.
         /// Must be a directed acyclic graph with no duplicate edge, as it represents chronological history how these entities are modified, splitted or merged to make a new entity.
         /// Must not have connection between Fragment and Entry, Entry and History, or Fragment and History, as this violates conceptual hierarchy.
         pub history_graph: Graph<Entity, ChangeType>,
+        /// entity id to node id
         pub history_graph_ids: HashMap<Entity, NodeIndex>
     }
 
