@@ -2,6 +2,8 @@ pub mod systems {
     use bevy::{prelude::*};
     use crate::{typedef::{event::*, component::*, resource::GameState}, utils::utils::*};
 
+    use super::inner::add_entry;
+
     pub fn handle_add_journal(
         mut events: EventReader<AddToFragments>,
         mut commands: Commands,
@@ -34,8 +36,13 @@ pub mod systems {
             };
         }
     }
+}
 
-    fn add_entry(
+mod inner {
+    use bevy::prelude::*;
+    use crate::typedef::{resource::*, component::*};
+
+    pub fn add_entry(
         commands: &mut Commands,
         entities: Vec<Entity>,
         ts: u64,
