@@ -8,7 +8,7 @@ pub mod systems {
     use bevy::{prelude::*, window::{WindowClosed, CreateWindow, PresentMode, WindowId}};
     use bevy_egui::EguiContext;
     use bevy_render::{MainWorld, render_graph::RenderGraph};
-    use crate::{typedef::{component::*, event::*}, constants::constants::SECONDARY_EGUI_PASS, utils::utils::create_timestamp};
+    use crate::{typedef::{component::*, event::*}, constants::constants::SECONDARY_EGUI_PASS};
 
     /// Blank window UI definition.
     pub fn subwindow_ui_blank_page (mut egui_ctx: ResMut<EguiContext>, query: Query<&SubWindow, With<BlankPage>>) {
@@ -24,7 +24,8 @@ pub mod systems {
     pub fn subwindow_ui_memo_field (
         mut egui_ctx: ResMut<EguiContext>,
         mut query: Query<(&mut SubWindow, &mut MemoField)>,
-        mut add_memo_ev: EventWriter<AddJournal>) {
+        mut frag_ev: EventWriter<AddToFragments>
+    ) {
         for (mut sw, mut mf) in query.iter_mut() {
             let wid = match sw.window_id {None => continue, Some(a) => a};
             let ctx = match egui_ctx.try_ctx_for_window_mut(wid) {None => continue, Some(ctx) => ctx};
@@ -62,9 +63,9 @@ pub mod systems {
 
                 egui::ScrollArea::vertical().show(ui, |ui| {
                     if ui.button("💾 Add Memo 💾").clicked() {
-                        add_memo_ev.send(AddJournal {
-                            text: mf.textarea.clone(),
-                            timestamp: create_timestamp()
+                        frag_ev.send(AddToFragments {
+                            contents: mf.textarea.split("\n\n").map(|x|FragmentContents::TextData { data: x.to_string() }).collect(),
+                            entry: None
                         });
                     }
                     ui.add_space(10.0);
@@ -127,7 +128,7 @@ pub mod systems {
                         width: 800.,
                         height: 600.,
                         present_mode: PresentMode::AutoVsync,
-                        title: "Second window".to_string(),
+                        title: "Sub window".to_string(),
                         ..Default::default()
                     },
                 });

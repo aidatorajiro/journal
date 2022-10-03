@@ -1,8 +1,7 @@
 pub mod component {
     //! Type definitions (Component).
-    use std::collections::HashMap;
-
-    use bevy::{prelude::Component, window::WindowId};
+    use bevy::{prelude::*, window::WindowId, utils::HashSet};
+    use petgraph::{graph::NodeIndex};
     use serde::{Serialize, Deserialize};
 
     // A subwindow.
@@ -22,53 +21,98 @@ pub mod component {
     #[derive(Component, Default)]
     pub struct BlankPage;
 
-    /// A part of the structure for the journal database.
-    #[derive(Serialize, Deserialize, Default, Debug)]
-    pub struct JournalEntryMetadata {
-        pub timestamp: i64,
-        pub tags: Vec<String>
-    }
-
-    /// A part of the structure for the journal database.
-    #[derive(Serialize, Deserialize, Debug)]
+    /// Content for journal fragment (e.g. a chunk of text, reference to local/remote images, URLs, programming codes, etc.)
+    #[derive(Serialize, Deserialize, Debug, Clone)]
     #[serde(tag = "type")]
-    pub enum JournalFragment {
+    pub enum FragmentContents {
         TextData { data: String },
-        Code {data: String, language: String },
+        Code { data: String, language: String },
         URL { data: String },
         Image { data: String }
     }
 
-    /// A part of the structure for the journal database.
-    #[derive(Serialize, Deserialize, Default, Debug)]
-    pub struct JournalEntry {
-        pub metadata: JournalEntryMetadata,
-        pub contents: Vec<JournalFragment>,
+    /// A component reperesenting a journal fragment, combining metadata and contents together
+    #[derive(Component, Serialize, Deserialize, Debug)]
+    pub struct Fragment {
+        pub timestamp: u64,
+        pub contents: FragmentContents,
+        pub neighbor_graph_index: Option<NodeIndex>,
+        pub history_graph_index: Option<NodeIndex>
     }
 
-    /// The journal database type definition.
-    #[derive(Serialize, Deserialize, Default, Debug)]
-    pub struct Database {
-        pub original: HashMap<String, JournalEntry>,
-        pub decomposed: HashMap<String, JournalEntry>,
-        pub reassembled: HashMap<String, JournalEntry>
+    /// A list of entity with a timestamp when it is compiled.
+    #[derive(Component, Serialize, Deserialize, Default, Debug)]
+    pub struct EntityList {
+        pub timestamp: u64,
+        pub entities: Vec<Entity>
     }
+
+    /// A component reperesenting a journal entry (A sequence of journal fragments). Use together with EntityList.
+    #[derive(Component, Serialize, Deserialize, Default, Debug)]
+    pub struct Entry;
+
+    /// A component reperesenting a history about something (A sequence of something). Use together with EntityList.
+    #[derive(Component, Serialize, Deserialize, Default, Debug)]
+    pub struct History;
+
+    /// A component reperesenting a tag.
+    #[derive(Component, Serialize, Deserialize, Default, Debug)]
+    pub struct Tag {
+        pub name: String,
+        pub entities: HashSet<Entity>,
+        pub events: Vec<TagEvent>
+    }
+
+    #[derive(Serialize, Deserialize, Debug)]
+    pub struct TagEvent {
+        pub timestamp: u64,
+        pub entity: Entity,
+        pub action: TagEventAction
+    }
+
+    #[derive(Serialize, Deserialize, Debug)]
+    pub enum TagEventAction { AddEntity, RemoveEntity }
 }
 
 pub mod resource {
     //! Type definitions (Resource).
+
+    use bevy::prelude::*;
+    use petgraph::Graph;
+    use serde::*;
     
     /// Global Game State, aside from entity components.
-    #[derive(Default, Debug)]
-    pub struct GameState {}
-}
+    #[derive(Serialize, Deserialize, Default, Debug)]
+    pub struct GameState {
+        /// A graph with Fragment entity as a node, and Entry entity as a edge. Represents continuation among fragments.
+        pub neighbor_graph: Graph<Entity, Entity>,
+        /// A graph with Fragment, Entry or History as a node.
+        /// Must be a directed acyclic graph with no duplicate edge, as it represents chronological history how these entities are modified, splitted or merged to make a new entity.
+        /// Must not have connection between Fragment and Entry, Entry and History, or Fragment and History, as this violates conceptual hierarchy.
+        pub history_graph: Graph<Entity, ChangeType>
+    }
 
+    #[derive(Serialize, Deserialize, Debug)]
+    pub enum ChangeType {
+        Modify,
+        Split,
+        Merge
+    }
+}
 
 pub mod event {
     //! Type definitions (Events).
-    #[derive(Default, Debug)]
-    pub struct AddJournal {
-        pub text: String,
-        pub timestamp: u64
+
+    use bevy::prelude::*;
+
+    use super::component::FragmentContents;
+    
+    /// Add text fragments to entry
+    #[derive(Debug)]
+    pub struct AddToFragments {
+        /// List of texts to add.
+        pub contents: Vec<FragmentContents>,
+        /// None for creating new entry. Some for append to existing entry.
+        pub entry: Option<Entity>
     }
 }

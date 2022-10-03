@@ -12,7 +12,6 @@ use assets::assets::RawDataLoader;
 
 use journalmanage::systems::*;
 use subwindow::systems::*;
-use typedef::component::*;
 use typedef::event::*;
 use typedef::resource::*;
 
@@ -25,7 +24,7 @@ fn main() {
     let mut app = App::new();
     
     app.init_resource::<GameState>()
-        .add_event::<AddJournal>()
+        .add_event::<AddToFragments>()
         .add_plugins(DefaultPlugins)
         .add_plugin(EguiPlugin)
         .add_asset::<RawData>()
@@ -46,7 +45,6 @@ fn main() {
 fn setup(mut commands: Commands) {
     // 2d camera
     commands.spawn_bundle(Camera2dBundle::default());
-    commands.spawn_bundle((SubWindow::default(), MemoField {..default()}));
 }
 
 /// Event listener for file drag and drop event.
