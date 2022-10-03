@@ -4,8 +4,8 @@ pub mod systems {
 
     use super::inner::{add_entry, add_fragment};
 
-    pub fn handle_add_journal(
-        mut events: EventReader<AddToFragments>,
+    pub fn handle_add_fragments(
+        mut events: EventReader<AddFragments>,
         mut commands: Commands,
         entitylist: Query<&EntityList>,
         mut global: ResMut<GameState>,

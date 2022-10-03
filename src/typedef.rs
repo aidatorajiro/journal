@@ -107,9 +107,9 @@ pub mod event {
 
     use super::component::FragmentContents;
     
-    /// Add text fragments to entry
+    /// Add fragments to existing or new entry
     #[derive(Debug)]
-    pub struct AddToFragments {
+    pub struct AddFragments {
         /// List of texts to add.
         pub contents: Vec<FragmentContents>,
         /// None for creating new entry. Some for append to existing entry.

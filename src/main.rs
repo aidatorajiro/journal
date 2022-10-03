@@ -24,7 +24,7 @@ fn main() {
     let mut app = App::new();
     
     app.init_resource::<GameState>()
-        .add_event::<AddToFragments>()
+        .add_event::<AddFragments>()
         .add_plugins(DefaultPlugins)
         .add_plugin(EguiPlugin)
         .add_asset::<RawData>()
@@ -33,7 +33,7 @@ fn main() {
         .add_system(system_drag_and_drop)
         .add_system(subwindow_event)
         .add_system_set(subwindow_ui_set())
-        .add_system(handle_add_journal);
+        .add_system(handle_add_fragments);
     
     let render_app = app.sub_app_mut(RenderApp);
     render_app.add_system_to_stage(RenderStage::Extract, subwindow_subapp_system);

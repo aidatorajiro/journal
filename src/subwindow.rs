@@ -24,7 +24,7 @@ pub mod systems {
     pub fn subwindow_ui_memo_field (
         mut egui_ctx: ResMut<EguiContext>,
         mut query: Query<(&mut SubWindow, &mut MemoField)>,
-        mut frag_ev: EventWriter<AddToFragments>
+        mut frag_ev: EventWriter<AddFragments>
     ) {
         for (mut sw, mut mf) in query.iter_mut() {
             let wid = match sw.window_id {None => continue, Some(a) => a};
@@ -63,7 +63,7 @@ pub mod systems {
 
                 egui::ScrollArea::vertical().show(ui, |ui| {
                     if ui.button("💾 Add Memo 💾").clicked() {
-                        frag_ev.send(AddToFragments {
+                        frag_ev.send(AddFragments {
                             contents: mf.textarea.split("\n\n").map(|x|FragmentContents::TextData { data: x.to_string() }).collect(),
                             entry: None
                         });
