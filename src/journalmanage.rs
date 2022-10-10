@@ -1,6 +1,6 @@
 pub mod systems {
     use bevy::{prelude::*};
-    use crate::{typedef::{event::*, component::*, resource::GameState}, utils::utils::*};
+    use crate::{typedef::{event::*, component::*, resource::GameGraph}, utils::utils::*};
 
     use super::inner::{add_entry, add_fragment};
 
@@ -8,7 +8,7 @@ pub mod systems {
         mut events: EventReader<AddFragments>,
         mut commands: Commands,
         entitylist: Query<&EntityList>,
-        mut global: ResMut<GameState>
+        mut global: ResMut<GameGraph>
     ) {
         for ev in events.iter() {
             let ts = create_timestamp();
@@ -38,7 +38,7 @@ mod inner {
         commands: &mut Commands,
         ts: u64,
         fragment_contents: &FragmentContents,
-        global: &mut ResMut<GameState>
+        global: &mut ResMut<GameGraph>
     ) -> Entity {
         let entid = commands.spawn().insert(Fragment {
             timestamp: ts,
@@ -55,7 +55,7 @@ mod inner {
         commands: &mut Commands,
         entities: &Vec<Entity>,
         ts: u64,
-        global: &mut ResMut<GameState>
+        global: &mut ResMut<GameGraph>
     ) -> Entity {
         let id_entry = commands.spawn().insert(Entry {}).insert(EntityList { timestamp: ts, entities: entities.clone() }).id();
 

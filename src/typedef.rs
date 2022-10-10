@@ -89,7 +89,7 @@ pub mod resource {
     
     /// Global Game State, aside from entity components.
     #[derive(Serialize, Deserialize, Default, Debug)]
-    pub struct GameState {
+    pub struct GameGraph {
         /// A graph with Fragment entity as a node, and Entry entity as a edge. Represents spacial continuation among fragments.
         pub neighbor_graph: Graph<Entity, Entity>,
         /// entity id to node id

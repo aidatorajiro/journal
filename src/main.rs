@@ -30,7 +30,7 @@ use ui::btn::*;
 fn main() {
     let mut app = App::new();
     
-    app.init_resource::<GameState>()
+    app.init_resource::<GameGraph>()
         .insert_resource(WinitSettings::desktop_app())
         .add_event::<AddFragments>()
         .add_plugins(DefaultPlugins)
