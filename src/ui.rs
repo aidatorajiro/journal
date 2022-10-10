@@ -3,11 +3,15 @@ pub mod top {
 
     use crate::{constants::style::*, typedef::{component::*, event::*, state::*}};
 
+    pub fn top_startup(mut commands: Commands, asset_server: Res<AssetServer>) {
+        top_buttons(&mut commands, &asset_server);
+    }
+
     pub fn top_systems() -> SystemSet {
         return SystemSet::on_update(AppState::Top).with_system(top_button_system);
     }
 
-    pub fn top_buttons(commands: &mut Commands, asset_server: &Res<AssetServer>) {
+    fn top_buttons(commands: &mut Commands, asset_server: &Res<AssetServer>) {
         commands
         .spawn_bundle(NodeBundle {
             style: Style {

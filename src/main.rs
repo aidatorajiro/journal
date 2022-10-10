@@ -47,6 +47,7 @@ fn main() {
         .add_system(handle_add_fragments)
         .add_system(window_closed_handler)
         // Toppage System
+        .add_startup_system(top_startup)
         .add_system_set(top_systems());
     
     let render_app = app.sub_app_mut(RenderApp);
@@ -63,8 +64,6 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     //commands.spawn()
     //    .insert(SubWindow { initialized: false, window_id: None })
     //    .insert(MemoField { textarea: "Hello".to_string() });
-
-    top_buttons(&mut commands, &asset_server);
 }
 
 fn window_closed_handler(mut ev: EventReader<WindowClosed>, mut quit: EventWriter<AppExit>) {
