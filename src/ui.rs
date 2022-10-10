@@ -3,7 +3,7 @@ pub mod btn {
 
     use crate::{constants::style::*, typedef::component::*};
 
-    pub fn top_buttons(commands: &mut Commands, tag: TopPageButton, asset_server: &Res<AssetServer>) {
+    pub fn top_buttons(commands: &mut Commands, asset_server: &Res<AssetServer>) {
         commands
         .spawn_bundle(NodeBundle {
             style: Style {

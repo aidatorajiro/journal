@@ -12,10 +12,8 @@ use assets::assets::RawData;
 use assets::assets::RawDataLoader;
 
 use bevy::app::AppExit;
-use bevy::ecs::system::EntityCommands;
 use bevy::window::WindowClosed;
 use bevy::winit::WinitSettings;
-use constants::window::*;
 use journalmanage::systems::*;
 use subwindow::systems::*;
 use typedef::component::*;
@@ -62,7 +60,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     //    .insert(SubWindow { initialized: false, window_id: None })
     //    .insert(MemoField { textarea: "Hello".to_string() });
 
-    top_buttons(&mut commands, TopPageButton::NewPage, &asset_server);
+    top_buttons(&mut commands, &asset_server);
 }
 
 fn window_closed_handler(mut ev: EventReader<WindowClosed>, mut quit: EventWriter<AppExit>) {
