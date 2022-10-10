@@ -8,7 +8,7 @@ pub mod systems {
     use bevy::{prelude::*, window::{WindowClosed, CreateWindow, PresentMode, WindowId}};
     use bevy_egui::EguiContext;
     use bevy::render::{MainWorld, render_graph::RenderGraph};
-    use crate::{typedef::{component::*, event::*}, constants::constants::SECONDARY_EGUI_PASS};
+    use crate::{typedef::{component::*, event::*}, constants::window::SECONDARY_EGUI_PASS};
 
     /// Blank window UI definition.
     pub fn subwindow_ui_blank_page (mut egui_ctx: ResMut<EguiContext>, query: Query<&SubWindow, With<BlankPage>>) {

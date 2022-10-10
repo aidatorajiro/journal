@@ -3,6 +3,15 @@ pub mod component {
     use bevy::{prelude::*, window::WindowId, utils::HashSet};
     use serde::{Serialize, Deserialize};
 
+    // Top Page button.
+    #[derive(Component)]
+    pub enum TopPageButton {
+        NewPage,
+        Explore,
+        Linear,
+        Migrate
+    }
+
     // A subwindow.
     #[derive(Component, Default)]
     pub struct SubWindow {

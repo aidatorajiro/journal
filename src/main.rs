@@ -6,22 +6,27 @@ pub mod subwindow;
 pub mod assets;
 pub mod utils;
 pub mod journalmanage;
+pub mod ui;
 
 use assets::assets::RawData;
 use assets::assets::RawDataLoader;
 
 use bevy::app::AppExit;
+use bevy::ecs::system::EntityCommands;
 use bevy::window::WindowClosed;
 use bevy::winit::WinitSettings;
-use constants::constants::*;
+use constants::window::*;
 use journalmanage::systems::*;
 use subwindow::systems::*;
+use typedef::component::*;
 use typedef::event::*;
 use typedef::resource::*;
+use constants::style::*;
 
 use bevy::{prelude::*, render::RenderApp};
 use bevy_egui::EguiPlugin;
 use bevy::render::{RenderStage};
+use ui::btn::*;
 
 /// Main function
 fn main() {
@@ -57,119 +62,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     //    .insert(SubWindow { initialized: false, window_id: None })
     //    .insert(MemoField { textarea: "Hello".to_string() });
 
-    commands
-        .spawn_bundle(NodeBundle {
-            style: Style {
-                size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
-                justify_content: JustifyContent::Center,
-                align_items: AlignItems::Center,
-                flex_wrap: FlexWrap::Wrap,
-                ..default()
-            },
-            color: Color::NONE.into(),
-            ..default()
-        })
-        .with_children(|parent| {
-            parent
-                .spawn_bundle(ButtonBundle {
-                    style: Style {
-                        size: Size::new(Val::Percent(50.0), Val::Percent(50.0)),
-                        position: UiRect::all(Val::Auto),
-                        // horizontally center child text
-                        justify_content: JustifyContent::Center,
-                        // vertically center child text
-                        align_items: AlignItems::Center,
-                        ..default()
-                    },
-                    color: NORMAL_BUTTON.into(),
-                    ..default()
-                })
-                .with_children(|parent| {
-                    parent.spawn_bundle(TextBundle::from_section(
-                        "Button",
-                        TextStyle {
-                            font: asset_server.load("NotoSansJP-Bold.otf"),
-                            font_size: 40.0,
-                            color: Color::rgb(0.9, 0.9, 0.9),
-                        },
-                    ));
-                });
-
-            parent
-                .spawn_bundle(ButtonBundle {
-                    style: Style {
-                        size: Size::new(Val::Percent(50.0), Val::Percent(50.0)),
-                        position: UiRect::all(Val::Auto),
-                        // horizontally center child text
-                        justify_content: JustifyContent::Center,
-                        // vertically center child text
-                        align_items: AlignItems::Center,
-                        ..default()
-                    },
-                    color: NORMAL_BUTTON.into(),
-                    ..default()
-                })
-                .with_children(|parent| {
-                    parent.spawn_bundle(TextBundle::from_section(
-                        "Button",
-                        TextStyle {
-                            font: asset_server.load("NotoSansJP-Bold.otf"),
-                            font_size: 40.0,
-                            color: Color::rgb(0.9, 0.9, 0.9),
-                        },
-                    ));
-                });
-
-            parent
-                .spawn_bundle(ButtonBundle {
-                    style: Style {
-                        size: Size::new(Val::Percent(50.0), Val::Percent(50.0)),
-                        position: UiRect::all(Val::Auto),
-                        // horizontally center child text
-                        justify_content: JustifyContent::Center,
-                        // vertically center child text
-                        align_items: AlignItems::Center,
-                        ..default()
-                    },
-                    color: NORMAL_BUTTON.into(),
-                    ..default()
-                })
-                .with_children(|parent| {
-                    parent.spawn_bundle(TextBundle::from_section(
-                        "Button",
-                        TextStyle {
-                            font: asset_server.load("NotoSansJP-Bold.otf"),
-                            font_size: 40.0,
-                            color: Color::rgb(0.9, 0.9, 0.9),
-                        },
-                    ));
-                });
-            
-            parent
-                .spawn_bundle(ButtonBundle {
-                    style: Style {
-                        size: Size::new(Val::Percent(50.0), Val::Percent(50.0)),
-                        position: UiRect::all(Val::Auto),
-                        // horizontally center child text
-                        justify_content: JustifyContent::Center,
-                        // vertically center child text
-                        align_items: AlignItems::Center,
-                        ..default()
-                    },
-                    color: NORMAL_BUTTON.into(),
-                    ..default()
-                })
-                .with_children(|parent| {
-                    parent.spawn_bundle(TextBundle::from_section(
-                        "Button",
-                        TextStyle {
-                            font: asset_server.load("NotoSansJP-Bold.otf"),
-                            font_size: 40.0,
-                            color: Color::rgb(0.9, 0.9, 0.9),
-                        },
-                    ));
-                });
-        });
+    top_buttons(&mut commands, TopPageButton::NewPage, &asset_server);
 }
 
 fn window_closed_handler(mut ev: EventReader<WindowClosed>, mut quit: EventWriter<AppExit>) {
@@ -196,25 +89,25 @@ fn system_drag_and_drop(
 
 fn button_system(
     mut interaction_query: Query<
-        (&Interaction, &mut UiColor, &Children),
+        (&Interaction, &mut UiColor, &Children, &TopPageButton),
         (Changed<Interaction>, With<Button>),
     >,
     mut text_query: Query<&mut Text>,
 ) {
-    for (interaction, mut color, children) in &mut interaction_query {
+    for (interaction, mut color, children, toppage) in &mut interaction_query {
         let mut text = text_query.get_mut(children[0]).unwrap();
         match *interaction {
             Interaction::Clicked => {
                 text.sections[0].value = "Press".to_string();
-                *color = PRESSED_BUTTON.into();
+                *color = TOPBTN_PRESSED.into();
             }
             Interaction::Hovered => {
                 text.sections[0].value = "Hover".to_string();
-                *color = HOVERED_BUTTON.into();
+                *color = TOPBTN_HOVER.into();
             }
             Interaction::None => {
                 text.sections[0].value = "Button".to_string();
-                *color = NORMAL_BUTTON.into();
+                *color = TOPBTN_NORMAL.into();
             }
         }
     }
