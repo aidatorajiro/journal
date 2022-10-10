@@ -3,15 +3,28 @@ pub mod top {
 
     use crate::{constants::style::*, typedef::{component::*, event::*, state::*}};
 
-    pub fn top_startup(mut commands: Commands, asset_server: Res<AssetServer>) {
-        top_buttons(&mut commands, &asset_server);
+    /// Enter systems on the top page.
+    pub fn top_systems_enter() -> SystemSet {
+        return SystemSet::on_enter(AppState::Top).with_system(top_enter);
     }
 
-    pub fn top_systems() -> SystemSet {
-        return SystemSet::on_update(AppState::Top).with_system(top_button_system);
+    /// Update systems on the top page.
+    pub fn top_systems_update() -> SystemSet {
+        return SystemSet::on_update(AppState::Top).with_system(top_button_update_system);
     }
 
-    fn top_buttons(commands: &mut Commands, asset_server: &Res<AssetServer>) {
+    /// Exit systems on the top page.
+    pub fn top_systems_exit() -> SystemSet {
+        return SystemSet::on_exit(AppState::Top).with_system(top_exit);
+    }
+
+    fn top_exit (mut q: Query<Entity, With<TopPageContents>>, mut com: Commands) {
+        for i in q.iter() {
+            com.entity(i).despawn_recursive();
+        }
+    }
+
+    fn top_enter(mut commands: Commands, asset_server: Res<AssetServer>) {
         commands
         .spawn_bundle(NodeBundle {
             style: Style {
@@ -56,10 +69,10 @@ pub mod top {
                     ));
                 }).insert(tag);
             }
-        });
+        }).insert(TopPageContents {});
     }
 
-    fn top_button_system(
+    fn top_button_update_system(
         mut interaction_query: Query<
             (&Interaction, &mut UiColor, &Children, &TopPageButton),
             (Changed<Interaction>, With<Button>),

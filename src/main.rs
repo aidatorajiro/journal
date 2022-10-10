@@ -47,8 +47,9 @@ fn main() {
         .add_system(handle_add_fragments)
         .add_system(window_closed_handler)
         // Toppage System
-        .add_startup_system(top_startup)
-        .add_system_set(top_systems());
+        .add_system_set(top_systems_enter())
+        .add_system_set(top_systems_exit())
+        .add_system_set(top_systems_update());
     
     let render_app = app.sub_app_mut(RenderApp);
     render_app.add_system_to_stage(RenderStage::Extract, subwindow_subapp_system);
