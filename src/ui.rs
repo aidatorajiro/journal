@@ -50,4 +50,36 @@ pub mod btn {
             }
         });
     }
+
+    pub fn button_system(
+        mut interaction_query: Query<
+            (&Interaction, &mut UiColor, &Children, &TopPageButton),
+            (Changed<Interaction>, With<Button>),
+        >,
+        mut text_query: Query<&mut Text>,
+    ) {
+        for (interaction, mut color, children, toppage) in &mut interaction_query {
+            let mut text = text_query.get_mut(children[0]).unwrap();
+            let (label, ev) = match toppage {
+                TopPageButton::NewPage => ("New Entry", 1),
+                TopPageButton::Explore => ("Non-Linear Exploration", 1),
+                TopPageButton::Linear => ("Linear Exploration", 1),
+                TopPageButton::Migrate => ("Migrate", 1),
+            };
+    
+            text.sections[0].value = label.to_string();
+    
+            match *interaction {
+                Interaction::Clicked => {
+                    *color = TOPBTN_PRESSED.into();
+                }
+                Interaction::Hovered => {
+                    *color = TOPBTN_HOVER.into();
+                }
+                Interaction::None => {
+                    *color = TOPBTN_NORMAL.into();
+                }
+            }
+        }
+    }
 }

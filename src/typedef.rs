@@ -4,7 +4,7 @@ pub mod component {
     use serde::{Serialize, Deserialize};
 
     // Top Page button.
-    #[derive(Component)]
+    #[derive(Component, PartialEq, Eq)]
     pub enum TopPageButton {
         NewPage,
         Explore,
