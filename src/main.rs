@@ -24,27 +24,30 @@ use constants::style::*;
 use bevy::{prelude::*, render::RenderApp};
 use bevy_egui::EguiPlugin;
 use bevy::render::{RenderStage};
-use ui::btn::*;
+use typedef::state::*;
+use ui::top::*;
 
 /// Main function
 fn main() {
     let mut app = App::new();
     
     app.init_resource::<GameGraph>()
+        .add_state::<AppState>(AppState::Top)
         .insert_resource(WinitSettings::desktop_app())
         .add_event::<AddFragments>()
-        .add_event::<SwitchMainPage>()
         .add_plugins(DefaultPlugins)
         .add_plugin(EguiPlugin)
         .add_asset::<RawData>()
         .init_asset_loader::<RawDataLoader>()
         .add_startup_system(setup)
         .add_system(system_drag_and_drop)
+        // subwindows
         .add_system(subwindow_event)
         .add_system_set(subwindow_ui_set())
         .add_system(handle_add_fragments)
         .add_system(window_closed_handler)
-        .add_system(button_system);
+        // Toppage System
+        .add_system_set(top_systems());
     
     let render_app = app.sub_app_mut(RenderApp);
     render_app.add_system_to_stage(RenderStage::Extract, subwindow_subapp_system);

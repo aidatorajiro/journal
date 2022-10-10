@@ -1,7 +1,11 @@
-pub mod btn {
+pub mod top {
     use bevy::prelude::*;
 
-    use crate::{constants::style::*, typedef::{component::*, event::*}};
+    use crate::{constants::style::*, typedef::{component::*, event::*, state::*}};
+
+    pub fn top_systems() -> SystemSet {
+        return SystemSet::on_update(AppState::Top).with_system(top_button_system);
+    }
 
     pub fn top_buttons(commands: &mut Commands, asset_server: &Res<AssetServer>) {
         commands
@@ -17,7 +21,7 @@ pub mod btn {
             ..default()
         })
         .with_children(|parent| {
-            let tags = vec![TopPageButton::NewPage, TopPageButton::Explore, TopPageButton::Linear, TopPageButton::Migrate];
+            let tags = vec![TopPageButton::Explore, TopPageButton::Linear, TopPageButton::NewPage, TopPageButton::Migrate];
             for tag in tags {
                 let btnstyle = Style {
                     size: Size::new(Val::Percent(50.0), Val::Percent(50.0)),
@@ -51,14 +55,13 @@ pub mod btn {
         });
     }
 
-    pub fn button_system(
+    fn top_button_system(
         mut interaction_query: Query<
             (&Interaction, &mut UiColor, &Children, &TopPageButton),
             (Changed<Interaction>, With<Button>),
         >,
         mut text_query: Query<&mut Text>,
-        mut com: Commands,
-        mut ev_writer: EventWriter<SwitchMainPage>
+        mut app_state: ResMut<State<AppState>>
     ) {
         for (interaction, mut color, children, toppage) in &mut interaction_query {
             let mut text = text_query.get_mut(children[0]).unwrap();
@@ -68,11 +71,11 @@ pub mod btn {
                 TopPageButton::Linear => ("Linear"),
                 TopPageButton::Migrate => ("Migrate"),
             };
-            let ev = match toppage {
-                TopPageButton::NewPage => SwitchMainPage::SwitchToNewPage,
-                TopPageButton::Explore => SwitchMainPage::SwitchToExplore,
-                TopPageButton::Linear => SwitchMainPage::SwitchToLinear,
-                TopPageButton::Migrate => SwitchMainPage::SwitchToMitigate,
+            let st = match toppage {
+                TopPageButton::NewPage => AppState::NewPage,
+                TopPageButton::Explore => AppState::Explore,
+                TopPageButton::Linear => AppState::Linear,
+                TopPageButton::Migrate => AppState::Mitigate,
             };
     
             text.sections[0].value = label.to_string();
@@ -80,7 +83,7 @@ pub mod btn {
             match *interaction {
                 Interaction::Clicked => {
                     *color = TOPBTN_PRESSED.into();
-                    ev_writer.send(ev);
+                    app_state.set(st);
                 }
                 Interaction::Hovered => {
                     *color = TOPBTN_HOVER.into();

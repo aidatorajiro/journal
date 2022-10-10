@@ -110,6 +110,17 @@ pub mod resource {
     }
 }
 
+pub mod state {
+    #[derive(Debug, Clone, Eq, PartialEq, Hash)]
+    pub enum AppState {
+        Top,
+        NewPage,
+        Explore,
+        Linear,
+        Mitigate
+    }
+}
+
 pub mod event {
     //! Type definitions (Events).
 
@@ -125,13 +136,5 @@ pub mod event {
         /// None for creating a new entry from scratch. Some for append to an existing entry (please provide Entity ID for the entry).
         /// In both cases, a new entry will be created, because entries should be immutable.
         pub entry: Option<Entity>
-    }
-
-    #[derive(Debug)]
-    pub enum SwitchMainPage {
-        SwitchToNewPage,
-        SwitchToExplore,
-        SwitchToLinear,
-        SwitchToMitigate
     }
 }
