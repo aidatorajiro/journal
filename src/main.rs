@@ -33,6 +33,7 @@ fn main() {
     app.init_resource::<GameGraph>()
         .insert_resource(WinitSettings::desktop_app())
         .add_event::<AddFragments>()
+        .add_event::<SwitchMainPage>()
         .add_plugins(DefaultPlugins)
         .add_plugin(EguiPlugin)
         .add_asset::<RawData>()
