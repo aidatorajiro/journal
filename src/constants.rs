@@ -7,10 +7,8 @@ pub mod style {
     //! Color Definitions
     use bevy::prelude::*;
 
-    pub const TOPBTN_NORMAL: Color = Color::rgb(0.15, 0.15, 0.15);
-    pub const TOPBTN_HOVER: Color = Color::rgb(0.25, 0.25, 0.25);
-    pub const TOPBTN_PRESSED: Color = Color::rgb(0.35, 0.75, 0.35);
+    pub const TOPBTN_NORMAL: Color = Color::rgb(11.0/256.0, 11.0/256.0, 48.0/256.0);
+    pub const TOPBTN_HOVER: Color = Color::rgb(15.0/256.0, 74.0/256.0, 175.0/256.0);
+    pub const TOPBTN_PRESSED: Color = Color::rgb(13.0/256.0, 181.0/256.0, 91.0/256.0);
     pub const TOPBTN_TEXT_COLOR: Color = Color::rgb(0.9, 0.9, 0.9);
-
-    
 }
