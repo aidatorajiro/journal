@@ -1,7 +1,7 @@
 pub mod btn {
     use bevy::prelude::*;
 
-    use crate::{constants::style::*, typedef::component::*};
+    use crate::{constants::style::*, typedef::{component::*, event::*}};
 
     pub fn top_buttons(commands: &mut Commands, asset_server: &Res<AssetServer>) {
         commands
@@ -57,14 +57,22 @@ pub mod btn {
             (Changed<Interaction>, With<Button>),
         >,
         mut text_query: Query<&mut Text>,
+        mut com: Commands,
+        mut ev_writer: EventWriter<SwitchMainPage>
     ) {
         for (interaction, mut color, children, toppage) in &mut interaction_query {
             let mut text = text_query.get_mut(children[0]).unwrap();
-            let (label, ev) = match toppage {
-                TopPageButton::NewPage => ("New Entry", 1),
-                TopPageButton::Explore => ("Non-Linear Exploration", 1),
-                TopPageButton::Linear => ("Linear Exploration", 1),
-                TopPageButton::Migrate => ("Migrate", 1),
+            let label = match toppage {
+                TopPageButton::NewPage => ("NewPage"),
+                TopPageButton::Explore => ("Explore"),
+                TopPageButton::Linear => ("Linear"),
+                TopPageButton::Migrate => ("Migrate"),
+            };
+            let ev = match toppage {
+                TopPageButton::NewPage => SwitchMainPage::SwitchToNewPage,
+                TopPageButton::Explore => SwitchMainPage::SwitchToExplore,
+                TopPageButton::Linear => SwitchMainPage::SwitchToLinear,
+                TopPageButton::Migrate => SwitchMainPage::SwitchToMitigate,
             };
     
             text.sections[0].value = label.to_string();
@@ -72,6 +80,7 @@ pub mod btn {
             match *interaction {
                 Interaction::Clicked => {
                     *color = TOPBTN_PRESSED.into();
+                    ev_writer.send(ev);
                 }
                 Interaction::Hovered => {
                     *color = TOPBTN_HOVER.into();

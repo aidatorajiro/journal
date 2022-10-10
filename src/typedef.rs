@@ -126,4 +126,12 @@ pub mod event {
         /// In both cases, a new entry will be created, because entries should be immutable.
         pub entry: Option<Entity>
     }
+
+    #[derive(Debug)]
+    pub enum SwitchMainPage {
+        SwitchToNewPage,
+        SwitchToExplore,
+        SwitchToLinear,
+        SwitchToMitigate
+    }
 }
