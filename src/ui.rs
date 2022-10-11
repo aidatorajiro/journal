@@ -1,11 +1,37 @@
+mod inner {
+    use bevy::prelude::*;
+
+    use crate::typedef::component::{MainCamera2D, MainCamera3D};
+
+    pub fn use_2d_camera (mut commands: Commands, q_2d: Query<Entity, With<MainCamera2D>>, q_3d: Query<Entity, With<MainCamera3D>>) {
+        for x in q_3d.iter() {
+            commands.entity(x).despawn_recursive()
+        }
+        if q_2d.is_empty() {
+            commands.spawn_bundle(Camera2dBundle::default()).insert(MainCamera2D {});
+        }
+    }
+
+    pub fn use_3d_camera (mut commands: Commands, q_2d: Query<Entity, With<MainCamera2D>>, q_3d: Query<Entity, With<MainCamera3D>>) {
+        for x in q_2d.iter() {
+            commands.entity(x).despawn_recursive()
+        }
+        if q_3d.is_empty() {
+            commands.spawn_bundle(Camera3dBundle::default()).insert(MainCamera3D {});
+        }
+    }
+}
+
 pub mod top {
     use bevy::prelude::*;
 
     use crate::{constants::style::*, typedef::{component::*, event::*, state::*}};
 
+    use super::inner::*;
+
     /// Enter systems on the top page.
     pub fn top_systems_enter() -> SystemSet {
-        return SystemSet::on_enter(AppState::Top).with_system(top_enter);
+        return SystemSet::on_enter(AppState::Top).with_system(use_2d_camera).with_system(top_enter);
     }
 
     /// Update systems on the top page.
@@ -25,6 +51,7 @@ pub mod top {
     }
 
     fn top_enter(mut commands: Commands, asset_server: Res<AssetServer>) {
+        
         commands
         .spawn_bundle(NodeBundle {
             style: Style {
@@ -110,5 +137,83 @@ pub mod top {
                 }
             }
         }
+    }
+}
+
+pub mod newpage {
+    use bevy::prelude::*;
+
+    use crate::{typedef::{state::AppState, component::NewPageContents}, constants::style::ICON_BACKGROUND_COLOR};
+
+    use super::inner::*;
+
+    pub fn newpage_systems_enter () -> SystemSet {
+        return SystemSet::on_enter(AppState::NewPage).with_system(use_2d_camera).with_system(newpage_enter);
+    }
+
+    pub fn newpage_systems_exit () -> SystemSet {
+        return SystemSet::on_exit(AppState::NewPage).with_system(newpage_exit);
+    }
+
+    pub fn newpage_systems_update () -> SystemSet {
+        return SystemSet::on_update(AppState::NewPage).with_system(newpage_update);
+    }
+
+    fn newpage_enter (mut com: Commands) {
+        com.spawn_bundle(ButtonBundle {
+            style: Style {
+                size: Size::new(Val::Px(100.0), Val::Px(100.0)),
+                // auto position
+                position: UiRect::all(Val::Auto),
+                // horizontally center child text
+                justify_content: JustifyContent::Center,
+                // vertically center child text
+                align_items: AlignItems::Center,
+                ..default()
+            },
+            color: ICON_BACKGROUND_COLOR.into(),
+            ..default()
+        }).insert(NewPageContents {});
+    }
+
+    fn newpage_exit (mut q: Query<Entity, With<NewPageContents>>, mut com: Commands) {
+        for i in q.iter() {
+            com.entity(i).despawn_recursive();
+        }
+    }
+
+    fn newpage_update () {
+
+    }
+}
+
+pub mod explore {
+    use bevy::prelude::*;
+    use crate::typedef::{state::AppState};
+
+    use super::inner::use_3d_camera;
+
+    pub fn newpage_systems_enter () -> SystemSet {
+        return SystemSet::on_enter(AppState::Explore).with_system(use_3d_camera).with_system(explore_enter);
+    }
+
+    pub fn newpage_systems_exit () -> SystemSet {
+        return SystemSet::on_enter(AppState::Explore).with_system(explore_exit);
+    }
+
+    pub fn newpage_systems_update () -> SystemSet {
+        return SystemSet::on_enter(AppState::Explore).with_system(explore_update);
+    }
+
+    fn explore_enter () {
+
+    }
+
+    fn explore_exit () {
+
+    }
+
+    fn explore_update () {
+
     }
 }

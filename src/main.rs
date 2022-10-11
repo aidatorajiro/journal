@@ -8,8 +8,8 @@ pub mod utils;
 pub mod journalmanage;
 pub mod ui;
 
-use assets::assets::RawData;
-use assets::assets::RawDataLoader;
+use assets::loader::RawData;
+use assets::loader::RawDataLoader;
 
 use bevy::app::AppExit;
 use bevy::window::WindowClosed;
@@ -25,6 +25,7 @@ use bevy::{prelude::*, render::RenderApp};
 use bevy_egui::EguiPlugin;
 use bevy::render::{RenderStage};
 use typedef::state::*;
+use ui::newpage::*;
 use ui::top::*;
 
 /// Main function
@@ -49,7 +50,11 @@ fn main() {
         // Toppage System
         .add_system_set(top_systems_enter())
         .add_system_set(top_systems_exit())
-        .add_system_set(top_systems_update());
+        .add_system_set(top_systems_update())
+        // Newpage system
+        .add_system_set(newpage_systems_enter())
+        .add_system_set(newpage_systems_exit())
+        .add_system_set(newpage_systems_update());
     
     let render_app = app.sub_app_mut(RenderApp);
     render_app.add_system_to_stage(RenderStage::Extract, subwindow_subapp_system);
@@ -59,12 +64,6 @@ fn main() {
 
 /// setup function for bevy
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
-    // 2d camera
-    commands.spawn_bundle(Camera2dBundle::default());
-
-    //commands.spawn()
-    //    .insert(SubWindow { initialized: false, window_id: None })
-    //    .insert(MemoField { textarea: "Hello".to_string() });
 }
 
 fn window_closed_handler(mut ev: EventReader<WindowClosed>, mut quit: EventWriter<AppExit>) {

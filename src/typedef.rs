@@ -3,6 +3,12 @@ pub mod component {
     use bevy::{prelude::*, window::WindowId, utils::HashSet};
     use serde::{Serialize, Deserialize};
 
+    #[derive(Component)]
+    pub struct MainCamera2D;
+
+    #[derive(Component)]
+    pub struct MainCamera3D;
+
     /// Top Page button.
     #[derive(Component, PartialEq, Eq)]
     pub enum TopPageButton {
@@ -14,7 +20,7 @@ pub mod component {
 
     /// parent of all top page contents
     #[derive(Component, PartialEq, Eq)]
-    pub struct  TopPageContents;
+    pub struct TopPageContents;
 
     // A subwindow.
     #[derive(Component, Default)]
@@ -82,6 +88,10 @@ pub mod component {
 
     #[derive(Serialize, Deserialize, Debug)]
     pub enum TagEventAction { AddEntity, RemoveEntity }
+    
+    /// contents on "new page" tab
+    #[derive(Component)]
+    pub struct NewPageContents {}
 }
 
 pub mod resource {
