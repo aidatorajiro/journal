@@ -1,4 +1,4 @@
-pub mod assets {
+pub mod loader {
     use bevy::{reflect::TypeUuid, asset::*};
 
     #[derive(Debug, TypeUuid)]
@@ -17,7 +17,7 @@ pub mod assets {
             load_context: &'a mut LoadContext,
         ) -> BoxedFuture<'a, Result<(), bevy::asset::Error>> {
             Box::pin(async move {
-                println!("yat");
+                println!("Rawdata Loaded");
                 let custom_asset = RawData {data: bytes.to_vec()};
                 load_context.set_default_asset(LoadedAsset::new(custom_asset));
                 Ok(())
