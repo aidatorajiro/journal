@@ -73,3 +73,9 @@ Working with fragment, entry, history hierarchy, and tags.
     the graph structure of fragments makes fragment history.
     the graph structure of entries makes entry history.
 → look for graph structure: discussion here https://github.com/bevyengine/bevy/issues/5430
+
+[2022-10-11]
+
+Tutorial Reading: issues with language used in programming (executed, captured, etc.)
+https://www.reuters.com/article/us-amazon-com-jobs-automation-insight-idUSKCN1MK08G
+
