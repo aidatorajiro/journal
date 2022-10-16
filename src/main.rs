@@ -12,7 +12,9 @@ use assets::loader::RawData;
 use assets::loader::RawDataLoader;
 
 use bevy::app::AppExit;
+use bevy::window::PresentMode;
 use bevy::window::WindowClosed;
+use bevy::window::WindowResized;
 use bevy::winit::WinitSettings;
 use journalmanage::systems::*;
 use subwindow::systems::*;
@@ -25,6 +27,7 @@ use bevy::{prelude::*, render::RenderApp};
 use bevy_egui::EguiPlugin;
 use bevy::render::{RenderStage};
 use typedef::state::*;
+use ui::explore::*;
 use ui::newpage::*;
 use ui::top::*;
 
@@ -32,7 +35,15 @@ use ui::top::*;
 fn main() {
     let mut app = App::new();
     
-    app.init_resource::<GameGraph>()
+    app.insert_resource(WindowDescriptor {
+        title: "!Bevy Journal! (c) 2022 Torajiro Aida".to_string(),
+        width: 800.,
+        height: 800.,
+        present_mode: PresentMode::AutoVsync,
+        resizable: false,
+        ..default()
+    })
+        .init_resource::<GameGraph>()
         .add_state::<AppState>(AppState::Top)
         .insert_resource(WinitSettings::desktop_app())
         .add_event::<AddFragments>()
@@ -54,7 +65,11 @@ fn main() {
         // Newpage system
         .add_system_set(newpage_systems_enter())
         .add_system_set(newpage_systems_exit())
-        .add_system_set(newpage_systems_update());
+        .add_system_set(newpage_systems_update())
+        // Explore system
+        .add_system_set(explore_systems_enter())
+        .add_system_set(explore_systems_exit())
+        .add_system_set(explore_systems_update());
     
     let render_app = app.sub_app_mut(RenderApp);
     render_app.add_system_to_stage(RenderStage::Extract, subwindow_subapp_system);
