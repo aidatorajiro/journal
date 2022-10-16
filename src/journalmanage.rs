@@ -46,6 +46,8 @@ mod inner {
         }).id();
         let a = global.neighbor_graph.add_node(entid);
         global.neighbor_graph_ids.insert(entid, a);
+
+        //add the fragment as a subject of history
         let b = global.history_graph.add_node(entid);
         global.history_graph_ids.insert(entid, b);
         entid
@@ -58,6 +60,10 @@ mod inner {
         global: &mut ResMut<GameGraph>
     ) -> Entity {
         let id_entry = commands.spawn().insert(Entry {}).insert(EntityList { timestamp: ts, entities: entities.clone() }).id();
+
+        // add the entry as a subject of history
+        let id_node = global.history_graph.add_node(id_entry);
+        global.history_graph_ids.insert(id_entry, id_node);
 
         if let Some(mut id_from) = entities.get(0) {
             for id_to in entities.iter().skip(1) {
