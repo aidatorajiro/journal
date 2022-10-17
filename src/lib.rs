@@ -32,7 +32,7 @@ use ui::newpage::*;
 use ui::top::*;
 
 /// Main function
-pub fn runTheJournal() {
+pub fn run_the_journal() {
     let mut app = App::new();
     
     app.insert_resource(WindowDescriptor {
@@ -78,8 +78,7 @@ pub fn runTheJournal() {
 }
 
 /// setup function for bevy
-fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
-}
+fn setup() { }
 
 fn window_closed_handler(mut ev: EventReader<WindowClosed>, mut quit: EventWriter<AppExit>) {
     for e in ev.iter() {

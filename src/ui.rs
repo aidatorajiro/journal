@@ -46,7 +46,7 @@ pub mod top {
         return SystemSet::on_exit(AppState::Top).with_system(top_exit);
     }
 
-    fn top_exit (mut q: Query<Entity, With<TopPageContents>>, mut com: Commands) {
+    fn top_exit (q: Query<Entity, With<TopPageContents>>, mut com: Commands) {
         for i in q.iter() {
             com.entity(i).despawn_recursive();
         }
@@ -136,10 +136,10 @@ pub mod top {
             let mut text = text_query.get_mut(children[1]).unwrap();
 
             let label = match toppage {
-                TopPageButton::NewPage => ("NewPage"),
-                TopPageButton::Explore => ("Explore"),
-                TopPageButton::Linear => ("Linear"),
-                TopPageButton::Migrate => ("Migrate"),
+                TopPageButton::NewPage => "NewPage",
+                TopPageButton::Explore => "Explore",
+                TopPageButton::Linear => "Linear",
+                TopPageButton::Migrate => "Migrate",
             };
             let st = match toppage {
                 TopPageButton::NewPage => AppState::NewPage,
@@ -153,7 +153,9 @@ pub mod top {
             let mut color = color_query.get_mut(ent).unwrap();
             match *interaction {
                 Interaction::Clicked => {
-                    app_state.set(st);
+                    if (app_state.set(st).is_err()) {
+                        // TODO: error handling
+                    };
                 }
                 Interaction::Hovered => {
                     *color = TOPBTN_HOVER.into();
@@ -162,8 +164,6 @@ pub mod top {
                     *color = TOPBTN_NORMAL.into();
                 }
             }
-
-            let mut im = color_query.get_mut(children[0]).unwrap();
         }
     }
 }
@@ -205,7 +205,7 @@ pub mod newpage {
         }).insert(NewPageContents {});
     }
 
-    fn newpage_exit (mut q: Query<Entity, With<NewPageContents>>, mut com: Commands) {
+    fn newpage_exit (q: Query<Entity, With<NewPageContents>>, mut com: Commands) {
         for i in q.iter() {
             com.entity(i).despawn_recursive();
         }

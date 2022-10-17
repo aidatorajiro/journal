@@ -1,5 +1,5 @@
-use thejournal::runTheJournal;
+use thejournal::run_the_journal;
 
 fn main () {
-    runTheJournal();
+    run_the_journal();
 }
