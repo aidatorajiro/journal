@@ -10,7 +10,9 @@ Journal History
 ❌ TODO: タグづけゲーム
 ❌ TODO: 分岐を作るゲーム　異なるjournalのfragment同士をくっつけるpathを作る。そうして新たなjournalが誕生する。
     [そういえば、fragment自体にIDをつけなきゃね... fragment自体の分岐・合流・他のfragmentとの結合によって無数のpathができる仕組みを作りたい]
-
+❌ TODO: データserialize & deserialize保存メカニズム！これがないと始まらないよね...
+❌ TODO: addメモ 人力でメモを追加する
+❌ TODO: migrate facebookやicloudなどからデータを引っ張ってくる
 
 [2022-09-22]
 when i open VSCode i couldnt use extension...
