@@ -36,7 +36,7 @@ fn main() {
     let mut app = App::new();
     
     app.insert_resource(WindowDescriptor {
-        title: "!Bevy Journal! (c) 2022 Torajiro Aida".to_string(),
+        title: "! Bevy Journal ! (c) 2022 Torajiro Aida".to_string(),
         width: 800.,
         height: 800.,
         present_mode: PresentMode::AutoVsync,
