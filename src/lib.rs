@@ -28,6 +28,9 @@ use bevy_egui::EguiPlugin;
 use bevy::render::{RenderStage};
 use typedef::state::*;
 use ui::explore::*;
+use ui::migrate::migrate_systems_enter;
+use ui::migrate::migrate_systems_exit;
+use ui::migrate::migrate_systems_update;
 use ui::newpage::*;
 use ui::top::*;
 
@@ -66,6 +69,10 @@ pub fn run_the_journal() {
         .add_system_set(newpage_systems_enter())
         .add_system_set(newpage_systems_exit())
         .add_system_set(newpage_systems_update())
+        // Migrate system
+        .add_system_set(migrate_systems_enter())
+        .add_system_set(migrate_systems_exit())
+        .add_system_set(migrate_systems_update())
         // Explore system
         .add_system_set(explore_systems_enter())
         .add_system_set(explore_systems_exit())

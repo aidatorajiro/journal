@@ -131,7 +131,7 @@ pub mod state {
         NewPage,
         Explore,
         Linear,
-        Mitigate
+        Migrate
     }
 }
 
