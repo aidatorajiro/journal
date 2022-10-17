@@ -28,6 +28,7 @@ use bevy_egui::EguiPlugin;
 use bevy::render::{RenderStage};
 use typedef::state::*;
 use ui::explore::*;
+use ui::manage::ui_manage_systems;
 use ui::migrate::migrate_systems_enter;
 use ui::migrate::migrate_systems_exit;
 use ui::migrate::migrate_systems_update;
@@ -46,16 +47,22 @@ pub fn run_the_journal() {
         resizable: false,
         ..default()
     })
-        .init_resource::<GameGraph>()
+        .init_resource::<GameState>()
         .add_state::<AppState>(AppState::Top)
         .insert_resource(WinitSettings::desktop_app())
         .add_event::<AddFragments>()
+        .add_event::<JumpToNewPage>()
+        .add_event::<JumpToExplore>()
+        .add_event::<JumpToLinear>()
+        .add_event::<JumpToMigrate>()
+        .add_event::<JumpToTop>()
         .add_plugins(DefaultPlugins)
         .add_plugin(EguiPlugin)
         .add_asset::<RawData>()
         .init_asset_loader::<RawDataLoader>()
         .add_startup_system(setup)
         .add_system(system_drag_and_drop)
+        .add_system_set(ui_manage_systems())
         // subwindows
         .add_system(subwindow_event)
         .add_system_set(subwindow_ui_set())

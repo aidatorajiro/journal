@@ -18,6 +18,21 @@ pub mod component {
         Migrate
     }
 
+    /// New Page button.
+    #[derive(Component, PartialEq, Eq)]
+    pub enum NewPageButton {
+        /// return to top page
+        Return,
+        /// Add texts to the entry
+        AddTexts,
+        /// Edit a fragment within the entry.
+        Edit
+    }
+
+    /// Contents on "new page" tab. Used to handle page switch.
+    #[derive(Component)]
+    pub struct NewPageContents {}
+
     /// parent of all top page contents
     #[derive(Component, PartialEq, Eq)]
     pub struct TopPageContents;
@@ -88,10 +103,6 @@ pub mod component {
 
     #[derive(Serialize, Deserialize, Debug)]
     pub enum TagEventAction { AddEntity, RemoveEntity }
-    
-    /// contents on "new page" tab
-    #[derive(Component)]
-    pub struct NewPageContents {}
 }
 
 pub mod resource {
@@ -100,8 +111,15 @@ pub mod resource {
     use bevy::{prelude::*, utils::HashMap};
     use petgraph::{Graph, graph::NodeIndex};
     use serde::*;
+
+    /// Game State
+    #[derive(Serialize, Deserialize, Default, Debug)]
+    pub struct GameState {
+        pub graph: GameGraph,
+        pub newpage_state: Option<NewPageState>
+    }
     
-    /// Global Game State, aside from entity components.
+    /// Graph data structures for the Journal.
     #[derive(Serialize, Deserialize, Default, Debug)]
     pub struct GameGraph {
         /// A graph with Fragment entity as a node, and Entry entity as a edge. Represents spacial continuation among fragments.
@@ -114,6 +132,13 @@ pub mod resource {
         pub history_graph: Graph<Entity, ChangeType>,
         /// entity id to node id
         pub history_graph_ids: HashMap<Entity, NodeIndex>
+    }
+
+    /// State for newpage Page.
+    #[derive(Serialize, Deserialize, Default, Debug)]
+    pub struct NewPageState {
+        /// Entry id which the user is currently working on. If it is None, it means that the user is creating a new entry. Used in "new page".
+        pub page_entry_id: Option<Entity>
     }
 
     #[derive(Serialize, Deserialize, Debug)]
@@ -137,7 +162,6 @@ pub mod state {
 
 pub mod event {
     //! Type definitions (Events).
-
     use bevy::prelude::*;
 
     use super::component::FragmentContents;
@@ -150,5 +174,26 @@ pub mod event {
         /// None for creating a new entry from scratch. Some for append to an existing entry (please provide Entity ID for the entry).
         /// In both cases, a new entry will be created, because entries should be immutable.
         pub entry: Option<Entity>
+    }
+
+    #[derive(Debug, Default)]
+    pub struct JumpToNewPage {
+        pub entry_id: Option<Entity>
+    }
+
+    #[derive(Debug, Default)]
+    pub struct JumpToExplore {
+    }
+
+    #[derive(Debug, Default)]
+    pub struct JumpToLinear {
+    }
+
+    #[derive(Debug, Default)]
+    pub struct JumpToMigrate {
+    }
+
+    #[derive(Debug, Default)]
+    pub struct JumpToTop {
     }
 }
