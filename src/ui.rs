@@ -25,7 +25,7 @@ mod inner {
 
 pub mod top {
     //! UI definitions for toppage
-    use bevy::prelude::*;
+    use bevy::{prelude::*, ui::FocusPolicy};
 
     use crate::{constants::style::*, typedef::{component::*, event::*, state::*}};
 
@@ -82,7 +82,7 @@ pub mod top {
                 let txtstyle = TextStyle {
                     font: asset_server.load("NotoSansJP-Bold.otf"),
                     font_size: 40.0,
-                    color: Color::rgb(0.9, 0.9, 0.9),
+                    color: TOPBTN_TEXT_COLOR,
                 };
                 
                 parent
@@ -92,6 +92,28 @@ pub mod top {
                     ..default()
                 })
                 .with_children(|parent| {
+
+                    let image = match tag {
+                        TopPageButton::NewPage => asset_server.load("newpage.png").into(),
+                        TopPageButton::Explore => asset_server.load("explore.png").into(),
+                        TopPageButton::Linear => asset_server.load("linear.png").into(),
+                        TopPageButton::Migrate => asset_server.load("migrate.png").into(),
+                    };
+
+                    parent.spawn_bundle(ImageBundle {
+                        style: Style {
+                            size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                            position: UiRect{ left: Val::Percent(0.0), top: Val::Percent(0.0), ..default() },
+                            position_type: PositionType::Absolute,
+                            
+                            ..default()
+                        },
+                        color: TOPBTN_IMG_OVERLAY.into(),
+                        focus_policy: FocusPolicy::Pass,
+                        image,
+                        ..default()
+                    });
+
                     parent.spawn_bundle(TextBundle::from_section(
                         "", 
                         txtstyle.clone()
@@ -103,14 +125,16 @@ pub mod top {
 
     fn top_button_update_system(
         mut interaction_query: Query<
-            (&Interaction, &mut UiColor, &Children, &TopPageButton),
-            (Changed<Interaction>, With<Button>),
+            (&Interaction, &Children, &TopPageButton, Entity),
+            (Changed<Interaction>, With<TopPageButton>),
         >,
         mut text_query: Query<&mut Text>,
-        mut app_state: ResMut<State<AppState>>
+        mut app_state: ResMut<State<AppState>>,
+        mut color_query: Query<&mut UiColor>
     ) {
-        for (interaction, mut color, children, toppage) in &mut interaction_query {
-            let mut text = text_query.get_mut(children[0]).unwrap();
+        for (interaction, children, toppage, ent) in &mut interaction_query {
+            let mut text = text_query.get_mut(children[1]).unwrap();
+
             let label = match toppage {
                 TopPageButton::NewPage => ("NewPage"),
                 TopPageButton::Explore => ("Explore"),
@@ -126,9 +150,9 @@ pub mod top {
     
             text.sections[0].value = label.to_string();
     
+            let mut color = color_query.get_mut(ent).unwrap();
             match *interaction {
                 Interaction::Clicked => {
-                    *color = TOPBTN_PRESSED.into();
                     app_state.set(st);
                 }
                 Interaction::Hovered => {
@@ -138,6 +162,8 @@ pub mod top {
                     *color = TOPBTN_NORMAL.into();
                 }
             }
+
+            let mut im = color_query.get_mut(children[0]).unwrap();
         }
     }
 }

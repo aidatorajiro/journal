@@ -83,3 +83,4 @@ https://www.reuters.com/article/us-amazon-com-jobs-automation-insight-idUSKCN1MK
 difficult thing is... Closure/function is difficult to use in Rust... because of BORROWING!!! It is easier to avoid repetition by for-each loop than using closure, and using clousure than using functions.
 Difficulty: function > closure > loops
 
+Rust mut borrowing: you have to separate code into small components, because you can't borrow mut variable twice. if you write `let mut x = abc.def(1)`, then you have to focus on programming about x. You cannot do like `let mut y = abc.def(2)`.
