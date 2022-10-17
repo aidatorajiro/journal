@@ -1,4 +1,5 @@
 mod inner {
+    //! inner mechanisms for UI.
     use bevy::prelude::*;
 
     use crate::typedef::component::{MainCamera2D, MainCamera3D};
@@ -23,6 +24,7 @@ mod inner {
 }
 
 pub mod top {
+    //! UI definitions for toppage
     use bevy::prelude::*;
 
     use crate::{constants::style::*, typedef::{component::*, event::*, state::*}};
@@ -141,6 +143,7 @@ pub mod top {
 }
 
 pub mod newpage {
+    //! UI defenitions for newpage
     use bevy::prelude::*;
 
     use crate::{typedef::{state::AppState, component::NewPageContents}, constants::style::ICON_BACKGROUND_COLOR};
@@ -188,6 +191,7 @@ pub mod newpage {
 }
 
 pub mod explore {
+    //! UI definitions for explore
     use bevy::prelude::*;
     use crate::typedef::{state::AppState, component::Fragment};
 

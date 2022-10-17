@@ -1,4 +1,6 @@
 pub mod loader {
+    //! Asset Loader Extension for Bevy
+    
     use bevy::{reflect::TypeUuid, asset::*};
 
     #[derive(Debug, TypeUuid)]

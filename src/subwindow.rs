@@ -1,5 +1,5 @@
 pub mod systems {
-    //! Second window management.
+    //! "second window" management. This program makes subwindows into Entities, making it easier to manage subwindows, their inner states, and their creation/destruction mechanism.
     
     use std::borrow::Cow;
 

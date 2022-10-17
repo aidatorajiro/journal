@@ -79,3 +79,7 @@ Working with fragment, entry, history hierarchy, and tags.
 Tutorial Reading: issues with language used in programming (executed, captured, etc.)
 https://www.reuters.com/article/us-amazon-com-jobs-automation-insight-idUSKCN1MK08G
 
+[2022-10-18]
+difficult thing is... Closure/function is difficult to use in Rust... because of BORROWING!!! It is easier to avoid repetition by for-each loop than using closure, and using clousure than using functions.
+Difficulty: function > closure > loops
+

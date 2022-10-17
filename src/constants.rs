@@ -1,10 +1,10 @@
 pub mod window {
-    //! Constants Definition
+    //! Constants Definition: Window
     pub const SECONDARY_EGUI_PASS: &str = "secondary_egui_pass";
 }
 
 pub mod style {
-    //! Color Definitions
+    //! Constants Definition: Color (such as UI color tone)
     use bevy::prelude::*;
 
     pub const TOPBTN_NORMAL: Color = Color::rgb(11.0/256.0, 11.0/256.0, 48.0/256.0);

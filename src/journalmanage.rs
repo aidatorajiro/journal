@@ -1,4 +1,6 @@
 pub mod systems {
+    //! Event and Data management for Journal data structure
+
     use bevy::{prelude::*};
     use crate::{typedef::{event::*, component::*, resource::GameGraph}, utils::utils::*};
 
@@ -31,6 +33,8 @@ pub mod systems {
 }
 
 mod inner {
+    //! Event and Data management for Journal data structure - private functions
+
     use bevy::prelude::*;
     use crate::typedef::{resource::*, component::*};
 
