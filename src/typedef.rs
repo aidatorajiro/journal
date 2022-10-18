@@ -138,7 +138,8 @@ pub mod resource {
     #[derive(Serialize, Deserialize, Default, Debug)]
     pub struct NewPageState {
         /// Entry id which the user is currently working on. If it is None, it means that the user is creating a new entry. Used in "new page".
-        pub page_entry_id: Option<Entity>
+        pub page_entry_id: Option<Entity>,
+        
     }
 
     #[derive(Serialize, Deserialize, Debug)]

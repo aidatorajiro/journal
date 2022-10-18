@@ -1,5 +1,5 @@
 pub mod explore;
-pub mod magage;
+pub mod manage;
 pub mod migrate;
 pub mod newpage;
 pub mod top;

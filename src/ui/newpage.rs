@@ -125,7 +125,7 @@ fn newpage_update (
                         
                     },
                     NewPageButton::Edit => {
-
+                        
                     }
                 };
             },

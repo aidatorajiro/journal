@@ -28,7 +28,7 @@ use bevy_egui::EguiPlugin;
 use bevy::render::{RenderStage};
 use typedef::state::*;
 use ui::explore::*;
-use ui::magage::ui_manage_systems;
+use ui::manage::ui_manage_systems;
 use ui::migrate::migrate_systems_enter;
 use ui::migrate::migrate_systems_exit;
 use ui::migrate::migrate_systems_update;
