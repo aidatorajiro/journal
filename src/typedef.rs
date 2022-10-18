@@ -65,7 +65,7 @@ pub mod component {
     }
 
     /// A component reperesenting a journal fragment, combining metadata and contents together
-    #[derive(Component, Serialize, Deserialize, Debug)]
+    #[derive(Component, Serialize, Deserialize, Debug, Clone)]
     pub struct Fragment {
         pub timestamp: u64,
         pub contents: FragmentContents
@@ -112,14 +112,7 @@ pub mod resource {
     use petgraph::{Graph, graph::NodeIndex};
     use serde::*;
 
-    use super::component::FragmentContents;
-
-    /// Game State
-    #[derive(Serialize, Deserialize, Default, Debug)]
-    pub struct GameState {
-        pub graph: GameGraph,
-        pub newpage_state: Option<NewPageState>
-    }
+    use super::component::{FragmentContents, Fragment};
     
     /// Graph data structures for the Journal.
     #[derive(Serialize, Deserialize, Default, Debug)]
@@ -136,6 +129,14 @@ pub mod resource {
         pub history_graph_ids: HashMap<Entity, NodeIndex>
     }
 
+    /// State for each pages
+    #[derive(Serialize, Deserialize, Default, Debug)]
+    pub enum GamePageState {
+        #[default]
+        None,
+        NewPage { state: NewPageState }
+    }
+
     /// State for newpage Page.
     #[derive(Serialize, Deserialize, Default, Debug)]
     pub struct NewPageState {
@@ -145,12 +146,12 @@ pub mod resource {
         pub entry_clone: Vec<FragmentClone>
     }
 
-    #[derive(Serialize, Deserialize, Debug)]
+    #[derive(Serialize, Deserialize, Debug, Clone)]
     pub enum FragmentClone {
         /// pointer to the global data structure. (it means that the data has not been modified)
-        NotModified {fragment_id: Entity},
+        NotModified { fragment_id: Entity },
         /// modified or newly added data (ready to be pushed to the database when syncing)
-        Modified {contents: FragmentContents}
+        Modified { fragment: Fragment }
     }
 
     #[derive(Serialize, Deserialize, Debug)]
@@ -176,7 +177,7 @@ pub mod event {
     //! Type definitions (Events).
     use bevy::prelude::*;
 
-    use super::component::FragmentContents;
+    use super::{component::FragmentContents, resource::FragmentClone};
     
     /// This event will yield a new entry, from scratch or based on an existing entry.
     #[derive(Debug)]
@@ -186,6 +187,11 @@ pub mod event {
         /// None for creating a new entry from scratch. Some for append to an existing entry (please provide Entity ID for the entry).
         /// In both cases, a new entry will be created, because entries should be immutable.
         pub entry: Option<Entity>
+    }
+
+    #[derive(Debug)]
+    pub struct SyncFragments {
+        pub entry_clone: Vec<FragmentClone>
     }
 
     #[derive(Debug, Default)]

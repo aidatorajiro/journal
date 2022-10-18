@@ -1,13 +1,9 @@
 
 //! UI defenitions for newpage
-use std::borrow::Cow;
-
 use bevy::{prelude::*, ui::FocusPolicy};
 use bevy_egui::EguiContext;
-use egui::TextBuffer;
-use serde::__private::de::{self, ContentDeserializer};
 
-use crate::{typedef::{state::AppState, component::{NewPageContents, NewPageButton, FragmentContents, Fragment, Entry, EntityList}, event::{JumpToTop, JumpToNewPage}, resource::{GameState, NewPageState, FragmentClone}}, constants::style::*, utils::utils::set_default_font};
+use crate::{typedef::{state::AppState, component::{NewPageContents, NewPageButton, FragmentContents, Fragment, Entry, EntityList}, event::{JumpToTop, JumpToNewPage, SyncFragments}, resource::{NewPageState, FragmentClone, GamePageState}}, constants::style::*, utils::utils::{set_default_font, create_timestamp}};
 
 use super::inner::*;
 
@@ -23,12 +19,12 @@ pub fn newpage_systems_update () -> SystemSet {
     return SystemSet::on_update(AppState::NewPage).with_system(newpage_update);
 }
 
-fn newpage_enter (mut com: Commands, mut ev_newpage: EventReader<JumpToNewPage>, asset_server: Res<AssetServer>, mut global: ResMut<GameState>) {
+fn newpage_enter (mut com: Commands, mut ev_newpage: EventReader<JumpToNewPage>, asset_server: Res<AssetServer>, mut page: ResMut<GamePageState>) {
     for ev in ev_newpage.iter() {
-        global.newpage_state = Some(NewPageState {
+        *page = GamePageState::NewPage{state: NewPageState {
             page_entry_id: ev.entry_id,
             ..default()
-        });
+        }};
         if let Some(entry_id) = ev.entry_id {
             // TODO write initial "syncing" code here ("pull" from the database to entry_clone)
         }
@@ -104,8 +100,9 @@ fn newpage_enter (mut com: Commands, mut ev_newpage: EventReader<JumpToNewPage>,
     }).insert(NewPageContents {});
 }
 
-fn newpage_exit (q: Query<Entity, With<NewPageContents>>, mut com: Commands, mut global: ResMut<GameState>) {
-    global.newpage_state = None;
+fn newpage_exit (q: Query<Entity, With<NewPageContents>>, mut com: Commands, mut page: ResMut<GamePageState>) {
+    *page = GamePageState::None;
+
     for i in q.iter() {
         com.entity(i).despawn_recursive();
     }
@@ -120,13 +117,16 @@ fn newpage_update (
     >,
     mut text_query: Query<&mut Text>,
     mut ev_top: EventWriter<JumpToTop>,
-    mut global: ResMut<GameState>,
+    mut page: ResMut<GamePageState>,
     q_fragment: Query<&Fragment>,
     q_entry: Query<&EntityList, With<Entry>>,
     mut initialized: Local<bool>,
-    mut inject_pos: Local<Option<usize>>
+    mut inject_pos: Local<Option<usize>>,
+    mut commands: Commands,
+    mut ev_sync: EventWriter<SyncFragments>
 ) {
-    let mut newpage_state = global.newpage_state.as_mut().unwrap();
+    let mut newpage_state = match page.as_mut() { GamePageState::NewPage { state } => state, _ => return};
+
     for (inter, child, btn_attr, mut color) in interaction_query.iter_mut() {
         match *inter {
             Interaction::Clicked => {
@@ -137,11 +137,13 @@ fn newpage_update (
                     },
                     NewPageButton::AddTexts => {
                         newpage_state.entry_clone.push(FragmentClone::Modified {
-                            contents: FragmentContents::TextData { data: "".to_string() }
+                            fragment: Fragment { timestamp: create_timestamp(), contents: FragmentContents::TextData { data: "".to_string() } }
                         });
                     },
                     NewPageButton::Save => {
-                        
+                        ev_sync.send(SyncFragments {
+                            entry_clone: newpage_state.entry_clone.clone(),
+                        })
                     }
                 };
             },
@@ -176,7 +178,6 @@ fn newpage_update (
             match fc {
                 // For data that is not cloned yet (thus have not been changed yet)
                 FragmentClone::NotModified { fragment_id } => {
-                    // TODO: copy existing fragment and do something like watching
                     let f = q_fragment.get(*fragment_id).unwrap();
                     match &f.contents {
                         FragmentContents::TextData { data } => {
@@ -198,8 +199,8 @@ fn newpage_update (
                     };
                 },
                 // For cloned data (thus have been already changed, desyncing from the master database)
-                FragmentClone::Modified { contents } => {
-                    match contents {
+                FragmentClone::Modified { fragment } => {
+                    match &mut fragment.contents {
                         FragmentContents::TextData { data } => {
                             let edit = ui.text_edit_multiline(data);
                             if let Some(pip) = prev_inject_pos {
@@ -230,13 +231,14 @@ fn newpage_update (
 
             // If some data is modified, clone it and put into entry_clone.
             if let Some(contents) = fragment_overwrite {
-                *fc = FragmentClone::Modified { contents }
+                *fc = FragmentClone::Modified { fragment: Fragment { timestamp: create_timestamp(), contents } }
             }
         }
 
         if let Some(ip) = *inject_pos {
             newpage_state.entry_clone.insert(ip + 1, FragmentClone::Modified {
-                contents: FragmentContents::TextData { data: "".to_string() }
+                fragment: Fragment { timestamp: create_timestamp(), contents: FragmentContents::TextData { data: "".to_string() } }
+                
             });
         }
     });

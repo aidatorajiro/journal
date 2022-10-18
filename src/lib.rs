@@ -47,10 +47,12 @@ pub fn run_the_journal() {
         resizable: false,
         ..default()
     })
-        .init_resource::<GameState>()
+        .init_resource::<GameGraph>()
+        .init_resource::<GamePageState>()
         .add_state::<AppState>(AppState::Top)
         .insert_resource(WinitSettings::desktop_app())
         .add_event::<AddFragments>()
+        .add_event::<SyncFragments>()
         .add_event::<JumpToNewPage>()
         .add_event::<JumpToExplore>()
         .add_event::<JumpToLinear>()
@@ -63,10 +65,11 @@ pub fn run_the_journal() {
         .add_startup_system(setup)
         .add_system(system_drag_and_drop)
         .add_system_set(ui_manage_systems())
+        // journal manage
+        .add_system(handle_sync_fragments)
         // subwindows
         .add_system(subwindow_event)
         .add_system_set(subwindow_ui_set())
-        .add_system(handle_add_fragments)
         .add_system(window_closed_handler)
         // Toppage System
         .add_system_set(top_systems_enter())
