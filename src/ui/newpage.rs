@@ -3,7 +3,7 @@
 use bevy::{prelude::*, ui::FocusPolicy};
 use bevy_egui::EguiContext;
 
-use crate::{typedef::{state::AppState, component::{NewPageContents, NewPageButton, FragmentContents, Fragment, Entry, EntityList}, event::{JumpToTop, JumpToNewPage, SyncFragments}, resource::{NewPageState, FragmentClone, GamePageState}}, constants::style::*, utils::utils::{set_default_font, create_timestamp}};
+use crate::{typedef::{state::AppState, component::{NewPageContents, NewPageButton, FragmentContents, Fragment, Entry, EntityList}, event::{JumpToTop, JumpToNewPage, SyncFragments, SyncFragmentsDone}, resource::{NewPageState, FragmentClone, GamePageState}}, constants::style::*, utils::utils::{set_default_font, create_timestamp}};
 
 use super::inner::*;
 
@@ -16,18 +16,47 @@ pub fn newpage_systems_exit () -> SystemSet {
 }
 
 pub fn newpage_systems_update () -> SystemSet {
-    return SystemSet::on_update(AppState::NewPage).with_system(newpage_update);
+    return SystemSet::on_update(AppState::NewPage).with_system(newpage_update).with_system(watch_sync_fragments_done);
 }
 
-fn newpage_enter (mut com: Commands, mut ev_newpage: EventReader<JumpToNewPage>, asset_server: Res<AssetServer>, mut page: ResMut<GamePageState>) {
+fn get_initial_state_with_id (q_list: &Query<&EntityList>, entry_id: Entity) -> GamePageState {
+    let entry_clone =
+    q_list.get(entry_id)
+    .unwrap().entities.iter()
+    .map(|x| FragmentClone::NotModified { fragment_id: x.clone() })
+    .collect();
+
+    GamePageState::NewPage{state: NewPageState {
+        page_entry_id: Some(entry_id),
+        entry_clone
+    }}
+}
+
+fn watch_sync_fragments_done (mut ev_sync: EventReader<SyncFragmentsDone>, q_list: Query<&EntityList>, mut page: ResMut<GamePageState>) {
+    for ev in ev_sync.iter() {
+        *page = get_initial_state_with_id(&q_list, ev.entry_id);
+    }
+}
+
+fn newpage_enter (
+    mut com: Commands,
+    mut ev_newpage: EventReader<JumpToNewPage>,
+    asset_server: Res<AssetServer>,
+    mut page: ResMut<GamePageState>,
+    q_list: Query<&EntityList>
+) {
     for ev in ev_newpage.iter() {
-        *page = GamePageState::NewPage{state: NewPageState {
-            page_entry_id: ev.entry_id,
-            ..default()
-        }};
-        if let Some(entry_id) = ev.entry_id {
-            // TODO write initial "syncing" code here ("pull" from the database to entry_clone)
-        }
+        *page = match ev.entry_id {
+            Some(entry_id) => {
+                get_initial_state_with_id(&q_list, entry_id)
+            }
+            None => {
+                GamePageState::NewPage{state: NewPageState {
+                    page_entry_id: ev.entry_id,
+                    ..default()
+                }}
+            }
+        };
     }
     com.spawn_bundle(NodeBundle {
         style: Style {

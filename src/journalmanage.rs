@@ -35,7 +35,8 @@ pub mod systems {
     pub fn handle_sync_fragments(
         mut events: EventReader<SyncFragments>,
         mut commands: Commands,
-        mut graph: ResMut<GameGraph>
+        mut graph: ResMut<GameGraph>,
+        mut ev_done: EventWriter<SyncFragmentsDone>
     ) {
         for ev in events.iter() {
             let ts = create_timestamp();
@@ -53,7 +54,8 @@ pub mod systems {
                 })
                 .collect();
 
-            add_entry(&mut commands, &ents, ts, &mut graph);
+            let e = add_entry(&mut commands, &ents, ts, &mut graph);
+            ev_done.send(SyncFragmentsDone { entry_id: e });
         }
     }
 }
@@ -74,12 +76,14 @@ mod inner {
             timestamp: ts,
             contents: fragment_contents.clone()
         }).id();
+
         let a = graph.neighbor_graph.add_node(entid);
         graph.neighbor_graph_ids.insert(entid, a);
 
         //add the fragment as a subject of history
         let b = graph.history_graph.add_node(entid);
         graph.history_graph_ids.insert(entid, b);
+
         entid
     }
 

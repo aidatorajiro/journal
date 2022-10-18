@@ -28,7 +28,7 @@ use bevy_egui::EguiPlugin;
 use bevy::render::{RenderStage};
 use typedef::state::*;
 use ui::explore::*;
-use ui::manage::ui_manage_systems;
+use ui::router::ui_manage_systems;
 use ui::migrate::migrate_systems_enter;
 use ui::migrate::migrate_systems_exit;
 use ui::migrate::migrate_systems_update;
@@ -53,6 +53,7 @@ pub fn run_the_journal() {
         .insert_resource(WinitSettings::desktop_app())
         .add_event::<AddFragments>()
         .add_event::<SyncFragments>()
+        .add_event::<SyncFragmentsDone>()
         .add_event::<JumpToNewPage>()
         .add_event::<JumpToExplore>()
         .add_event::<JumpToLinear>()

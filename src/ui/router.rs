@@ -16,18 +16,18 @@ fn event_listener (
     mut ev_top: EventReader<JumpToTop>,
 ) {
     for x in ev_newpage.iter() {
-        app_state.set(AppState::NewPage).expect("couldn't change state");
+        app_state.set(AppState::NewPage);
     }
     for x in ev_explore.iter() {
-        app_state.set(AppState::Explore).expect("couldn't change state");
+        app_state.set(AppState::Explore);
     }
     for x in ev_linear.iter() {
-        app_state.set(AppState::Linear).expect("couldn't change state");
+        app_state.set(AppState::Linear);
     }
     for x in ev_migrate.iter() {
-        app_state.set(AppState::Migrate).expect("couldn't change state");
+        app_state.set(AppState::Migrate);
     }
     for x in ev_top.iter() {
-        app_state.set(AppState::Top).expect("couldn't change state");
+        app_state.set(AppState::Top);
     }
 }

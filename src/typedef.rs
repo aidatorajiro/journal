@@ -194,6 +194,11 @@ pub mod event {
         pub entry_clone: Vec<FragmentClone>
     }
 
+    #[derive(Debug)]
+    pub struct SyncFragmentsDone {
+        pub entry_id: Entity
+    }
+
     #[derive(Debug, Default)]
     pub struct JumpToNewPage {
         pub entry_id: Option<Entity>
