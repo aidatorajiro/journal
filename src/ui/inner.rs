@@ -1,4 +1,3 @@
-
 //! inner mechanisms for UI.
 use bevy::prelude::*;
 
