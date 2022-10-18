@@ -86,3 +86,5 @@ difficult thing is... Closure/function is difficult to use in Rust... because of
 Difficulty: function > closure > loops
 
 Rust mut borrowing: you have to separate code into small components, because you can't borrow mut variable twice. if you write `let mut x = abc.def(1)`, then you have to focus on programming about x. You cannot do like `let mut y = abc.def(2)`.
+
+まあ恩恵は結構あるけどね...モジュールごとに分けることの...ある機能を変更することで、他のさまざまなコードも変えなければいけなくなることがあまり起こらない。関数を変える必要があるのは、決まってデータ構造を変えた時のみだから。データ構造を変えない限り、関数はそのままでもコンパイルは絶対に通る。
