@@ -5,7 +5,7 @@ use std::borrow::Cow;
 use bevy::{prelude::*, ui::FocusPolicy};
 use bevy_egui::EguiContext;
 use egui::TextBuffer;
-use serde::__private::de;
+use serde::__private::de::{self, ContentDeserializer};
 
 use crate::{typedef::{state::AppState, component::{NewPageContents, NewPageButton, FragmentContents, Fragment, Entry, EntityList}, event::{JumpToTop, JumpToNewPage}, resource::{GameState, NewPageState, FragmentClone}}, constants::style::*, utils::utils::set_default_font};
 
@@ -171,17 +171,19 @@ fn newpage_update (
         *inject_pos = None;
 
         for (i, fc) in newpage_state.entry_clone.iter_mut().enumerate() {
+            let mut fragment_overwrite = None;
+
             match fc {
+                // For data that is not cloned yet (thus have not been changed yet)
                 FragmentClone::NotModified { fragment_id } => {
                     // TODO: copy existing fragment and do something like watching
                     let f = q_fragment.get(*fragment_id).unwrap();
                     match &f.contents {
                         FragmentContents::TextData { data } => {
-                            let mut data_cow = Cow::from(data);
-                            let edit = ui.text_edit_multiline(data_cow.to_mut());
-
+                            let mut data_cloned = data.clone();
+                            let edit = ui.text_edit_multiline(&mut data_cloned);
                             if (edit.changed()) {
-                                
+                                fragment_overwrite = Some(FragmentContents::TextData { data: data_cloned });
                             }
                         },
                         FragmentContents::Code { data, language } => {
@@ -193,8 +195,9 @@ fn newpage_update (
                         FragmentContents::Image { data } => {
                             // TODO handle image
                         },
-                    }
+                    };
                 },
+                // For cloned data (thus have been already changed, desyncing from the master database)
                 FragmentClone::Modified { contents } => {
                     match contents {
                         FragmentContents::TextData { data } => {
@@ -221,8 +224,13 @@ fn newpage_update (
                         FragmentContents::Image { data } => {
                             // TODO handle image
                         },
-                    }
+                    };
                 },
+            }
+
+            // If some data is modified, clone it and put into entry_clone.
+            if let Some(contents) = fragment_overwrite {
+                *fc = FragmentClone::Modified { contents }
             }
         }
 
