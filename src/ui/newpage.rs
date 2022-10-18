@@ -2,8 +2,9 @@
 //! UI defenitions for newpage
 use bevy::{prelude::*, ui::FocusPolicy};
 use bevy_egui::EguiContext;
+use serde::__private::de;
 
-use crate::{typedef::{state::AppState, component::{NewPageContents, NewPageButton}, event::{JumpToTop, JumpToNewPage}, resource::{GameState, NewPageState}}, constants::style::*};
+use crate::{typedef::{state::AppState, component::{NewPageContents, NewPageButton, FragmentContents}, event::{JumpToTop, JumpToNewPage}, resource::{GameState, NewPageState, FragmentClone}}, constants::style::*};
 
 use super::inner::*;
 
@@ -23,7 +24,11 @@ fn newpage_enter (mut com: Commands, mut ev_newpage: EventReader<JumpToNewPage>,
     for ev in ev_newpage.iter() {
         global.newpage_state = Some(NewPageState {
             page_entry_id: ev.entry_id,
+            ..default()
         });
+        if let Some(entry_id) = ev.entry_id {
+            // TODO write initial "syncing" code here ("pull" from the database to entry_clone)
+        }
     }
     com.spawn_bundle(NodeBundle {
         style: Style {
@@ -41,7 +46,7 @@ fn newpage_enter (mut com: Commands, mut ev_newpage: EventReader<JumpToNewPage>,
         let base_w = 100.0;
         let base_h = 20.0;
 
-        let tags = [NewPageButton::Return, NewPageButton::Edit, NewPageButton::AddTexts];
+        let tags = [NewPageButton::Return, NewPageButton::Save, NewPageButton::AddTexts];
 
         for tag in tags {
             parent.spawn_bundle(ButtonBundle {
@@ -62,7 +67,7 @@ fn newpage_enter (mut com: Commands, mut ev_newpage: EventReader<JumpToNewPage>,
                 let image = match tag {
                     NewPageButton::Return => asset_server.load("newpage.png").into(),
                     NewPageButton::AddTexts => asset_server.load("newpage.png").into(),
-                    NewPageButton::Edit => asset_server.load("newpage.png").into(),
+                    NewPageButton::Save => asset_server.load("newpage.png").into(),
                 };
 
                 parent.spawn_bundle(ImageBundle {
@@ -83,7 +88,7 @@ fn newpage_enter (mut com: Commands, mut ev_newpage: EventReader<JumpToNewPage>,
                     match tag {
                         NewPageButton::Return => "Return",
                         NewPageButton::AddTexts => "Add Texts",
-                        NewPageButton::Edit => "Edit",
+                        NewPageButton::Save => "Save",
                     }, 
                     TextStyle {
                         font: asset_server.load("NotoSansJP-Bold.otf"),
@@ -112,7 +117,9 @@ fn newpage_update (
     >,
     mut text_query: Query<&mut Text>,
     mut ev_top: EventWriter<JumpToTop>,
+    mut global: ResMut<GameState>
 ) {
+    let mut newpage_state = global.newpage_state.as_mut().unwrap();
     for (inter, child, btn_attr, mut color) in interaction_query.iter_mut() {
         match *inter {
             Interaction::Clicked => {
@@ -122,9 +129,11 @@ fn newpage_update (
                         ev_top.send(JumpToTop {})
                     },
                     NewPageButton::AddTexts => {
-                        
+                        newpage_state.entry_clone.push(FragmentClone::Modified {
+                            contents: FragmentContents::TextData { data: "".to_string() }
+                        });
                     },
-                    NewPageButton::Edit => {
+                    NewPageButton::Save => {
                         
                     }
                 };
@@ -144,7 +153,23 @@ fn newpage_update (
         .min_width(w.width() * 0.8)
         .max_width(w.width() * 0.8)
     .show(egui_ctx.ctx_mut(), |ui| {
-        
+        for fc in newpage_state.entry_clone.iter_mut() {
+            match fc {
+                FragmentClone::NotModified { fragment_id } => {
+                    // TODO: copy existing fragment and do something like watching
+                },
+                FragmentClone::Modified { contents } => {
+                    match contents {
+                        FragmentContents::TextData { data } => {
+                            ui.text_edit_multiline(data);
+                        },
+                        FragmentContents::Code { data, language } => {},
+                        FragmentContents::URL { data } => {},
+                        FragmentContents::Image { data } => {},
+                    }
+                },
+            }
+        }
     });
 }
 

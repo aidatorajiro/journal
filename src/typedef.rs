@@ -26,7 +26,7 @@ pub mod component {
         /// Add texts to the entry
         AddTexts,
         /// Edit a fragment within the entry.
-        Edit
+        Save
     }
 
     /// Contents on "new page" tab. Used to handle page switch.
@@ -112,6 +112,8 @@ pub mod resource {
     use petgraph::{Graph, graph::NodeIndex};
     use serde::*;
 
+    use super::component::FragmentContents;
+
     /// Game State
     #[derive(Serialize, Deserialize, Default, Debug)]
     pub struct GameState {
@@ -139,7 +141,16 @@ pub mod resource {
     pub struct NewPageState {
         /// Entry id which the user is currently working on. If it is None, it means that the user is creating a new entry. Used in "new page".
         pub page_entry_id: Option<Entity>,
-        
+        /// Clone of the fragments within 
+        pub entry_clone: Vec<FragmentClone>
+    }
+
+    #[derive(Serialize, Deserialize, Debug)]
+    pub enum FragmentClone {
+        /// pointer to the global data structure. (it means that the data has not been modified)
+        NotModified {fragment_id: Entity},
+        /// modified or newly added data (ready to be pushed to the database when syncing)
+        Modified {contents: FragmentContents}
     }
 
     #[derive(Serialize, Deserialize, Debug)]
