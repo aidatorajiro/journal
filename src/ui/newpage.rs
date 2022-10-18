@@ -1,10 +1,13 @@
 
 //! UI defenitions for newpage
+use std::borrow::Cow;
+
 use bevy::{prelude::*, ui::FocusPolicy};
 use bevy_egui::EguiContext;
+use egui::TextBuffer;
 use serde::__private::de;
 
-use crate::{typedef::{state::AppState, component::{NewPageContents, NewPageButton, FragmentContents}, event::{JumpToTop, JumpToNewPage}, resource::{GameState, NewPageState, FragmentClone}}, constants::style::*};
+use crate::{typedef::{state::AppState, component::{NewPageContents, NewPageButton, FragmentContents, Fragment, Entry, EntityList}, event::{JumpToTop, JumpToNewPage}, resource::{GameState, NewPageState, FragmentClone}}, constants::style::*, utils::utils::set_default_font};
 
 use super::inner::*;
 
@@ -117,7 +120,11 @@ fn newpage_update (
     >,
     mut text_query: Query<&mut Text>,
     mut ev_top: EventWriter<JumpToTop>,
-    mut global: ResMut<GameState>
+    mut global: ResMut<GameState>,
+    q_fragment: Query<&Fragment>,
+    q_entry: Query<&EntityList, With<Entry>>,
+    mut initialized: Local<bool>,
+    mut inject_pos: Local<Option<usize>>
 ) {
     let mut newpage_state = global.newpage_state.as_mut().unwrap();
     for (inter, child, btn_attr, mut color) in interaction_query.iter_mut() {
@@ -153,23 +160,78 @@ fn newpage_update (
         .min_width(w.width() * 0.8)
         .max_width(w.width() * 0.8)
     .show(egui_ctx.ctx_mut(), |ui| {
-        for fc in newpage_state.entry_clone.iter_mut() {
+    egui::ScrollArea::vertical().show(ui, |ui| {
+        
+        if (*initialized == false) {
+            set_default_font(ui);
+            *initialized = true;
+        }
+
+        let prev_inject_pos = inject_pos.clone();
+        *inject_pos = None;
+
+        for (i, fc) in newpage_state.entry_clone.iter_mut().enumerate() {
             match fc {
                 FragmentClone::NotModified { fragment_id } => {
                     // TODO: copy existing fragment and do something like watching
+                    let f = q_fragment.get(*fragment_id).unwrap();
+                    match &f.contents {
+                        FragmentContents::TextData { data } => {
+                            let mut data_cow = Cow::from(data);
+                            let edit = ui.text_edit_multiline(data_cow.to_mut());
+
+                            if (edit.changed()) {
+                                
+                            }
+                        },
+                        FragmentContents::Code { data, language } => {
+                            // TODO handle code
+                        },
+                        FragmentContents::URL { data } => {
+                            // TODO handle url
+                        },
+                        FragmentContents::Image { data } => {
+                            // TODO handle image
+                        },
+                    }
                 },
                 FragmentClone::Modified { contents } => {
                     match contents {
                         FragmentContents::TextData { data } => {
-                            ui.text_edit_multiline(data);
+                            let edit = ui.text_edit_multiline(data);
+                            if let Some(pip) = prev_inject_pos {
+                                if i == pip + 1 {
+                                    edit.request_focus();
+                                }
+                            }
+                            if data.ends_with("\n\n") {
+                                let mut x = data.chars();
+                                x.nth_back(1);
+                                *data = x.as_str().to_string();
+
+                                *inject_pos = Some(i);
+                            }
                         },
-                        FragmentContents::Code { data, language } => {},
-                        FragmentContents::URL { data } => {},
-                        FragmentContents::Image { data } => {},
+                        FragmentContents::Code { data, language } => {
+                            // TODO handle code
+                        },
+                        FragmentContents::URL { data } => {
+                            // TODO handle url
+                        },
+                        FragmentContents::Image { data } => {
+                            // TODO handle image
+                        },
                     }
                 },
             }
         }
+
+        if let Some(ip) = *inject_pos {
+            newpage_state.entry_clone.insert(ip + 1, FragmentClone::Modified {
+                contents: FragmentContents::TextData { data: "".to_string() }
+            });
+        }
+    });
     });
 }
 
