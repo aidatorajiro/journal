@@ -3,7 +3,7 @@
 use bevy::{prelude::*, ui::FocusPolicy};
 use bevy_egui::EguiContext;
 
-use crate::{typedef::{state::AppState, component::{NewPageContents, NewPageButton, FragmentContents, Fragment, Entry, EntityList}, event::{JumpToTop, JumpToNewPage, SyncFragments, SyncFragmentsDone}, resource::{NewPageState, FragmentClone, GamePageState}}, constants::style::*, utils::utils::{set_default_font, create_timestamp}};
+use crate::{typedef::{state::AppState, component::{NewPageContents, NewPageButton, FragmentContents, Fragment, EntityList}, event::{JumpToTop, JumpToNewPage, SyncFragments, SyncFragmentsDone}, resource::{NewPageState, FragmentClone, GamePageState}}, constants::style::*, utils::utils::{set_default_font, create_timestamp}};
 
 use super::inner::*;
 
@@ -141,22 +141,19 @@ fn newpage_update (
     mut egui_ctx: ResMut<EguiContext>,
     window: Res<Windows>,
     mut interaction_query: Query<
-        (&Interaction, &Children, &NewPageButton, &mut UiColor),
-        (Changed<Interaction>),
+        (&Interaction, &NewPageButton, &mut UiColor),
+        Changed<Interaction>,
     >,
-    mut text_query: Query<&mut Text>,
     mut ev_top: EventWriter<JumpToTop>,
     mut page: ResMut<GamePageState>,
     q_fragment: Query<&Fragment>,
-    q_entry: Query<&EntityList, With<Entry>>,
     mut initialized: Local<bool>,
     mut inject_pos: Local<Option<usize>>,
-    mut commands: Commands,
     mut ev_sync: EventWriter<SyncFragments>
 ) {
-    let mut newpage_state = match page.as_mut() { GamePageState::NewPage { state } => state, _ => return};
+    let newpage_state = match page.as_mut() { GamePageState::NewPage { state } => state, _ => return};
 
-    for (inter, child, btn_attr, mut color) in interaction_query.iter_mut() {
+    for (inter, btn_attr, mut color) in interaction_query.iter_mut() {
         match *inter {
             Interaction::Clicked => {
                 *color = NEWPAGE_CLICK.into();
@@ -193,7 +190,7 @@ fn newpage_update (
     .show(egui_ctx.ctx_mut(), |ui| {
     egui::ScrollArea::vertical().show(ui, |ui| {
         
-        if (*initialized == false) {
+        if *initialized == false {
             set_default_font(ui);
             *initialized = true;
         }
@@ -212,7 +209,7 @@ fn newpage_update (
                         FragmentContents::TextData { data } => {
                             let mut data_cloned = data.clone();
                             let edit = ui.text_edit_multiline(&mut data_cloned);
-                            if (edit.changed()) {
+                            if edit.changed() {
                                 fragment_overwrite = Some(FragmentContents::TextData { data: data_cloned });
                             }
                         },

@@ -14,14 +14,11 @@ use assets::loader::RawDataLoader;
 use bevy::app::AppExit;
 use bevy::window::PresentMode;
 use bevy::window::WindowClosed;
-use bevy::window::WindowResized;
 use bevy::winit::WinitSettings;
 use journalmanage::systems::*;
 use subwindow::systems::*;
-use typedef::component::*;
 use typedef::event::*;
 use typedef::resource::*;
-use constants::style::*;
 
 use bevy::{prelude::*, render::RenderApp};
 use bevy_egui::EguiPlugin;

@@ -15,19 +15,19 @@ fn event_listener (
     mut ev_migrate: EventReader<JumpToMigrate>,
     mut ev_top: EventReader<JumpToTop>,
 ) {
-    for x in ev_newpage.iter() {
-        app_state.set(AppState::NewPage);
+    for _ in ev_newpage.iter() {
+        app_state.set(AppState::NewPage).unwrap();
     }
-    for x in ev_explore.iter() {
-        app_state.set(AppState::Explore);
+    for _ in ev_explore.iter() {
+        app_state.set(AppState::Explore).unwrap();
     }
-    for x in ev_linear.iter() {
-        app_state.set(AppState::Linear);
+    for _ in ev_linear.iter() {
+        app_state.set(AppState::Linear).unwrap();
     }
-    for x in ev_migrate.iter() {
-        app_state.set(AppState::Migrate);
+    for _ in ev_migrate.iter() {
+        app_state.set(AppState::Migrate).unwrap();
     }
-    for x in ev_top.iter() {
-        app_state.set(AppState::Top);
+    for _ in ev_top.iter() {
+        app_state.set(AppState::Top).unwrap();
     }
 }

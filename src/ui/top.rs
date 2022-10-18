@@ -104,19 +104,16 @@ fn top_enter(mut commands: Commands, asset_server: Res<AssetServer>) {
 
 fn top_button_update_system(
     mut interaction_query: Query<
-        (&Interaction, &Children, &TopPageButton, &mut UiColor),
-        (Changed<Interaction>),
+        (&Interaction, &TopPageButton, &mut UiColor),
+        Changed<Interaction>,
     >,
     mut text_query: Query<&mut Text>,
     mut ev_newpage: EventWriter<JumpToNewPage>,
     mut ev_explore: EventWriter<JumpToExplore>,
     mut ev_linear: EventWriter<JumpToLinear>,
-    mut ev_migrate: EventWriter<JumpToMigrate>,
-    com: Commands
+    mut ev_migrate: EventWriter<JumpToMigrate>
 ) {
-    for (interaction, children, toppage, mut color) in &mut interaction_query {
-        let mut text = text_query.get_mut(children[1]).unwrap();
-
+    for (interaction, toppage, mut color) in &mut interaction_query {
         match *interaction {
             Interaction::Clicked => match toppage {
                 TopPageButton::NewPage => ev_newpage.send(JumpToNewPage::default()),

@@ -112,7 +112,7 @@ pub mod resource {
     use petgraph::{Graph, graph::NodeIndex};
     use serde::*;
 
-    use super::component::{FragmentContents, Fragment};
+    use super::component::{Fragment};
     
     /// Graph data structures for the Journal.
     #[derive(Serialize, Deserialize, Default, Debug)]
