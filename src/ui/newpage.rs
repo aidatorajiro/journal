@@ -2,6 +2,7 @@
 //! UI defenitions for newpage
 use bevy::{prelude::*, ui::FocusPolicy};
 use bevy_egui::EguiContext;
+use egui::TextEdit;
 
 use crate::{typedef::{state::AppState, component::{NewPageContents, NewPageButton, FragmentContents, Fragment, EntityList}, event::{JumpToTop, JumpToNewPage, SyncFragments, SyncFragmentsDone}, resource::{NewPageState, FragmentClone}}, constants::style::*, utils::utils::{set_default_font, create_timestamp}, journalmanage::systems::handle_sync_fragments};
 
@@ -179,8 +180,7 @@ fn newpage_update (
         .min_width(w.width() * 0.8)
         .max_width(w.width() * 0.8)
     .show(egui_ctx.ctx_mut(), |ui| {
-    egui::ScrollArea::vertical().show(ui, |ui| {
-        
+    egui::ScrollArea::vertical().always_show_scroll(true).show(ui, |ui| {
         if *initialized == false {
             set_default_font(ui);
             *initialized = true;
@@ -199,7 +199,9 @@ fn newpage_update (
                     match &f.contents {
                         FragmentContents::TextData { data } => {
                             let mut data_cloned = data.clone();
-                            let edit = ui.text_edit_multiline(&mut data_cloned);
+                            let mut size = ui.available_size();
+                            size.y = 40.0;
+                            let edit = ui.add_sized(size, TextEdit::multiline(&mut data_cloned).margin(egui::Vec2{x:9.0, y:6.0}));
                             if edit.changed() {
                                 fragment_overwrite = Some(FragmentContents::TextData { data: data_cloned });
                             }
@@ -219,7 +221,9 @@ fn newpage_update (
                 FragmentClone::Modified { fragment } => {
                     match &mut fragment.contents {
                         FragmentContents::TextData { data } => {
-                            let edit = ui.text_edit_multiline(data);
+                            let mut size = ui.available_size();
+                            size.y = 40.0;
+                            let edit = ui.add_sized(size, TextEdit::multiline(data).margin(egui::Vec2{x:9.0, y:6.0}));
                             if let Some(pip) = prev_inject_pos {
                                 if i == pip + 1 {
                                     edit.request_focus();
