@@ -1,8 +1,11 @@
 
 //! UI defenitions for newpage
+
+// TODO: "split" functionality
+
 use bevy::{prelude::*, ui::FocusPolicy};
 use bevy_egui::EguiContext;
-use egui::TextEdit;
+use egui::{TextEdit, Visuals, Color32};
 
 use crate::{typedef::{state::AppState, component::{NewPageContents, NewPageButton, FragmentContents, Fragment, EntityList}, event::{JumpToTop, JumpToNewPage, SyncFragments, SyncFragmentsDone}, resource::{NewPageState, FragmentClone}}, constants::style::*, utils::utils::{set_default_font, create_timestamp}, journalmanage::systems::handle_sync_fragments};
 
@@ -197,6 +200,7 @@ fn newpage_update (
                 // For data that is not cloned yet (thus have not been changed yet)
                 FragmentClone::NotModified { fragment_id } => {
                     let f = q_fragment.get(*fragment_id).unwrap();
+                    ui.label(format!("Fragment ID {:?}", fragment_id));
                     match &f.contents {
                         FragmentContents::TextData { data } => {
                             let mut data_cloned = data.clone();
@@ -219,12 +223,14 @@ fn newpage_update (
                     };
                 },
                 // For cloned data (thus have been already changed, desyncing from the master database)
-                FragmentClone::Modified { fragment, original_id: _ } => {
+                FragmentClone::Modified { fragment, original_id } => {
+                    ui.label(if let Some(oid) = original_id { format!("Modified from ID {:?}", oid) } else { "New Fragment".into() });
                     match &mut fragment.contents {
                         FragmentContents::TextData { data } => {
                             let mut size = ui.available_size();
                             size.y = 40.0;
-                            let edit = ui.add_sized(size, TextEdit::multiline(data).margin(egui::Vec2{x:9.0, y:6.0}));
+                            let widget = TextEdit::multiline(data).margin(egui::Vec2{x:9.0, y:6.0}).text_color(Color32::from_rgb(230, 134, 156));
+                            let edit = ui.add_sized(size, widget);
                             if let Some(pip) = prev_inject_pos {
                                 if i == pip + 1 {
                                     edit.request_focus();
