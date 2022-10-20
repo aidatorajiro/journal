@@ -107,7 +107,6 @@ fn top_button_update_system(
         (&Interaction, &TopPageButton, &mut UiColor),
         Changed<Interaction>,
     >,
-    mut text_query: Query<&mut Text>,
     mut ev_newpage: EventWriter<JumpToNewPage>,
     mut ev_explore: EventWriter<JumpToExplore>,
     mut ev_linear: EventWriter<JumpToLinear>,

@@ -1,7 +1,7 @@
 
 //! UI definitions for explore
 use bevy::prelude::*;
-use crate::typedef::{state::AppState, component::Fragment};
+use crate::typedef::{state::AppState};
 
 use super::inner::use_3d_camera;
 
@@ -17,7 +17,7 @@ pub fn explore_systems_update () -> SystemSet {
     return SystemSet::on_enter(AppState::Explore).with_system(explore_update);
 }
 
-fn explore_enter (q: Query<&Fragment>) {
+fn explore_enter () {
     
 }
 

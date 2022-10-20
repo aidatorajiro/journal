@@ -124,7 +124,7 @@ pub mod resource {
         /// A graph with Fragment, Entry or History as a node.
         /// Must be a directed acyclic graph with no duplicate edge, as it represents chronological history how these entities are modified, splitted or merged to make a new entity.
         /// Must not have connection between Fragment and Entry, Entry and History, or Fragment and History, as this violates conceptual hierarchy.
-        pub history_graph: Graph<Entity, ChangeType>,
+        pub history_graph: Graph<Entity, ()>,
         /// entity id to node id
         pub history_graph_ids: HashMap<Entity, NodeIndex>
     }
@@ -152,13 +152,6 @@ pub mod resource {
         NotModified { fragment_id: Entity },
         /// modified or newly added data (ready to be pushed to the database when syncing)
         Modified { fragment: Fragment }
-    }
-
-    #[derive(Serialize, Deserialize, Debug)]
-    pub enum ChangeType {
-        Modify,
-        Split,
-        Merge
     }
 }
 
@@ -191,6 +184,8 @@ pub mod event {
 
     #[derive(Debug)]
     pub struct SyncFragments {
+        /// id of the original entries
+        pub original_entries: Vec<Entity>,
         pub entry_clone: Vec<FragmentClone>
     }
 

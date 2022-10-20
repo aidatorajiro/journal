@@ -2,7 +2,7 @@ pub mod systems {
     //! Event and Data management for Journal data structure - systems
 
     use bevy::{prelude::*};
-    use crate::{typedef::{event::*, component::*, resource::{GameGraph, FragmentClone, ChangeType}}, utils::utils::*};
+    use crate::{typedef::{event::*, component::*, resource::GameGraph, resource::FragmentClone}, utils::utils::*};
 
     use super::inner::{add_entry, add_fragment};
 
@@ -27,7 +27,7 @@ pub mod systems {
                 let y = add_entry(&mut commands, &[entitylist.get(x).unwrap().entities.clone(), ents].concat(), ts, &mut graph);
                 let id_x = graph.history_graph_ids.get(&x).unwrap().clone();
                 let id_y = graph.history_graph_ids.get(&y).unwrap().clone();
-                graph.history_graph.add_edge(id_x, id_y, ChangeType::Modify);
+                graph.history_graph.add_edge(id_x, id_y, ());
             } else {
                 add_entry(&mut commands, &ents, ts, &mut graph);
             };
@@ -58,6 +58,12 @@ pub mod systems {
                 .collect();
 
             let e = add_entry(&mut commands, &ents, ts, &mut graph);
+
+            for orig in ev.original_entries.clone() {
+                let id_x = graph.history_graph_ids.get(&orig).unwrap().clone();
+                let id_y = graph.history_graph_ids.get(&e).unwrap().clone();
+                graph.history_graph.add_edge(id_x, id_y, ());
+            }
             ev_done.send(SyncFragmentsDone { entry_id: e });
         }
     }

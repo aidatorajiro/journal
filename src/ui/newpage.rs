@@ -169,6 +169,7 @@ fn newpage_update (
                     NewPageButton::Save => {
                         ev_sync.send(SyncFragments {
                             entry_clone: newpage_state.entry_clone.clone(),
+                            original_entries: todo!(),
                         })
                     }
                 };
