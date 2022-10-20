@@ -2,37 +2,9 @@ pub mod systems {
     //! Event and Data management for Journal data structure - systems
 
     use bevy::{prelude::*};
-    use crate::{typedef::{event::*, component::*, resource::GameGraph, resource::FragmentClone}, utils::utils::*};
+    use crate::{typedef::{event::*, resource::GameGraph, resource::FragmentClone}, utils::utils::*};
 
     use super::inner::{add_entry, add_fragment};
-
-    pub fn handle_add_fragments(
-        mut events: EventReader<AddFragments>,
-        mut commands: Commands,
-        entitylist: Query<&EntityList>,
-        mut graph: ResMut<GameGraph>
-    ) {
-        for ev in events.iter() {
-            let ts = create_timestamp();
-
-            let ents: Vec<Entity> =
-                ev.contents
-                .iter()
-                .map(|x| {
-                    add_fragment(&mut commands, ts, x,  &mut graph)
-                })
-                .collect();
-
-            if let Some(x) = ev.entry {
-                let y = add_entry(&mut commands, &[entitylist.get(x).unwrap().entities.clone(), ents].concat(), ts, &mut graph);
-                let id_x = graph.history_graph_ids.get(&x).unwrap().clone();
-                let id_y = graph.history_graph_ids.get(&y).unwrap().clone();
-                graph.history_graph.add_edge(id_x, id_y, ());
-            } else {
-                add_entry(&mut commands, &ents, ts, &mut graph);
-            };
-        }
-    }
 
     /// Push the list of FragmentClone (which is either id of existing fragment or data of new fragment) into the graph and entity database.
     pub fn handle_sync_fragments(
@@ -51,8 +23,8 @@ pub mod systems {
                     FragmentClone::NotModified { fragment_id } => {
                         fragment_id.clone()
                     },
-                    FragmentClone::Modified { fragment } => {
-                        add_fragment(&mut commands, fragment.timestamp, &fragment.contents,  &mut graph)
+                    FragmentClone::Modified { fragment, original_id } => {
+                        add_fragment(&mut commands, fragment.timestamp, &fragment.contents, &mut graph, original_id.clone())
                     },
                 })
                 .collect();
@@ -80,7 +52,8 @@ mod inner {
         commands: &mut Commands,
         ts: u64,
         fragment_contents: &FragmentContents,
-        graph: &mut ResMut<GameGraph>
+        graph: &mut ResMut<GameGraph>,
+        original_id: Option<Entity>
     ) -> Entity {
         let entid = commands.spawn().insert(Fragment {
             timestamp: ts,
@@ -93,6 +66,11 @@ mod inner {
         //add the fragment as a subject of history
         let b = graph.history_graph.add_node(entid);
         graph.history_graph_ids.insert(entid, b);
+
+        if let Some(oid) = original_id {
+            let oid_nodeid = graph.history_graph_ids.get(&oid).unwrap().clone();
+            graph.history_graph.add_edge(oid_nodeid, b, ());
+        }
 
         entid
     }

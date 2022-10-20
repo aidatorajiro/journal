@@ -143,7 +143,7 @@ pub mod resource {
         /// pointer to the global data structure. (it means that the data has not been modified)
         NotModified { fragment_id: Entity },
         /// modified or newly added data (ready to be pushed to the database when syncing)
-        Modified { fragment: Fragment }
+        Modified { fragment: Fragment, original_id: Option<Entity> }
     }
 }
 

@@ -154,7 +154,8 @@ fn newpage_update (
                     },
                     NewPageButton::AddTexts => {
                         newpage_state.entry_clone.push(FragmentClone::Modified {
-                            fragment: Fragment { timestamp: create_timestamp(), contents: FragmentContents::TextData { data: "".to_string() } }
+                            fragment: Fragment { timestamp: create_timestamp(), contents: FragmentContents::TextData { data: "".to_string() } },
+                            original_id: None
                         });
                     },
                     NewPageButton::Save => {
@@ -203,7 +204,7 @@ fn newpage_update (
                             size.y = 40.0;
                             let edit = ui.add_sized(size, TextEdit::multiline(&mut data_cloned).margin(egui::Vec2{x:9.0, y:6.0}));
                             if edit.changed() {
-                                fragment_overwrite = Some(FragmentContents::TextData { data: data_cloned });
+                                fragment_overwrite = Some((FragmentContents::TextData { data: data_cloned }, fragment_id));
                             }
                         },
                         FragmentContents::Code { data, language } => {
@@ -218,7 +219,7 @@ fn newpage_update (
                     };
                 },
                 // For cloned data (thus have been already changed, desyncing from the master database)
-                FragmentClone::Modified { fragment } => {
+                FragmentClone::Modified { fragment, original_id: _ } => {
                     match &mut fragment.contents {
                         FragmentContents::TextData { data } => {
                             let mut size = ui.available_size();
@@ -251,15 +252,15 @@ fn newpage_update (
             }
 
             // If some data is modified, clone it and put into entry_clone.
-            if let Some(contents) = fragment_overwrite {
-                *fc = FragmentClone::Modified { fragment: Fragment { timestamp: create_timestamp(), contents } }
+            if let Some((contents, oid)) = fragment_overwrite {
+                *fc = FragmentClone::Modified { fragment: Fragment { timestamp: create_timestamp(), contents }, original_id: Some(oid.clone()) }
             }
         }
 
         if let Some(ip) = *inject_pos {
             newpage_state.entry_clone.insert(ip + 1, FragmentClone::Modified {
-                fragment: Fragment { timestamp: create_timestamp(), contents: FragmentContents::TextData { data: "".to_string() } }
-                
+                fragment: Fragment { timestamp: create_timestamp(), contents: FragmentContents::TextData { data: "".to_string() } },
+                original_id: None
             });
         }
     });
