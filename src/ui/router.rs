@@ -28,6 +28,6 @@ fn event_listener (
         app_state.set(AppState::Migrate).unwrap();
     }
     for _ in ev_top.iter() {
-        app_state.set(AppState::Top).unwrap();
+        app_state.set(AppState::TopPage).unwrap();
     }
 }

@@ -7,17 +7,17 @@ use super::inner::*;
 
 /// Enter systems on the top page.
 pub fn top_systems_enter() -> SystemSet {
-    return SystemSet::on_enter(AppState::Top).with_system(use_2d_camera).with_system(top_enter);
+    return SystemSet::on_enter(AppState::TopPage).with_system(use_2d_camera).with_system(top_enter);
 }
 
 /// Update systems on the top page.
 pub fn top_systems_update() -> SystemSet {
-    return SystemSet::on_update(AppState::Top).with_system(top_button_update_system);
+    return SystemSet::on_update(AppState::TopPage).with_system(top_button_update_system);
 }
 
 /// Exit systems on the top page.
 pub fn top_systems_exit() -> SystemSet {
-    return SystemSet::on_exit(AppState::Top).with_system(top_exit);
+    return SystemSet::on_exit(AppState::TopPage).with_system(top_exit);
 }
 
 fn top_exit (q: Query<Entity, With<TopPageContents>>, mut com: Commands) {

@@ -3,7 +3,7 @@
 use bevy::{prelude::*, ui::FocusPolicy};
 use bevy_egui::EguiContext;
 
-use crate::{typedef::{state::AppState, component::{NewPageContents, NewPageButton, FragmentContents, Fragment, EntityList}, event::{JumpToTop, JumpToNewPage, SyncFragments, SyncFragmentsDone}, resource::{NewPageState, FragmentClone, GamePageState}}, constants::style::*, utils::utils::{set_default_font, create_timestamp}};
+use crate::{typedef::{state::AppState, component::{NewPageContents, NewPageButton, FragmentContents, Fragment, EntityList}, event::{JumpToTop, JumpToNewPage, SyncFragments, SyncFragmentsDone}, resource::{NewPageState, FragmentClone}}, constants::style::*, utils::utils::{set_default_font, create_timestamp}};
 
 use super::inner::*;
 
@@ -19,20 +19,20 @@ pub fn newpage_systems_update () -> SystemSet {
     return SystemSet::on_update(AppState::NewPage).with_system(newpage_update).with_system(watch_sync_fragments_done);
 }
 
-fn get_initial_state_with_id (q_list: &Query<&EntityList>, entry_id: Entity) -> GamePageState {
+fn get_initial_state_with_id (q_list: &Query<&EntityList>, entry_id: Entity) -> NewPageState {
     let entry_clone =
     q_list.get(entry_id)
     .unwrap().entities.iter()
     .map(|x| FragmentClone::NotModified { fragment_id: x.clone() })
     .collect();
 
-    GamePageState::NewPage{state: NewPageState {
+    NewPageState {
         page_entry_id: Some(entry_id),
         entry_clone
-    }}
+    }
 }
 
-fn watch_sync_fragments_done (mut ev_sync: EventReader<SyncFragmentsDone>, q_list: Query<&EntityList>, mut page: ResMut<GamePageState>) {
+fn watch_sync_fragments_done (mut ev_sync: EventReader<SyncFragmentsDone>, q_list: Query<&EntityList>, mut page: ResMut<NewPageState>) {
     for ev in ev_sync.iter() {
         *page = get_initial_state_with_id(&q_list, ev.entry_id);
     }
@@ -42,21 +42,17 @@ fn newpage_enter (
     mut com: Commands,
     mut ev_newpage: EventReader<JumpToNewPage>,
     asset_server: Res<AssetServer>,
-    mut page: ResMut<GamePageState>,
     q_list: Query<&EntityList>
 ) {
     for ev in ev_newpage.iter() {
-        *page = match ev.entry_id {
+        com.insert_resource::<NewPageState>(match ev.entry_id {
             Some(entry_id) => {
                 get_initial_state_with_id(&q_list, entry_id)
             }
             None => {
-                GamePageState::NewPage{state: NewPageState {
-                    page_entry_id: ev.entry_id,
-                    ..default()
-                }}
+                NewPageState::default()
             }
-        };
+        });
     }
     com.spawn_bundle(NodeBundle {
         style: Style {
@@ -129,8 +125,8 @@ fn newpage_enter (
     }).insert(NewPageContents {});
 }
 
-fn newpage_exit (q: Query<Entity, With<NewPageContents>>, mut com: Commands, mut page: ResMut<GamePageState>) {
-    *page = GamePageState::None;
+fn newpage_exit (q: Query<Entity, With<NewPageContents>>, mut com: Commands) {
+    com.remove_resource::<NewPageState>();
 
     for i in q.iter() {
         com.entity(i).despawn_recursive();
@@ -145,14 +141,12 @@ fn newpage_update (
         Changed<Interaction>,
     >,
     mut ev_top: EventWriter<JumpToTop>,
-    mut page: ResMut<GamePageState>,
+    mut newpage_state: ResMut<NewPageState>,
     q_fragment: Query<&Fragment>,
     mut initialized: Local<bool>,
     mut inject_pos: Local<Option<usize>>,
     mut ev_sync: EventWriter<SyncFragments>
 ) {
-    let newpage_state = match page.as_mut() { GamePageState::NewPage { state } => state, _ => return};
-
     for (inter, btn_attr, mut color) in interaction_query.iter_mut() {
         match *inter {
             Interaction::Clicked => {

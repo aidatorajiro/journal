@@ -129,14 +129,6 @@ pub mod resource {
         pub history_graph_ids: HashMap<Entity, NodeIndex>
     }
 
-    /// State for each pages
-    #[derive(Serialize, Deserialize, Default, Debug)]
-    pub enum GamePageState {
-        #[default]
-        None,
-        NewPage { state: NewPageState }
-    }
-
     /// State for newpage Page.
     #[derive(Serialize, Deserialize, Default, Debug)]
     pub struct NewPageState {
@@ -158,7 +150,7 @@ pub mod resource {
 pub mod state {
     #[derive(Debug, Clone, Eq, PartialEq, Hash)]
     pub enum AppState {
-        Top,
+        TopPage,
         NewPage,
         Explore,
         Linear,
