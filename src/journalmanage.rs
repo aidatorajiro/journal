@@ -2,7 +2,7 @@ pub mod systems {
     //! Event and Data management for Journal data structure - systems
 
     use bevy::{prelude::*};
-    use crate::{typedef::{event::*, component::*, resource::{GameGraph, FragmentClone}}, utils::utils::*};
+    use crate::{typedef::{event::*, component::*, resource::{GameGraph, FragmentClone, ChangeType}}, utils::utils::*};
 
     use super::inner::{add_entry, add_fragment};
 
@@ -24,7 +24,10 @@ pub mod systems {
                 .collect();
 
             if let Some(x) = ev.entry {
-                add_entry(&mut commands, &[entitylist.get(x).unwrap().entities.clone(), ents].concat(), ts, &mut graph);
+                let y = add_entry(&mut commands, &[entitylist.get(x).unwrap().entities.clone(), ents].concat(), ts, &mut graph);
+                let id_x = graph.history_graph_ids.get(&x).unwrap().clone();
+                let id_y = graph.history_graph_ids.get(&y).unwrap().clone();
+                graph.history_graph.add_edge(id_x, id_y, ChangeType::Modify);
             } else {
                 add_entry(&mut commands, &ents, ts, &mut graph);
             };
