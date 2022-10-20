@@ -64,6 +64,7 @@ pub mod systems {
                 let id_y = graph.history_graph_ids.get(&e).unwrap().clone();
                 graph.history_graph.add_edge(id_x, id_y, ());
             }
+            
             ev_done.send(SyncFragmentsDone { entry_id: e });
         }
     }

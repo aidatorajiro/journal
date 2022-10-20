@@ -19,22 +19,23 @@ pub fn newpage_systems_update () -> SystemSet {
     return SystemSet::on_update(AppState::NewPage).with_system(newpage_update).with_system(watch_sync_fragments_done);
 }
 
-fn get_initial_state_with_id (q_list: &Query<&EntityList>, entry_id: Entity) -> NewPageState {
-    let entry_clone =
-    q_list.get(entry_id)
-    .unwrap().entities.iter()
-    .map(|x| FragmentClone::NotModified { fragment_id: x.clone() })
-    .collect();
+fn get_initial_state_with_ids (q_list: &Query<&EntityList>, entry_ids: Vec<Entity>) -> NewPageState {
+    let entry_clone = entry_ids.iter().map(|entry| {
+        q_list.get(entry.clone())
+        .unwrap().entities.iter()
+        .map(|x| FragmentClone::NotModified { fragment_id: x.clone() })
+        .collect::<Vec<_>>()
+    }).collect::<Vec<_>>().concat();
 
     NewPageState {
-        page_entry_id: Some(entry_id),
+        page_entry_ids: entry_ids,
         entry_clone
     }
 }
 
 fn watch_sync_fragments_done (mut ev_sync: EventReader<SyncFragmentsDone>, q_list: Query<&EntityList>, mut page: ResMut<NewPageState>) {
     for ev in ev_sync.iter() {
-        *page = get_initial_state_with_id(&q_list, ev.entry_id);
+        *page = get_initial_state_with_ids(&q_list, vec![ev.entry_id]);
     }
 }
 
@@ -45,14 +46,7 @@ fn newpage_enter (
     q_list: Query<&EntityList>
 ) {
     for ev in ev_newpage.iter() {
-        com.insert_resource::<NewPageState>(match ev.entry_id {
-            Some(entry_id) => {
-                get_initial_state_with_id(&q_list, entry_id)
-            }
-            None => {
-                NewPageState::default()
-            }
-        });
+        com.insert_resource::<NewPageState>(get_initial_state_with_ids(&q_list, ev.entry_ids.clone()));
     }
     com.spawn_bundle(NodeBundle {
         style: Style {
@@ -163,7 +157,7 @@ fn newpage_update (
                     NewPageButton::Save => {
                         ev_sync.send(SyncFragments {
                             entry_clone: newpage_state.entry_clone.clone(),
-                            original_entries: todo!(),
+                            original_entries: newpage_state.page_entry_ids.clone(),
                         })
                     }
                 };

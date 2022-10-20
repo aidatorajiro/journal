@@ -133,7 +133,7 @@ pub mod resource {
     #[derive(Serialize, Deserialize, Default, Debug)]
     pub struct NewPageState {
         /// Entry id which the user is currently working on. If it is None, it means that the user is creating a new entry. Used in "new page".
-        pub page_entry_id: Option<Entity>,
+        pub page_entry_ids: Vec<Entity>,
         /// Clone of the fragments within 
         pub entry_clone: Vec<FragmentClone>
     }
@@ -188,7 +188,7 @@ pub mod event {
 
     #[derive(Debug, Default)]
     pub struct JumpToNewPage {
-        pub entry_id: Option<Entity>
+        pub entry_ids: Vec<Entity>
     }
 
     #[derive(Debug, Default)]
