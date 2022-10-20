@@ -3,7 +3,7 @@
 use bevy::{prelude::*, ui::FocusPolicy};
 use bevy_egui::EguiContext;
 
-use crate::{typedef::{state::AppState, component::{NewPageContents, NewPageButton, FragmentContents, Fragment, EntityList}, event::{JumpToTop, JumpToNewPage, SyncFragments, SyncFragmentsDone}, resource::{NewPageState, FragmentClone}}, constants::style::*, utils::utils::{set_default_font, create_timestamp}};
+use crate::{typedef::{state::AppState, component::{NewPageContents, NewPageButton, FragmentContents, Fragment, EntityList}, event::{JumpToTop, JumpToNewPage, SyncFragments, SyncFragmentsDone}, resource::{NewPageState, FragmentClone}}, constants::style::*, utils::utils::{set_default_font, create_timestamp}, journalmanage::systems::handle_sync_fragments};
 
 use super::inner::*;
 
@@ -16,15 +16,17 @@ pub fn newpage_systems_exit () -> SystemSet {
 }
 
 pub fn newpage_systems_update () -> SystemSet {
-    return SystemSet::on_update(AppState::NewPage).with_system(newpage_update).with_system(watch_sync_fragments_done);
+    return SystemSet::on_update(AppState::NewPage).with_system(newpage_update).with_system(watch_sync_fragments_done.before(handle_sync_fragments));
 }
 
 fn get_initial_state_with_ids (q_list: &Query<&EntityList>, entry_ids: Vec<Entity>) -> NewPageState {
     let entry_clone = entry_ids.iter().map(|entry| {
-        q_list.get(entry.clone())
-        .unwrap().entities.iter()
-        .map(|x| FragmentClone::NotModified { fragment_id: x.clone() })
-        .collect::<Vec<_>>()
+        match q_list.get(entry.clone()) {
+            Ok(lst) => lst.entities.iter()
+                .map(|x| FragmentClone::NotModified { fragment_id: x.clone() })
+                .collect::<Vec<_>>(),
+            Err(_) => vec![],
+        }
     }).collect::<Vec<_>>().concat();
 
     NewPageState {
