@@ -1,6 +1,7 @@
 pub mod component {
     //! Type definitions (Component).
-    use bevy::{prelude::*, window::WindowId, utils::HashSet, reflect::FromReflect};
+    use bevy::{prelude::*, window::WindowId, utils::{HashSet, HashMap}, reflect::FromReflect};
+    use petgraph::{Graph, graph::NodeIndex};
     use serde::{Serialize, Deserialize};
     
     #[derive(Component)]
@@ -116,6 +117,16 @@ pub mod component {
 
     #[derive(Reflect, Default, Debug, Clone, FromReflect)]
     pub enum TagEventAction { #[default] AddEntity, RemoveEntity }
+    
+    /// dummy hack for saving/loading GameGraph
+    #[derive(Component, Reflect, Default, Debug)]
+    #[reflect(Component)]
+    pub struct GameGraphDummy {
+        pub neighbor_graph: String,
+        pub neighbor_graph_ids: String,
+        pub history_graph: String,
+        pub history_graph_ids: String
+    }
 }
 
 pub mod resource {

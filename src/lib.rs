@@ -111,23 +111,41 @@ fn load_scene_system(mut commands: Commands, asset_server: Res<AssetServer>) {
 fn save_scene_system(world: &mut World) {
     if !world.is_resource_changed::<GameGraph>() { return };
     println!("Saving state...");
-    
-    //let type_registry = world.resource::<TypeRegistry>();
+
+    let graph = world.get_resource::<GameGraph>().unwrap();
+
+    let dummy = GameGraphDummy {
+        neighbor_graph: ron::to_string(&graph.neighbor_graph).unwrap(),
+        neighbor_graph_ids: ron::to_string(&graph.neighbor_graph_ids).unwrap(),
+        history_graph: ron::to_string(&graph.history_graph).unwrap(),
+        history_graph_ids: ron::to_string(&graph.history_graph_ids).unwrap()
+    };
+
+    world.spawn().insert(dummy);
+
     let mut type_registry = TypeRegistry::default();
     type_registry.write().register::<Entity>();
     type_registry.write().register::<FragmentContents>();
     type_registry.write().register_type_data::<FragmentContents, ReflectSerialize>();
     type_registry.write().register_type_data::<FragmentContents, ReflectDeserialize>();
+    type_registry.write().register::<String>();
+    type_registry.write().register_type_data::<String, ReflectSerialize>();
+    type_registry.write().register_type_data::<String, ReflectDeserialize>();
     type_registry.write().register::<Fragment>();
     type_registry.write().register::<EntityList>();
     type_registry.write().register::<Entry>();
     type_registry.write().register::<Tag>();
     type_registry.write().register::<TagEvent>();
     type_registry.write().register::<TagEventAction>();
+    type_registry.write().register::<GameGraphDummy>();
+
     let scene = DynamicScene::from_world(&world, &type_registry);
     let serialized_scene = match scene.serialize_ron(&type_registry) {Ok(x) => x, Err(x) => {println!("{:?}", x); return}};
 
-    println!("Success!");
+    println!("Success! Cleaning...");
+
+    let mut q = world.query::<(Entity, &GameGraphDummy)>();
+    world.despawn(q.single(world).0);
     
     #[cfg(not(target_arch = "wasm32"))]
     IoTaskPool::get()
