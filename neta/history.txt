@@ -94,3 +94,5 @@ Rust mut borrowing: you have to separate code into small components, because you
 Well... Sometimes the app crashes... It happen in about 50% probability, so it's a very weird bug. The problem occurs when a system is receiving an Event that is supposed to be emitted AFTER an "entity" is created. However, if the system tries to access the entity, it crashes. (Which means the entity isn't exist.)
 
 Why??? maybe parallelism is related? The state of entities is not synced even after an event is emitted???
+
+Reflectionすごい！これ使えば本格的にmodding環境が整うじゃん！てかbevyってもはやmodding engineなのでは。。。
