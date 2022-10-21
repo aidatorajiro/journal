@@ -1,6 +1,6 @@
 pub mod component {
     //! Type definitions (Component).
-    use bevy::{prelude::*, window::WindowId, utils::HashSet};
+    use bevy::{prelude::*, window::WindowId, utils::HashSet, reflect::FromReflect};
     use serde::{Serialize, Deserialize};
 
     #[derive(Component)]
@@ -54,8 +54,15 @@ pub mod component {
     #[derive(Component, Default)]
     pub struct BlankPage;
 
+
+
+
+
+
+
+
     /// Content for journal fragment (e.g. a chunk of text, reference to local/remote images, URLs, programming codes, etc.)
-    #[derive(Serialize, Deserialize, Debug, Clone)]
+    #[derive(Serialize, Reflect, Deserialize, Debug, Clone)]
     #[serde(tag = "type")]
     pub enum FragmentContents {
         TextData { data: String },
@@ -64,45 +71,51 @@ pub mod component {
         Image { data: String }
     }
 
+    impl Default for FragmentContents {
+        fn default() -> Self {
+            FragmentContents::TextData { data: "".into() }
+        }
+    }
+
     /// A component reperesenting a journal fragment, combining metadata and contents together
-    #[derive(Component, Serialize, Deserialize, Debug, Clone)]
+    #[derive(Component, Reflect, Default, Serialize, Deserialize, Debug, Clone)]
+    #[reflect(Component)]
     pub struct Fragment {
         pub timestamp: u64,
         pub contents: FragmentContents
     }
 
     /// A list of entity with a timestamp when it is compiled.
-    #[derive(Component, Serialize, Deserialize, Default, Debug)]
+    #[derive(Component, Reflect, Serialize, Deserialize, Default, Debug)]
+    #[reflect(Component)]
     pub struct EntityList {
         pub timestamp: u64,
         pub entities: Vec<Entity>
     }
 
     /// A component reperesenting a journal entry (A sequence of journal fragments). Use together with EntityList.
-    #[derive(Component, Serialize, Deserialize, Default, Debug)]
+    #[derive(Component, Reflect, Serialize, Deserialize, Default, Debug)]
+    #[reflect(Component)]
     pub struct Entry;
 
-    /// A component reperesenting a history about something (A sequence of something). Use together with EntityList.
-    #[derive(Component, Serialize, Deserialize, Default, Debug)]
-    pub struct History;
-
     /// A component reperesenting a tag.
-    #[derive(Component, Serialize, Deserialize, Default, Debug)]
+    #[derive(Component, Reflect, Serialize, Deserialize, Default, Debug)]
+    #[reflect(Component)]
     pub struct Tag {
         pub name: String,
         pub entities: HashSet<Entity>,
         pub events: Vec<TagEvent>
     }
 
-    #[derive(Serialize, Deserialize, Debug)]
+    #[derive(Serialize, Reflect, Deserialize, Debug, FromReflect)]
     pub struct TagEvent {
         pub timestamp: u64,
         pub entity: Entity,
         pub action: TagEventAction
     }
 
-    #[derive(Serialize, Deserialize, Debug)]
-    pub enum TagEventAction { AddEntity, RemoveEntity }
+    #[derive(Reflect, Default, Serialize, Deserialize, Debug, Clone, FromReflect)]
+    pub enum TagEventAction { #[default] AddEntity, RemoveEntity }
 }
 
 pub mod resource {
@@ -130,7 +143,7 @@ pub mod resource {
     }
 
     /// State for newpage Page.
-    #[derive(Serialize, Deserialize, Default, Debug)]
+    #[derive(Default, Debug)]
     pub struct NewPageState {
         /// Entry id which the user is currently working on. If it is None, it means that the user is creating a new entry. Used in "new page".
         pub page_entry_ids: Vec<Entity>,
@@ -138,7 +151,7 @@ pub mod resource {
         pub entry_clone: Vec<FragmentClone>
     }
 
-    #[derive(Serialize, Deserialize, Debug, Clone)]
+    #[derive(Debug, Clone)]
     pub enum FragmentClone {
         /// pointer to the global data structure. (it means that the data has not been modified)
         NotModified { fragment_id: Entity },
