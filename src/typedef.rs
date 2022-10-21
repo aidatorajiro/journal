@@ -2,7 +2,7 @@ pub mod component {
     //! Type definitions (Component).
     use bevy::{prelude::*, window::WindowId, utils::HashSet, reflect::FromReflect};
     use serde::{Serialize, Deserialize};
-
+    
     #[derive(Component)]
     pub struct MainCamera2D;
 
@@ -62,8 +62,8 @@ pub mod component {
 
 
     /// Content for journal fragment (e.g. a chunk of text, reference to local/remote images, URLs, programming codes, etc.)
-    #[derive(Serialize, Reflect, Deserialize, Debug, Clone)]
-    #[serde(tag = "type")]
+    #[derive(Reflect, Debug, Clone, Serialize, Deserialize)]
+    // #[serde(tag = "type")]
     pub enum FragmentContents {
         TextData { data: String },
         Code { data: String, language: String },
@@ -73,12 +73,12 @@ pub mod component {
 
     impl Default for FragmentContents {
         fn default() -> Self {
-            FragmentContents::TextData { data: "".into() }
+            FragmentContents::TextData { data: "なんかおかしいみたいだね".into() }
         }
     }
 
     /// A component reperesenting a journal fragment, combining metadata and contents together
-    #[derive(Component, Reflect, Default, Serialize, Deserialize, Debug, Clone)]
+    #[derive(Component, Reflect, Default, Debug, Clone)]
     #[reflect(Component)]
     pub struct Fragment {
         pub timestamp: u64,
@@ -86,7 +86,7 @@ pub mod component {
     }
 
     /// A list of entity with a timestamp when it is compiled.
-    #[derive(Component, Reflect, Serialize, Deserialize, Default, Debug)]
+    #[derive(Component, Reflect, Default, Debug)]
     #[reflect(Component)]
     pub struct EntityList {
         pub timestamp: u64,
@@ -94,12 +94,12 @@ pub mod component {
     }
 
     /// A component reperesenting a journal entry (A sequence of journal fragments). Use together with EntityList.
-    #[derive(Component, Reflect, Serialize, Deserialize, Default, Debug)]
+    #[derive(Component, Reflect, Default, Debug)]
     #[reflect(Component)]
     pub struct Entry;
 
     /// A component reperesenting a tag.
-    #[derive(Component, Reflect, Serialize, Deserialize, Default, Debug)]
+    #[derive(Component, Reflect, Default, Debug)]
     #[reflect(Component)]
     pub struct Tag {
         pub name: String,
@@ -107,14 +107,14 @@ pub mod component {
         pub events: Vec<TagEvent>
     }
 
-    #[derive(Serialize, Reflect, Deserialize, Debug, FromReflect)]
+    #[derive(Reflect, Debug, FromReflect)]
     pub struct TagEvent {
         pub timestamp: u64,
         pub entity: Entity,
         pub action: TagEventAction
     }
 
-    #[derive(Reflect, Default, Serialize, Deserialize, Debug, Clone, FromReflect)]
+    #[derive(Reflect, Default, Debug, Clone, FromReflect)]
     pub enum TagEventAction { #[default] AddEntity, RemoveEntity }
 }
 
@@ -123,12 +123,11 @@ pub mod resource {
 
     use bevy::{prelude::*, utils::HashMap};
     use petgraph::{Graph, graph::NodeIndex};
-    use serde::*;
 
     use super::component::{Fragment};
     
     /// Graph data structures for the Journal.
-    #[derive(Serialize, Deserialize, Default, Debug)]
+    #[derive(Default, Debug)]
     pub struct GameGraph {
         /// A graph with Fragment entity as a node, and Entry entity as a edge. Represents spacial continuation among fragments.
         pub neighbor_graph: Graph<Entity, Entity>,

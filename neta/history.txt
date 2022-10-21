@@ -95,4 +95,8 @@ Well... Sometimes the app crashes... It happen in about 50% probability, so it's
 
 Why??? maybe parallelism is related? The state of entities is not synced even after an event is emitted???
 
+→ Configuring system order (the one that creates entity runs AFTER the one that accesses the entity)
+→ You can also use exclusive_system (but it's costly therefore "crazy", according to Bevy Cookbook https://bevy-cheatbook.github.io/programming/exclusive.html)
+→ Oh recent update... https://github.com/bevyengine/bevy/commit/dc3f801239d25287dc11d7cda35b00d6e3d3dbcf
+
 Reflectionすごい！これ使えば本格的にmodding環境が整うじゃん！てかbevyってもはやmodding engineなのでは。。。

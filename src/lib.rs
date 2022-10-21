@@ -8,15 +8,21 @@ pub mod utils;
 pub mod journalmanage;
 pub mod ui;
 
+use std::fs::File;
+use std::io::Write;
+
 use assets::loader::RawData;
 use assets::loader::RawDataLoader;
 
 use bevy::app::AppExit;
+use bevy::reflect::{TypeRegistry, ReflectSerialize, ReflectDeserialize};
+use bevy::tasks::IoTaskPool;
 use bevy::window::PresentMode;
 use bevy::window::WindowClosed;
 use bevy::winit::WinitSettings;
 use journalmanage::systems::*;
 use subwindow::systems::*;
+use typedef::component::*;
 use typedef::event::*;
 use typedef::resource::*;
 
@@ -36,14 +42,17 @@ use ui::top::*;
 pub fn run_the_journal() {
     let mut app = App::new();
     
-    app.insert_resource(WindowDescriptor {
-        title: "! Bevy Journal ! (c) 2022 Torajiro Aida".to_string(),
-        width: 800.,
-        height: 800.,
-        present_mode: PresentMode::AutoVsync,
-        resizable: false,
-        ..default()
-    })
+    app
+        .insert_resource(WindowDescriptor {
+            title: "! Bevy Journal ! (c) 2022 Torajiro Aida".to_string(),
+            width: 800.,
+            height: 800.,
+            present_mode: PresentMode::AutoVsync,
+            resizable: false,
+            ..default()
+        })
+        .add_plugins(DefaultPlugins)
+        .add_plugin(EguiPlugin)
         .init_resource::<GameGraph>()
         .add_state::<AppState>(AppState::TopPage)
         .insert_resource(WinitSettings::desktop_app())
@@ -55,11 +64,10 @@ pub fn run_the_journal() {
         .add_event::<JumpToLinear>()
         .add_event::<JumpToMigrate>()
         .add_event::<JumpToTop>()
-        .add_plugins(DefaultPlugins)
-        .add_plugin(EguiPlugin)
         .add_asset::<RawData>()
         .init_asset_loader::<RawDataLoader>()
-        .add_startup_system(setup)
+        .add_system(save_scene_system.exclusive_system())
+        //.add_startup_system(load_scene_system)
         .add_system(system_drag_and_drop)
         .add_system_set(ui_manage_systems())
         // journal manage
@@ -91,8 +99,48 @@ pub fn run_the_journal() {
     app.run();
 }
 
-/// setup function for bevy
-fn setup() { }
+/// Load scene
+fn load_scene_system(mut commands: Commands, asset_server: Res<AssetServer>) {
+    commands.spawn_bundle(DynamicSceneBundle {
+        scene: asset_server.load("state.scn.ron"),
+        ..default()
+    });
+}
+
+/// Save scene
+fn save_scene_system(world: &mut World) {
+    if !world.is_resource_changed::<GameGraph>() { return };
+    println!("Saving state...");
+    
+    //let type_registry = world.resource::<TypeRegistry>();
+    let mut type_registry = TypeRegistry::default();
+    type_registry.write().register::<Entity>();
+    type_registry.write().register::<FragmentContents>();
+    type_registry.write().register_type_data::<FragmentContents, ReflectSerialize>();
+    type_registry.write().register_type_data::<FragmentContents, ReflectDeserialize>();
+    type_registry.write().register::<Fragment>();
+    type_registry.write().register::<EntityList>();
+    type_registry.write().register::<Entry>();
+    type_registry.write().register::<Tag>();
+    type_registry.write().register::<TagEvent>();
+    type_registry.write().register::<TagEventAction>();
+    let scene = DynamicScene::from_world(&world, &type_registry);
+    let serialized_scene = match scene.serialize_ron(&type_registry) {Ok(x) => x, Err(x) => {println!("{:?}", x); return}};
+
+    println!("Success!");
+    
+    #[cfg(not(target_arch = "wasm32"))]
+    IoTaskPool::get()
+        .spawn(async move {
+            File::create("state.scn.ron")
+                .and_then(|mut file| file.write(serialized_scene.as_bytes()))
+                .expect("Error while saving state!");
+        })
+        .detach();
+    
+    #[cfg(target_arch = "wasm32")]
+    todo!("TODO: put here localStorage or communication with server or something");
+}
 
 fn window_closed_handler(mut ev: EventReader<WindowClosed>, mut quit: EventWriter<AppExit>) {
     for e in ev.iter() {
