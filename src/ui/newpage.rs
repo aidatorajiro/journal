@@ -20,7 +20,7 @@ pub fn newpage_systems_exit () -> SystemSet {
 }
 
 pub fn newpage_systems_update () -> SystemSet {
-    return SystemSet::on_update(AppState::NewPage).with_system(newpage_update).with_system(watch_sync_fragments_done.before(handle_sync_fragments));
+    return SystemSet::on_update(AppState::NewPage).with_system(newpage_update).with_system(watch_sync_fragments_done.before(handle_sync_fragments)); // TODO: workaround with this weird hack
 }
 
 fn get_initial_state_with_ids (q_list: &Query<&EntityList>, entry_ids: Vec<Entity>) -> NewPageState {
