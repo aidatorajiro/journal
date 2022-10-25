@@ -1,7 +1,6 @@
 pub mod component {
     //! Type definitions (Component).
-    use bevy::{prelude::*, window::WindowId, utils::{HashSet, HashMap}, reflect::FromReflect};
-    use petgraph::{Graph, graph::NodeIndex};
+    use bevy::{prelude::*, window::WindowId, utils::HashSet, reflect::FromReflect};
     use serde::{Serialize, Deserialize};
     
     #[derive(Component)]
@@ -167,6 +166,17 @@ pub mod resource {
         NotModified { fragment_id: Entity },
         /// modified or newly added data (ready to be pushed to the database when syncing)
         Modified { fragment: Fragment, original_id: Option<Entity> }
+    }
+
+    #[derive(Debug, Clone)]
+    pub struct SaveLoadManagement {
+        pub nextsave: u64
+    }
+
+    impl Default for SaveLoadManagement {
+        fn default() -> Self {
+            Self { nextsave: 10000 }
+        }
     }
 }
 

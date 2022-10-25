@@ -7,9 +7,12 @@ pub mod assets;
 pub mod utils;
 pub mod journalmanage;
 pub mod ui;
+pub mod migration;
+pub mod tests;
 
 use std::fs::File;
 use std::io::Write;
+use std::path::Path;
 
 use assets::loader::RawData;
 use assets::loader::RawDataLoader;
@@ -67,7 +70,8 @@ pub fn run_the_journal() {
         .add_asset::<RawData>()
         .init_asset_loader::<RawDataLoader>()
         .add_system(save_scene_system.exclusive_system())
-        //.add_startup_system(load_scene_system)
+        .add_startup_system(load_scene_system)
+        .add_system(load_graph_system)
         .add_system(system_drag_and_drop)
         .add_system_set(ui_manage_systems())
         // journal manage
@@ -101,15 +105,30 @@ pub fn run_the_journal() {
 
 /// Load scene
 fn load_scene_system(mut commands: Commands, asset_server: Res<AssetServer>) {
-    commands.spawn_bundle(DynamicSceneBundle {
-        scene: asset_server.load("state.scn.ron"),
-        ..default()
-    });
+    if !Path::new("state.scn.ron").exists() { // TODO: maybe use IoTaskPool?
+        commands.spawn_bundle(DynamicSceneBundle {
+            scene: asset_server.load("../state.scn.ron"),
+            ..default()
+        });
+    }
+}
+
+/// Load scene, additional steps for the graph
+fn load_graph_system(mut r: ResMut<GameGraph>, mut commands: Commands, q: Query<(Entity, &GameGraphDummy)>) {
+    let (e, d) = match q.get_single() {Ok(x) => x, _ => return};
+    
+    *r = GameGraph {
+        neighbor_graph: ron::from_str(&d.neighbor_graph).unwrap(),
+        neighbor_graph_ids: ron::from_str(&d.neighbor_graph_ids).unwrap(),
+        history_graph: ron::from_str(&d.history_graph).unwrap(),
+        history_graph_ids: ron::from_str(&d.history_graph_ids).unwrap()
+    };
+
+    commands.entity(e).despawn();
 }
 
 /// Save scene
 fn save_scene_system(world: &mut World) {
-    if !world.is_resource_changed::<GameGraph>() { return };
     println!("Saving state...");
 
     let graph = world.get_resource::<GameGraph>().unwrap();
@@ -123,7 +142,7 @@ fn save_scene_system(world: &mut World) {
 
     world.spawn().insert(dummy);
 
-    let mut type_registry = TypeRegistry::default();
+    let type_registry = TypeRegistry::default();
     type_registry.write().register::<Entity>();
     type_registry.write().register::<FragmentContents>();
     type_registry.write().register_type_data::<FragmentContents, ReflectSerialize>();
