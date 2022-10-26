@@ -1,0 +1,6 @@
+[book]
+authors = ["aidatorajiro"]
+language = "en"
+multilingual = false
+src = "src"
+title = "The Journal Documentation"
