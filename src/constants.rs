@@ -16,5 +16,5 @@ pub mod style {
     pub const NEWPAGE_HOVER: Color = Color::rgb(195.0/256.0, 232.0/256.0, 46.0/256.0);
     pub const NEWPAGE_CLICK: Color = Color::rgb(230.0/256.0, 152.0/256.0, 44.0/256.0);
 
-    pub const STATE_FILE: &str = "savedata.journal";
+    pub const STATE_FILE: &str = "state.scn.ron";
 }

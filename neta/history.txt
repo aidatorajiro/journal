@@ -102,3 +102,8 @@ Why??? maybe parallelism is related? The state of entities is not synced even af
 Reflectionすごい！これ使えば本格的にmodding環境が整うじゃん！てかbevyってもはやmodding engineなのでは。。。
 
 → I first thinking of using "scene" features of bevy, but... it turns out to be difficult, because I'm using references to entity within components...
+Wanted to use scene, but Vec<Entity> doesn't work well. → maybe use MapEntities? (after reading source code for Children, I discovered MapEntities, which act as a coordinator when there's a conflict between Entity IDs) → success !!!
+
+
+[2022-10-27]
+documentation - use mdbook, as well as rustdoc. It seemsa that these two are different documentation programs. The former is suited for describing "overview", "tutorial" or "example" things, and the latter is suited for API documentation?

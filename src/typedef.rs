@@ -1,37 +1,9 @@
-pub mod savedata {
-    use bevy::utils::HashMap;
-    use petgraph::{Graph, graph::NodeIndex};
-    use serde::{Serialize, Deserialize};
-
-    use super::component::{FragmentContents, Fragment};
-
-    #[derive(Serialize, Deserialize)]
-    pub struct Savedata {
-        pub entities: HashMap<ObjectID, Vec<SavedataComponents>>,
-        pub neighbor_graph: Graph<ObjectID, ObjectID>,
-        pub neighbor_graph_ids: HashMap<ObjectID, NodeIndex>,
-        pub history_graph: Graph<ObjectID, ()>,
-        pub history_graph_ids: HashMap<ObjectID, NodeIndex>
-    }
-
-    #[derive(Serialize, Deserialize)]
-    pub enum SavedataComponents {
-        EntityList {data: Vec<ObjectID>},
-        Fragment {data: Fragment},
-        FragmentContents {data: FragmentContents},
-        Entry
-    }
-
-    #[derive(Serialize, Deserialize, Eq, PartialEq, Hash)]
-    pub struct ObjectID {
-        id: u64
-    }
-}
-
 pub mod component {
     //! Type definitions (Component).
     use bevy::{prelude::*, window::WindowId, utils::HashSet, reflect::FromReflect};
     use serde::{Serialize, Deserialize};
+    use bevy::ecs::reflect::ReflectMapEntities;
+    use bevy::ecs::entity::{MapEntities, EntityMap, MapEntitiesError};
     
     #[derive(Component)]
     pub struct MainCamera2D;
@@ -67,6 +39,12 @@ pub mod component {
     #[derive(Component, PartialEq, Eq)]
     pub struct TopPageContents;
 
+    #[derive(Component)]
+    pub struct ExploreContents;
+
+    #[derive(Component)]
+    pub struct ExploreCube;
+
     // A subwindow.
     #[derive(Component, Default)]
     pub struct SubWindow {
@@ -92,7 +70,7 @@ pub mod component {
 
 
     /// Content for journal fragment (e.g. a chunk of text, reference to local/remote images, URLs, programming codes, etc.)
-    #[derive(Debug, Clone, Serialize, Deserialize)]
+    #[derive(Reflect, Debug, Clone, Serialize, Deserialize)]
     // #[serde(tag = "type")]
     pub enum FragmentContents {
         TextData { data: String },
@@ -108,41 +86,79 @@ pub mod component {
     }
 
     /// A component reperesenting a journal fragment, combining metadata and contents together
-    #[derive(Component, Default, Debug, Clone, Serialize, Deserialize)]
+    #[derive(Component, Reflect, Default, Debug, Clone)]
+    #[reflect(Component)]
     pub struct Fragment {
         pub timestamp: u64,
         pub contents: FragmentContents
     }
 
     /// A list of entity with a timestamp when it is compiled.
-    #[derive(Component, Default, Debug)]
+    #[derive(Component, Reflect, Default, Debug)]
+    #[reflect(Component, MapEntities)]
     pub struct EntityList {
         pub timestamp: u64,
         pub entities: Vec<Entity>
     }
 
+    impl MapEntities for EntityList {
+        fn map_entities(&mut self, entity_map: &bevy::ecs::entity::EntityMap) -> Result<(), bevy::ecs::entity::MapEntitiesError> {
+            for mut t in &mut self.entities {
+                *t=entity_map.get(*t)?
+            }
+            Ok(())
+        }
+    }
+
     /// A component reperesenting a journal entry (A sequence of journal fragments). Use together with EntityList.
-    #[derive(Component, Default, Debug)]
+    #[derive(Component, Reflect, Default, Debug)]
+    #[reflect(Component)]
     pub struct Entry;
 
-    /* 
     /// A component reperesenting a tag.
-    #[derive(Component, Default, Debug)]
+    #[derive(Component, Reflect, Default, Debug)]
+    #[reflect(Component)]
     pub struct Tag {
         pub name: String,
         pub entities: HashSet<Entity>,
         pub events: Vec<TagEvent>
     }
 
-    #[derive(Debug)]
+    #[derive(Reflect, Debug, FromReflect)]
     pub struct TagEvent {
         pub timestamp: u64,
         pub entity: Entity,
         pub action: TagEventAction
     }
 
-    #[derive(Default, Debug, Clone)]
-    pub enum TagEventAction { #[default] AddEntity, RemoveEntity }*/
+    #[derive(Reflect, Default, Debug, Clone, FromReflect)]
+    pub enum TagEventAction { #[default] AddEntity, RemoveEntity }
+    
+    /// dummy hack for saving/loading GameGraph
+    #[derive(Component, Reflect, Default, Debug)]
+    #[reflect(Component, MapEntities)]
+    pub struct GameGraphDummy {
+        pub neighbor_graph: EncodedGraph<Entity, Entity>,
+        pub history_graph: EncodedGraph<Entity, ()>
+    }
+
+    pub type EncodedGraph<A, B> = (Vec<A>, Vec<(usize, usize, B)>);
+
+    impl MapEntities for GameGraphDummy {
+        fn map_entities(&mut self, entity_map: &EntityMap) -> Result<(), MapEntitiesError> {
+            for e in &mut self.neighbor_graph.0 {
+                *e = entity_map.get(*e)?;
+            }
+            for (_, _, e) in &mut self.neighbor_graph.1 {
+                *e = entity_map.get(*e)?;
+            }
+
+            for e in &mut self.history_graph.0 {
+                *e = entity_map.get(*e)?;
+            }
+            Ok(())
+        }
+    }
 }
 
 pub mod resource {
@@ -185,12 +201,29 @@ pub mod resource {
         pub entry_clone: Vec<FragmentClone>
     }
 
+    #[derive(Default, Debug)]
+    /// State for Explore Page.
+    pub struct ExploreState {
+    }
+
+    /// A data structure that represents either (1) existing fragment or (2) modified fragment or (3) completely new fragment
     #[derive(Debug, Clone)]
     pub enum FragmentClone {
         /// pointer to the global data structure. (it means that the data has not been modified)
         NotModified { fragment_id: Entity },
         /// modified or newly added data (ready to be pushed to the database when syncing)
         Modified { fragment: Fragment, original_id: Option<Entity> }
+    }
+
+    #[derive(Debug, Clone)]
+    pub struct SaveLoadManagement {
+        pub nextsave: u64
+    }
+
+    impl Default for SaveLoadManagement {
+        fn default() -> Self {
+            Self { nextsave: 10000 }
+        }
     }
 }
 
@@ -222,10 +255,13 @@ pub mod event {
         pub entry: Option<Entity>
     }
 
+    /// Send a request to add a new entry.
+    /// ID of the original entries and a list of FragmentClone, which is used to identify which fragment is modified from which, must be provided.
     #[derive(Debug)]
     pub struct SyncFragments {
         /// id of the original entries
         pub original_entries: Vec<Entity>,
+        /// a list of FragmentClone
         pub entry_clone: Vec<FragmentClone>
     }
 

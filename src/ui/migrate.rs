@@ -1,4 +1,3 @@
-
 //! UI definitions for explore
 use bevy::prelude::*;
 use crate::typedef::{state::AppState};
@@ -10,11 +9,11 @@ pub fn migrate_systems_enter () -> SystemSet {
 }
 
 pub fn migrate_systems_exit () -> SystemSet {
-    return SystemSet::on_enter(AppState::Migrate).with_system(migrate_exit);
+    return SystemSet::on_exit(AppState::Migrate).with_system(migrate_exit);
 }
 
 pub fn migrate_systems_update () -> SystemSet {
-    return SystemSet::on_enter(AppState::Migrate).with_system(migrate_update);
+    return SystemSet::on_update(AppState::Migrate).with_system(migrate_update);
 }
 
 fn migrate_enter () {

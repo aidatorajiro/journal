@@ -1,4 +1,3 @@
-
 use bevy::prelude::*;
 
 use crate::typedef::{event::*, state::AppState};
