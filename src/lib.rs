@@ -171,8 +171,8 @@ fn convert_encoded_to_graph<A: Hash + Eq + Clone, B> (eg: EncodedGraph<A, B>) ->
     let mut i = 0;
     for ent_neig in eg.0 {
         let node_id = neighbor_graph.add_node(ent_neig.clone());
-        neighbor_graph_ids.insert(ent_neig, node_id).unwrap();
-        tmp.insert(i, node_id).unwrap();
+        neighbor_graph_ids.insert(ent_neig, node_id);
+        tmp.insert(i, node_id);
         i += 1;
     }
 

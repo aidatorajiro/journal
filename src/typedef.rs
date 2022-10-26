@@ -3,7 +3,7 @@ pub mod component {
     use bevy::{prelude::*, window::WindowId, utils::HashSet, reflect::FromReflect};
     use serde::{Serialize, Deserialize};
     use bevy::ecs::reflect::ReflectMapEntities;
-    use bevy::ecs::entity::MapEntities;
+    use bevy::ecs::entity::{MapEntities, EntityMap, MapEntitiesError};
     
     #[derive(Component)]
     pub struct MainCamera2D;
@@ -139,7 +139,17 @@ pub mod component {
     pub type EncodedGraph<A, B> = (Vec<A>, Vec<(usize, usize, B)>);
 
     impl MapEntities for GameGraphDummy {
-        fn map_entities(&mut self, entity_map: &bevy::ecs::entity::EntityMap) -> Result<(), bevy::ecs::entity::MapEntitiesError> {
+        fn map_entities(&mut self, entity_map: &EntityMap) -> Result<(), MapEntitiesError> {
+            for e in &mut self.neighbor_graph.0 {
+                *e = entity_map.get(*e)?;
+            }
+            for (_, _, e) in &mut self.neighbor_graph.1 {
+                *e = entity_map.get(*e)?;
+            }
+
+            for e in &mut self.history_graph.0 {
+                *e = entity_map.get(*e)?;
+            }
             Ok(())
         }
     }
