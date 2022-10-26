@@ -15,9 +15,7 @@ use std::fs::File;
 use std::io::Write;
 use std::path::Path;
 
-use assets::loader::RawData;
-use assets::loader::RawDataLoader;
-
+use assets::loader::{JournalData, JournalDataLoader};
 use bevy::app::AppExit;
 use bevy::reflect::{TypeRegistry, ReflectSerialize, ReflectDeserialize};
 use bevy::tasks::IoTaskPool;
@@ -58,20 +56,6 @@ pub fn run_the_journal() {
             resizable: false,
             ..default()
         })
-        .register_type::<Entity>()
-        .register_type::<FragmentContents>()
-        .register_type_data::<FragmentContents, ReflectSerialize>()
-        .register_type_data::<FragmentContents, ReflectDeserialize>()
-        .register_type::<String>()
-        .register_type_data::<String, ReflectSerialize>()
-        .register_type_data::<String, ReflectDeserialize>()
-        .register_type::<Fragment>()
-        .register_type::<EntityList>()
-        .register_type::<Entry>()
-        .register_type::<Tag>()
-        .register_type::<TagEvent>()
-        .register_type::<TagEventAction>()
-        .register_type::<GameGraphDummy>()
         .add_plugins(DefaultPlugins)
         .add_plugin(EguiPlugin)
         .add_state::<AppState>(AppState::LoadSaveData)
@@ -85,14 +69,13 @@ pub fn run_the_journal() {
         .add_event::<JumpToMigrate>()
         .add_event::<JumpToTop>()
         .init_resource::<StartupManagement>()
-        .add_asset::<RawData>()
+        .add_asset::<JournalData>()
         .init_resource::<GameGraph>()
-        .init_asset_loader::<RawDataLoader>()
+        .init_asset_loader::<JournalDataLoader>()
 
         // Root systems
-        .add_startup_system(load_scene_system.exclusive_system())
-        .add_system(load_graph_system)
-        .add_system(save_scene_system.exclusive_system())
+        .add_startup_system(load_savedata)
+        .add_system(save_savedata.exclusive_system())
         .add_system(system_drag_and_drop)
         .add_system_set(ui_manage_systems())
 
@@ -127,119 +110,35 @@ pub fn run_the_journal() {
 }
 
 /// Load scene
-fn load_scene_system(world: &mut World) {
-    println!("Checking ron file...");
-    if Path::new(STATE_FILE).exists() { // TODO: maybe use IoTaskPool?
-        println!("Loading ron file...");
+fn load_savedata(mut asset_server: ResMut<AssetServer>, mut management: ResMut<StartupManagement>, mut stat: ResMut<State<AppState>>) {
+    println!("Checking data file...");
+    // TODO: maybe use IoTaskPool?
+    if Path::new(STATE_FILE).exists() {
+        println!("Loading data file...");
         fs::copy(Path::new(STATE_FILE), Path::new(STATE_FILE).with_extension("ron.".to_string() + &create_timestamp().to_string())).unwrap();
-        let asset_server = world.resource_mut::<AssetServer>();
-        let handle: Handle<DynamicScene> = asset_server.load(Path::new("..").join(STATE_FILE));
-        //let mut spawner =  SceneSpawner::default();
-        //let res = spawner.spawn_sync(world, handle);
-        //println!("{:?}", res);
-        let id = world.spawn().insert_bundle(DynamicSceneBundle {
-            scene: handle,
-            ..default()
-        }).id();
-        println!("Root entity id: {:?}", id);
+        // do something...
+        stat.overwrite_set(AppState::TopPage);
     } else {
-        let id = world.spawn().id();
-        println!("Root entity id: {:?}", id);
-        
-        let mut startup = world.resource_mut::<StartupManagement>();
-        startup.state_file_nonexistent = true;
-
-        let mut stat = world.resource_mut::<State<AppState>>();
-        stat.overwrite_set(AppState::TopPage).unwrap();
+        stat.overwrite_set(AppState::TopPage);
     }
-    let mut startup = world.resource_mut::<StartupManagement>();
-    startup.state_file_checked = true;
-}
-
-/// Load scene, additional steps for the graph
-fn load_graph_system(
-    mut stat: ResMut<State<AppState>>,
-    mut r: ResMut<GameGraph>,
-    mut startup: ResMut<StartupManagement>,
-    mut commands: Commands,
-    q: Query<(Entity, &GameGraphDummy)>,
-    q_test: Query<Entity, Without<GameGraphDummy>>,
-) {
-    let (e, d) = match q.get_single() {Ok(x) => x, _ => return};
-
-    println!("Loading dummy state...");
-    
-    *r = GameGraph {
-        neighbor_graph: ron::from_str(&d.neighbor_graph).unwrap(),
-        neighbor_graph_ids: ron::from_str(&d.neighbor_graph_ids).unwrap(),
-        history_graph: ron::from_str(&d.history_graph).unwrap(),
-        history_graph_ids: ron::from_str(&d.history_graph_ids).unwrap()
-    };
-
-    commands.entity(e).despawn();
-
-    startup.load_graph_done = true;
-
-    println!("{:?}", q_test.iter().collect::<Vec<_>>());
-    
-    stat.overwrite_set(AppState::TopPage).unwrap();
 }
 
 /// Save scene
-fn save_scene_system(world: &mut World) {
-
-    if world.resource::<State<AppState>>().current().clone() == AppState::LoadSaveData { return; }
-
+fn save_savedata(world: &mut World) {
     if !world.is_resource_changed::<GameGraph>() { return; }
+    if world.resource::<State<AppState>>().current().clone() == AppState::LoadSaveData { return; }
 
     println!("Saving state...");
 
-    let graph = world.get_resource::<GameGraph>().unwrap();
+    let serialized_data = b"";
 
-    let dummy = GameGraphDummy {
-        neighbor_graph: ron::to_string(&graph.neighbor_graph).unwrap(),
-        neighbor_graph_ids: ron::to_string(&graph.neighbor_graph_ids).unwrap(),
-        history_graph: ron::to_string(&graph.history_graph).unwrap(),
-        history_graph_ids: ron::to_string(&graph.history_graph_ids).unwrap()
-    };
-
-    world.spawn().insert(dummy);
-
-    if world.despawn(Entity::from_bits(0)) {
-        println!("Entity 0 removed");
-    }
-
-    let type_registry = TypeRegistry::default();
-    type_registry.write().register::<Entity>();
-    type_registry.write().register_type_data::<Entity, ReflectSerialize>();
-    type_registry.write().register_type_data::<Entity, ReflectDeserialize>();
-    type_registry.write().register::<FragmentContents>();
-    type_registry.write().register_type_data::<FragmentContents, ReflectSerialize>();
-    type_registry.write().register_type_data::<FragmentContents, ReflectDeserialize>();
-    type_registry.write().register::<String>();
-    type_registry.write().register_type_data::<String, ReflectSerialize>();
-    type_registry.write().register_type_data::<String, ReflectDeserialize>();
-    type_registry.write().register::<Fragment>();
-    type_registry.write().register::<EntityList>();
-    type_registry.write().register::<Entry>();
-    type_registry.write().register::<Tag>();
-    type_registry.write().register::<TagEvent>();
-    type_registry.write().register::<TagEventAction>();
-    type_registry.write().register::<GameGraphDummy>();
-
-    let scene = DynamicScene::from_world(&world, &type_registry);
-    let serialized_scene = match scene.serialize_ron(&type_registry) {Ok(x) => x, Err(x) => {println!("{:?}", x); return}};
-
-    println!("Success! Cleaning...");
-
-    let mut q = world.query::<(Entity, &GameGraphDummy)>();
-    world.despawn(q.single(world).0);
+    println!("Success!");
     
     #[cfg(not(target_arch = "wasm32"))]
     IoTaskPool::get()
         .spawn(async move {
             File::create(STATE_FILE)
-                .and_then(|mut file| file.write(serialized_scene.as_bytes()))
+                .and_then(|mut file| file.write(serialized_data))
                 .expect("Error while saving state!");
         })
         .detach();

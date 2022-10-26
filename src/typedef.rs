@@ -1,3 +1,12 @@
+pub mod savedata {
+    pub struct JournalData {
+        //Entry,
+        //EntityList,
+        //Fragment,
+        //FragmentContents
+    }
+}
+
 pub mod component {
     //! Type definitions (Component).
     use bevy::{prelude::*, window::WindowId, utils::HashSet, reflect::FromReflect};
@@ -62,7 +71,7 @@ pub mod component {
 
 
     /// Content for journal fragment (e.g. a chunk of text, reference to local/remote images, URLs, programming codes, etc.)
-    #[derive(Reflect, Debug, Clone, Serialize, Deserialize)]
+    #[derive(Debug, Clone, Serialize, Deserialize)]
     // #[serde(tag = "type")]
     pub enum FragmentContents {
         TextData { data: String },
@@ -78,54 +87,41 @@ pub mod component {
     }
 
     /// A component reperesenting a journal fragment, combining metadata and contents together
-    #[derive(Component, Reflect, Default, Debug, Clone)]
-    #[reflect(Component)]
+    #[derive(Component, Default, Debug, Clone)]
     pub struct Fragment {
         pub timestamp: u64,
         pub contents: FragmentContents
     }
 
     /// A list of entity with a timestamp when it is compiled.
-    #[derive(Component, Reflect, Default, Debug)]
-    #[reflect(Component)]
+    #[derive(Component, Default, Debug)]
     pub struct EntityList {
         pub timestamp: u64,
         pub entities: Vec<Entity>
     }
 
     /// A component reperesenting a journal entry (A sequence of journal fragments). Use together with EntityList.
-    #[derive(Component, Reflect, Default, Debug)]
-    #[reflect(Component)]
+    #[derive(Component, Default, Debug)]
     pub struct Entry;
 
+    /* 
     /// A component reperesenting a tag.
-    #[derive(Component, Reflect, Default, Debug)]
-    #[reflect(Component)]
+    #[derive(Component, Default, Debug)]
     pub struct Tag {
         pub name: String,
         pub entities: HashSet<Entity>,
         pub events: Vec<TagEvent>
     }
 
-    #[derive(Reflect, Debug, FromReflect)]
+    #[derive(Debug)]
     pub struct TagEvent {
         pub timestamp: u64,
         pub entity: Entity,
         pub action: TagEventAction
     }
 
-    #[derive(Reflect, Default, Debug, Clone, FromReflect)]
-    pub enum TagEventAction { #[default] AddEntity, RemoveEntity }
-    
-    /// dummy hack for saving/loading GameGraph
-    #[derive(Component, Reflect, Default, Debug)]
-    #[reflect(Component)]
-    pub struct GameGraphDummy {
-        pub neighbor_graph: String,
-        pub neighbor_graph_ids: String,
-        pub history_graph: String,
-        pub history_graph_ids: String
-    }
+    #[derive(Default, Debug, Clone)]
+    pub enum TagEventAction { #[default] AddEntity, RemoveEntity }*/
 }
 
 pub mod resource {
@@ -174,17 +170,6 @@ pub mod resource {
         NotModified { fragment_id: Entity },
         /// modified or newly added data (ready to be pushed to the database when syncing)
         Modified { fragment: Fragment, original_id: Option<Entity> }
-    }
-
-    #[derive(Debug, Clone)]
-    pub struct SaveLoadManagement {
-        pub nextsave: u64
-    }
-
-    impl Default for SaveLoadManagement {
-        fn default() -> Self {
-            Self { nextsave: 10000 }
-        }
     }
 }
 

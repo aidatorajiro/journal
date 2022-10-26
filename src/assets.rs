@@ -4,30 +4,29 @@ pub mod loader {
     use bevy::{reflect::TypeUuid, asset::*};
 
     #[derive(Debug, TypeUuid)]
-    #[uuid = "26c8669a-8a70-4266-a4d4-64b33c0199d7"]
-    pub struct RawData {
-        pub data: Vec<u8>
+    #[uuid = "AAF83272-ED10-456A-B953-0B6E3F7AB9E4"]
+    pub struct JournalData {
     }
 
     #[derive(Default)]
-    pub struct RawDataLoader;
+    pub struct JournalDataLoader;
 
-    impl AssetLoader for RawDataLoader {
+    impl AssetLoader for JournalDataLoader {
         fn load<'a>(
             &'a self,
             bytes: &'a [u8],
             load_context: &'a mut LoadContext,
         ) -> BoxedFuture<'a, Result<(), bevy::asset::Error>> {
             Box::pin(async move {
-                println!("Rawdata Loaded");
-                let custom_asset = RawData {data: bytes.to_vec()};
+                println!("Journal Data Loaded");
+                let custom_asset = JournalData {};
                 load_context.set_default_asset(LoadedAsset::new(custom_asset));
                 Ok(())
             })
         }
 
         fn extensions(&self) -> &[&str] {
-            &["rawdata"]
+            &["journal"]
         }
     }
 
