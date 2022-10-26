@@ -2,6 +2,8 @@ pub mod component {
     //! Type definitions (Component).
     use bevy::{prelude::*, window::WindowId, utils::HashSet, reflect::FromReflect};
     use serde::{Serialize, Deserialize};
+    use bevy::ecs::reflect::ReflectMapEntities;
+    use bevy::ecs::entity::MapEntities;
     
     #[derive(Component)]
     pub struct MainCamera2D;
@@ -87,10 +89,19 @@ pub mod component {
 
     /// A list of entity with a timestamp when it is compiled.
     #[derive(Component, Reflect, Default, Debug)]
-    #[reflect(Component)]
+    #[reflect(Component, MapEntities)]
     pub struct EntityList {
         pub timestamp: u64,
         pub entities: Vec<Entity>
+    }
+
+    impl MapEntities for EntityList {
+        fn map_entities(&mut self, entity_map: &bevy::ecs::entity::EntityMap) -> Result<(), bevy::ecs::entity::MapEntitiesError> {
+            for mut t in &mut self.entities {
+                *t=entity_map.get(*t)?
+            }
+            Ok(())
+        }
     }
 
     /// A component reperesenting a journal entry (A sequence of journal fragments). Use together with EntityList.

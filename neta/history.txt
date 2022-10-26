@@ -100,3 +100,5 @@ Why??? maybe parallelism is related? The state of entities is not synced even af
 → Oh recent update... https://github.com/bevyengine/bevy/commit/dc3f801239d25287dc11d7cda35b00d6e3d3dbcf
 
 Reflectionすごい！これ使えば本格的にmodding環境が整うじゃん！てかbevyってもはやmodding engineなのでは。。。
+
+Wanted to use scene, but Vec<Entity> doesn't work well. → maybe use MapEntities?
