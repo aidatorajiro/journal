@@ -46,6 +46,7 @@ mod inner {
     //! Event and Data management for Journal data structure - utility functions for fragment data/graph
 
     use bevy::prelude::*;
+    use petgraph::Graph;
     use crate::typedef::{resource::*, component::*};
 
     pub fn add_fragment (

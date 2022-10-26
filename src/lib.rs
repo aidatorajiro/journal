@@ -12,6 +12,7 @@ pub mod tests;
 
 use std::fs;
 use std::fs::File;
+use std::hash::Hash;
 use std::io::Write;
 use std::path::Path;
 
@@ -21,10 +22,14 @@ use assets::loader::RawDataLoader;
 use bevy::app::AppExit;
 use bevy::reflect::{TypeRegistry, ReflectSerialize, ReflectDeserialize};
 use bevy::tasks::IoTaskPool;
+use bevy::utils::HashMap;
 use bevy::window::PresentMode;
 use bevy::window::WindowClosed;
 use bevy::winit::WinitSettings;
 use journalmanage::systems::*;
+use petgraph::Graph;
+use petgraph::graph::NodeIndex;
+use petgraph::data::FromElements;
 use subwindow::systems::*;
 use typedef::component::*;
 use typedef::event::*;
@@ -156,6 +161,28 @@ fn load_scene_system(world: &mut World) {
     startup.state_file_checked = true;
 }
 
+/// Construct graph and "weight to index" map from EncodedGraph
+fn convert_encoded_to_graph<A: Hash + Eq + Clone, B> (eg: EncodedGraph<A, B>) -> (Graph<A, B>, HashMap<A, NodeIndex>) {
+
+    let mut neighbor_graph: Graph<A, B> = Graph::new();
+    let mut neighbor_graph_ids: HashMap<A, NodeIndex> = HashMap::new();
+    let mut tmp: HashMap<usize, NodeIndex> = HashMap::new();
+
+    let mut i = 0;
+    for ent_neig in eg.0 {
+        let node_id = neighbor_graph.add_node(ent_neig.clone());
+        neighbor_graph_ids.insert(ent_neig, node_id).unwrap();
+        tmp.insert(i, node_id).unwrap();
+        i += 1;
+    }
+
+    for (id_1, id_2, edge) in eg.1 {
+        neighbor_graph.add_edge(*tmp.get(&id_1).unwrap(), *tmp.get(&id_2).unwrap(), edge);
+    }
+
+    (neighbor_graph, neighbor_graph_ids)
+}
+
 /// Load scene, additional steps for the graph
 fn load_graph_system(
     mut stat: ResMut<State<AppState>>,
@@ -168,12 +195,15 @@ fn load_graph_system(
     let (e, d) = match q.get_single() {Ok(x) => x, _ => return};
 
     println!("Loading dummy state...");
+
+    let (neighbor_graph, neighbor_graph_ids) = convert_encoded_to_graph(d.neighbor_graph.clone());
+    let (history_graph, history_graph_ids) = convert_encoded_to_graph(d.history_graph.clone());
     
     *r = GameGraph {
-        neighbor_graph: ron::from_str(&d.neighbor_graph).unwrap(),
-        neighbor_graph_ids: ron::from_str(&d.neighbor_graph_ids).unwrap(),
-        history_graph: ron::from_str(&d.history_graph).unwrap(),
-        history_graph_ids: ron::from_str(&d.history_graph_ids).unwrap()
+        neighbor_graph,
+        neighbor_graph_ids,
+        history_graph,
+        history_graph_ids
     };
 
     commands.entity(e).despawn();
@@ -183,6 +213,29 @@ fn load_graph_system(
     println!("{:?}", q_test.iter().collect::<Vec<_>>());
     
     stat.overwrite_set(AppState::TopPage).unwrap();
+}
+
+/// Construct graph and "weight to index" map from EncodedGraph
+fn convert_graph_to_encoded<A: Hash + Eq + Clone, B: Clone> (g: Graph<A, B>) -> EncodedGraph<A, B> {
+    let mut tmp: HashMap<NodeIndex, usize> = HashMap::new();
+    let mut vec_A: Vec<A> = Vec::new();
+    let mut counter = 0;
+
+    for ni in g.node_indices() {
+        let a = g.node_weight(ni).unwrap().clone();
+        vec_A.push(a);
+        tmp.insert(ni, counter);
+        counter += 1;
+    }
+
+    let mut vec_B: Vec<(usize, usize, B)> = Vec::new();
+    for ei in g.edge_indices() {
+        let b = g.edge_weight(ei).unwrap().clone();
+        let nodes = g.edge_endpoints(ei).unwrap();
+        vec_B.push((*tmp.get(&nodes.0).unwrap(), *tmp.get(&nodes.1).unwrap(), b));
+    }
+
+    (vec_A, vec_B)
 }
 
 /// Save scene
@@ -197,10 +250,8 @@ fn save_scene_system(world: &mut World) {
     let graph = world.get_resource::<GameGraph>().unwrap();
 
     let dummy = GameGraphDummy {
-        neighbor_graph: ron::to_string(&graph.neighbor_graph).unwrap(),
-        neighbor_graph_ids: ron::to_string(&graph.neighbor_graph_ids).unwrap(),
-        history_graph: ron::to_string(&graph.history_graph).unwrap(),
-        history_graph_ids: ron::to_string(&graph.history_graph_ids).unwrap()
+        neighbor_graph: convert_graph_to_encoded(graph.neighbor_graph.clone()),
+        history_graph: convert_graph_to_encoded(graph.history_graph.clone()),
     };
 
     world.spawn().insert(dummy);

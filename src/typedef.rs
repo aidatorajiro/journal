@@ -130,12 +130,18 @@ pub mod component {
     
     /// dummy hack for saving/loading GameGraph
     #[derive(Component, Reflect, Default, Debug)]
-    #[reflect(Component)]
+    #[reflect(Component, MapEntities)]
     pub struct GameGraphDummy {
-        pub neighbor_graph: String,
-        pub neighbor_graph_ids: String,
-        pub history_graph: String,
-        pub history_graph_ids: String
+        pub neighbor_graph: EncodedGraph<Entity, Entity>,
+        pub history_graph: EncodedGraph<Entity, ()>
+    }
+
+    pub type EncodedGraph<A, B> = (Vec<A>, Vec<(usize, usize, B)>);
+
+    impl MapEntities for GameGraphDummy {
+        fn map_entities(&mut self, entity_map: &bevy::ecs::entity::EntityMap) -> Result<(), bevy::ecs::entity::MapEntitiesError> {
+            Ok(())
+        }
     }
 }
 
