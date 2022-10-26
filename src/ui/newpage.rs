@@ -263,6 +263,7 @@ fn newpage_update (
             }
         }
 
+        // Add a new empty fragment at the position specified by `inject_pos`. `original_id` will be set to None, which means the fragement doesn't have a predecessor.
         if let Some(ip) = *inject_pos {
             newpage_state.entry_clone.insert(ip + 1, FragmentClone::Modified {
                 fragment: Fragment { timestamp: create_timestamp(), contents: FragmentContents::TextData { data: "".to_string() } },
