@@ -1,9 +1,30 @@
 pub mod savedata {
-    pub struct JournalData {
-        //Entry,
-        //EntityList,
-        //Fragment,
-        //FragmentContents
+    use bevy::utils::HashMap;
+    use petgraph::{Graph, graph::NodeIndex};
+    use serde::{Serialize, Deserialize};
+
+    use super::component::{FragmentContents, Fragment};
+
+    #[derive(Serialize, Deserialize)]
+    pub struct Savedata {
+        pub entities: HashMap<ObjectID, Vec<SavedataComponents>>,
+        pub neighbor_graph: Graph<ObjectID, ObjectID>,
+        pub neighbor_graph_ids: HashMap<ObjectID, NodeIndex>,
+        pub history_graph: Graph<ObjectID, ()>,
+        pub history_graph_ids: HashMap<ObjectID, NodeIndex>
+    }
+
+    #[derive(Serialize, Deserialize)]
+    pub enum SavedataComponents {
+        EntityList {data: Vec<ObjectID>},
+        Fragment {data: Fragment},
+        FragmentContents {data: FragmentContents},
+        Entry
+    }
+
+    #[derive(Serialize, Deserialize, Eq, PartialEq, Hash)]
+    pub struct ObjectID {
+        id: u64
     }
 }
 
@@ -87,7 +108,7 @@ pub mod component {
     }
 
     /// A component reperesenting a journal fragment, combining metadata and contents together
-    #[derive(Component, Default, Debug, Clone)]
+    #[derive(Component, Default, Debug, Clone, Serialize, Deserialize)]
     pub struct Fragment {
         pub timestamp: u64,
         pub contents: FragmentContents

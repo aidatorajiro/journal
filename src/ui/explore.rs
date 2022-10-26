@@ -1,5 +1,5 @@
 
-//! UI definitions for explore
+//! UI definitions for explore page
 use bevy::prelude::*;
 use crate::typedef::{state::AppState};
 
