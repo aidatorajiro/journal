@@ -39,6 +39,12 @@ pub mod component {
     #[derive(Component, PartialEq, Eq)]
     pub struct TopPageContents;
 
+    #[derive(Component)]
+    pub struct ExploreContents;
+
+    #[derive(Component)]
+    pub struct ExploreCube;
+
     // A subwindow.
     #[derive(Component, Default)]
     pub struct SubWindow {
@@ -195,6 +201,12 @@ pub mod resource {
         pub entry_clone: Vec<FragmentClone>
     }
 
+    #[derive(Default, Debug)]
+    /// State for Explore Page.
+    pub struct ExploreState {
+    }
+
+    /// A data structure that represents either (1) existing fragment or (2) modified fragment or (3) completely new fragment
     #[derive(Debug, Clone)]
     pub enum FragmentClone {
         /// pointer to the global data structure. (it means that the data has not been modified)
@@ -243,10 +255,13 @@ pub mod event {
         pub entry: Option<Entity>
     }
 
+    /// Send a request to add a new entry.
+    /// ID of the original entries and a list of FragmentClone, which is used to identify which fragment is modified from which, must be provided.
     #[derive(Debug)]
     pub struct SyncFragments {
         /// id of the original entries
         pub original_entries: Vec<Entity>,
+        /// a list of FragmentClone
         pub entry_clone: Vec<FragmentClone>
     }
 

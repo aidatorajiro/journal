@@ -256,10 +256,6 @@ fn save_scene_system(world: &mut World) {
 
     world.spawn().insert(dummy);
 
-    if world.despawn(Entity::from_bits(0)) {
-        println!("Entity 0 removed");
-    }
-
     let type_registry = TypeRegistry::default();
     type_registry.write().register::<Entity>();
     type_registry.write().register_type_data::<Entity, ReflectSerialize>();
