@@ -45,4 +45,4 @@ Cargo.lock
 **/*.rs.bk
 
 
-state.scn.ron
+state.scn.ron*

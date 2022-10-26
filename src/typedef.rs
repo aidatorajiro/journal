@@ -135,6 +135,14 @@ pub mod resource {
     use petgraph::{Graph, graph::NodeIndex};
 
     use super::component::{Fragment};
+
+    /// Data for startup management
+    #[derive(Default, Debug)]
+    pub struct StartupManagement {
+        pub state_file_checked: bool,
+        pub load_graph_done: bool,
+        pub state_file_nonexistent: bool
+    }
     
     /// Graph data structures for the Journal.
     #[derive(Default, Debug)]
@@ -183,6 +191,7 @@ pub mod resource {
 pub mod state {
     #[derive(Debug, Clone, Eq, PartialEq, Hash)]
     pub enum AppState {
+        LoadSaveData,
         TopPage,
         NewPage,
         Explore,
