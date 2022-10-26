@@ -85,7 +85,7 @@ pub mod component {
         }
     }
 
-    /// A component reperesenting a journal fragment, combining metadata and contents together
+    /// A component representing a journal fragment, combining metadata and contents together
     #[derive(Component, Reflect, Default, Debug, Clone)]
     #[reflect(Component)]
     pub struct Fragment {
@@ -103,19 +103,19 @@ pub mod component {
 
     impl MapEntities for EntityList {
         fn map_entities(&mut self, entity_map: &bevy::ecs::entity::EntityMap) -> Result<(), bevy::ecs::entity::MapEntitiesError> {
-            for mut t in &mut self.entities {
+            for t in &mut self.entities {
                 *t=entity_map.get(*t)?
             }
             Ok(())
         }
     }
 
-    /// A component reperesenting a journal entry (A sequence of journal fragments). Use together with EntityList.
+    /// A component representing a journal entry (A sequence of journal fragments). Use together with EntityList.
     #[derive(Component, Reflect, Default, Debug)]
     #[reflect(Component)]
     pub struct Entry;
 
-    /// A component reperesenting a tag.
+    /// A component representing a tag.
     #[derive(Component, Reflect, Default, Debug)]
     #[reflect(Component)]
     pub struct Tag {

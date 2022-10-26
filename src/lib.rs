@@ -29,7 +29,6 @@ use bevy::winit::WinitSettings;
 use journalmanage::systems::*;
 use petgraph::Graph;
 use petgraph::graph::NodeIndex;
-use petgraph::data::FromElements;
 use subwindow::systems::*;
 use typedef::component::*;
 use typedef::event::*;
@@ -108,7 +107,7 @@ pub fn run_the_journal() {
         .add_system(subwindow_event)
         .add_system_set(subwindow_ui_set())
         .add_system(window_closed_handler)
-        // Toppage System
+        // TopPage System
         .add_system_set(top_systems_enter())
         .add_system_set(top_systems_exit())
         .add_system_set(top_systems_update())
@@ -169,9 +168,9 @@ fn convert_encoded_to_graph<A: Hash + Eq + Clone, B> (eg: EncodedGraph<A, B>) ->
     let mut tmp: HashMap<usize, NodeIndex> = HashMap::new();
 
     let mut i = 0;
-    for ent_neig in eg.0 {
-        let node_id = neighbor_graph.add_node(ent_neig.clone());
-        neighbor_graph_ids.insert(ent_neig, node_id);
+    for ent_neighbor in eg.0 {
+        let node_id = neighbor_graph.add_node(ent_neighbor.clone());
+        neighbor_graph_ids.insert(ent_neighbor, node_id);
         tmp.insert(i, node_id);
         i += 1;
     }
@@ -218,24 +217,24 @@ fn load_graph_system(
 /// Construct graph and "weight to index" map from EncodedGraph
 fn convert_graph_to_encoded<A: Hash + Eq + Clone, B: Clone> (g: Graph<A, B>) -> EncodedGraph<A, B> {
     let mut tmp: HashMap<NodeIndex, usize> = HashMap::new();
-    let mut vec_A: Vec<A> = Vec::new();
+    let mut vec_a: Vec<A> = Vec::new();
     let mut counter = 0;
 
     for ni in g.node_indices() {
         let a = g.node_weight(ni).unwrap().clone();
-        vec_A.push(a);
+        vec_a.push(a);
         tmp.insert(ni, counter);
         counter += 1;
     }
 
-    let mut vec_B: Vec<(usize, usize, B)> = Vec::new();
+    let mut vec_b: Vec<(usize, usize, B)> = Vec::new();
     for ei in g.edge_indices() {
         let b = g.edge_weight(ei).unwrap().clone();
         let nodes = g.edge_endpoints(ei).unwrap();
-        vec_B.push((*tmp.get(&nodes.0).unwrap(), *tmp.get(&nodes.1).unwrap(), b));
+        vec_b.push((*tmp.get(&nodes.0).unwrap(), *tmp.get(&nodes.1).unwrap(), b));
     }
 
-    (vec_A, vec_B)
+    (vec_a, vec_b)
 }
 
 /// Save scene

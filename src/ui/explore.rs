@@ -24,7 +24,7 @@ fn explore_enter (
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
-    for ev in ev_explore.iter() {
+    for _ in ev_explore.iter() {
         com.insert_resource::<ExploreState>(ExploreState {});
     }
 
@@ -66,12 +66,12 @@ fn explore_exit (q: Query<Entity, With<ExploreContents>>, mut com: Commands) {
 }
 
 fn explore_update (mut q_cube: Query<&mut Transform, With<ExploreCube>>) {
-    println!("updupd");
+    println!("hello");
     for mut t in q_cube.iter_mut() {
         println!("translating");
-        let applyrand = |z: &mut f32| {*z +=  (random::<f32>() - 0.5)/10.0; *z = z.max(-0.5).min(0.5)};
-        applyrand(&mut t.rotation.x);
-        applyrand(&mut t.rotation.y);
-        applyrand(&mut t.rotation.z);
+        let apply_rand = |z: &mut f32| {*z +=  (random::<f32>() - 0.5)/10.0; *z = z.max(-0.5).min(0.5)};
+        apply_rand(&mut t.rotation.x);
+        apply_rand(&mut t.rotation.y);
+        apply_rand(&mut t.rotation.z);
     }
 }
