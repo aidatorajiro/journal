@@ -1,6 +1,7 @@
 pub mod component {
     //! Type definitions (Component).
     use bevy::{prelude::*, window::WindowId, utils::HashSet, reflect::FromReflect};
+    use petgraph::graph::NodeIndex;
     use serde::{Serialize, Deserialize};
     use bevy::ecs::reflect::ReflectMapEntities;
     use bevy::ecs::entity::{MapEntities, EntityMap, MapEntitiesError};
@@ -43,7 +44,10 @@ pub mod component {
     pub struct ExploreContents;
 
     #[derive(Component)]
-    pub struct ExploreCube;
+    pub struct ExploreCube {
+        pub force_graph_index: NodeIndex,
+        pub fragment_id: Entity
+    }
 
     // A subwindow.
     #[derive(Component, Default)]
@@ -165,6 +169,7 @@ pub mod resource {
     //! Type definitions (Resource).
 
     use bevy::{prelude::*, utils::HashMap};
+    use fdg_sim::{ForceGraph, Simulation};
     use petgraph::{Graph, graph::NodeIndex};
 
     use super::component::{Fragment};
@@ -201,9 +206,10 @@ pub mod resource {
         pub entry_clone: Vec<FragmentClone>
     }
 
-    #[derive(Default, Debug)]
+    #[derive(Default)]
     /// State for Explore Page.
     pub struct ExploreState {
+        pub simulation: Option<Simulation<Entity, f32>>
     }
 
     /// A data structure that represents either (1) existing fragment or (2) modified fragment or (3) completely new fragment

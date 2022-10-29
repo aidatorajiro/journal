@@ -7,7 +7,7 @@ use super::inner::*;
 
 /// Enter systems on the top page.
 pub fn top_systems_enter() -> SystemSet {
-    return SystemSet::on_enter(AppState::TopPage).with_system(use_2d_camera).with_system(top_enter);
+    return SystemSet::on_enter(AppState::TopPage).with_system(use_default_2d_camera).with_system(top_enter);
 }
 
 /// Update systems on the top page.

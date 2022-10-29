@@ -11,7 +11,7 @@ use crate::{typedef::{state::AppState, component::{NewPageContents, NewPageButto
 use super::inner::*;
 
 pub fn newpage_systems_enter () -> SystemSet {
-    return SystemSet::on_enter(AppState::NewPage).with_system(use_2d_camera).with_system(newpage_enter);
+    return SystemSet::on_enter(AppState::NewPage).with_system(use_default_2d_camera).with_system(newpage_enter);
 }
 
 pub fn newpage_systems_exit () -> SystemSet {

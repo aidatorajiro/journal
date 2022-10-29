@@ -1,0 +1,14 @@
+graph on top, informations about the selected cube on bottom, press up-right-left-bottom to move around the nodes?
+about voyageing... randomly selecting points and asks player to connect the two (the player can "skip" it, if thinks that they are irrelevant. also maybe, "intensity" calculation by recording keystrokes etc?)
+Actually, chronology doesn't needed? (should develop only one pane deeper?) but... is fdg_sim allows to make "similar" fragments in certain place?
+Also, develop splitting!
+Tagging as a "strong" graph connections? (tag/untag history relationship as a edge, tag-fragment or tag-entry edges as just a tagging, tag-tag edges as equivalence construction/destruction)
+
+***
+
+just a little bit more exps (oranges, kelps, ...)
+try to make red color?
+what is red food waste?
+
+is it possible to get wanted behaviour only from food waste??
+
