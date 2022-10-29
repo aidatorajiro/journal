@@ -18,6 +18,7 @@ use bevy::reflect::{ReflectSerialize, ReflectDeserialize};
 use bevy::window::PresentMode;
 use bevy::window::WindowClosed;
 use bevy::winit::WinitSettings;
+use bevy_mod_picking::DefaultPickingPlugins;
 use journalmanage::systems::*;
 use subwindow::systems::*;
 use typedef::component::*;
@@ -71,6 +72,7 @@ pub fn run_the_journal() {
         // plugins
         .add_plugins(DefaultPlugins)
         .add_plugin(EguiPlugin)
+        .add_plugins(DefaultPickingPlugins)
 
         // app state
         .add_state::<AppState>(AppState::LoadSaveData)
@@ -110,7 +112,7 @@ pub fn run_the_journal() {
         .add_system(subwindow_event)
         .add_system_set(subwindow_ui_set())
         .add_system(window_closed_handler)
-        
+
         // TopPage System
         .add_system_set(top_systems_enter())
         .add_system_set(top_systems_exit())
