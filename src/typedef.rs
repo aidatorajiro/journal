@@ -169,7 +169,7 @@ pub mod resource {
     //! Type definitions (Resource).
 
     use bevy::{prelude::*, utils::HashMap};
-    use fdg_sim::{ForceGraph, Simulation};
+    use fdg_sim::Simulation;
     use petgraph::{Graph, graph::NodeIndex};
 
     use super::component::{Fragment};

@@ -1,12 +1,10 @@
 //! UI definitions for explore
-use std::process::id;
-
 use bevy::{prelude::*, utils::HashMap};
 use petgraph::graph::NodeIndex;
 use rand::random;
 use crate::typedef::{state::AppState, event::JumpToExplore, resource::{ExploreState, GameGraph}, component::{ExploreContents, ExploreCube}};
 
-use fdg_sim::{ForceGraph, ForceGraphHelper, Simulation, SimulationParameters, Dimensions, force::{self, fruchterman_reingold, fruchterman_reingold_weighted}};
+use fdg_sim::{ForceGraph, ForceGraphHelper, Simulation, SimulationParameters, Dimensions, force::{fruchterman_reingold_weighted}};
 
 use super::inner::delete_all_camera;
 

@@ -10,25 +10,15 @@ pub mod ui;
 pub mod migration;
 pub mod tests;
 
-use std::fs;
-use std::fs::File;
-use std::hash::Hash;
-use std::io::Write;
-use std::path::Path;
-
 use assets::loader::RawData;
 use assets::loader::RawDataLoader;
 
 use bevy::app::AppExit;
-use bevy::reflect::{TypeRegistry, ReflectSerialize, ReflectDeserialize};
-use bevy::tasks::IoTaskPool;
-use bevy::utils::HashMap;
+use bevy::reflect::{ReflectSerialize, ReflectDeserialize};
 use bevy::window::PresentMode;
 use bevy::window::WindowClosed;
 use bevy::winit::WinitSettings;
 use journalmanage::systems::*;
-use petgraph::Graph;
-use petgraph::graph::NodeIndex;
 use subwindow::systems::*;
 use typedef::component::*;
 use typedef::event::*;
@@ -45,9 +35,6 @@ use ui::migrate::migrate_systems_exit;
 use ui::migrate::migrate_systems_update;
 use ui::newpage::*;
 use ui::top::*;
-use utils::utils::create_timestamp;
-
-use crate::constants::style::STATE_FILE;
 
 /// Main function
 pub fn run_the_journal() {
