@@ -7,6 +7,8 @@ pub mod systems {
     use super::inner::{add_entry, add_fragment};
 
     /// Push the list of FragmentClone (which is either id of existing fragment or data of new fragment) into the graph and entity database.
+    /// This function will update `neighbor_graph` and `history_graph` so that its edge relationships matches the references of Entity IDs provided by the list of FragmentClone.
+    /// Then, it will spawn an Entity with Entry component.
     pub fn handle_sync_fragments(
         mut events: EventReader<SyncFragments>,
         mut commands: Commands,
