@@ -6,7 +6,7 @@ use bevy::{prelude::*, ui::FocusPolicy};
 use bevy_egui::EguiContext;
 use egui::{TextEdit, Color32};
 
-use crate::{typedef::{state::AppState, component::{NewPageContents, NewPageButton, FragmentContents, Fragment, EntityList}, event::{JumpToTop, JumpToNewPage, SyncFragments, SyncFragmentsDone}, resource::{NewPageState, FragmentClone}}, constants::style::*, utils::utils::{set_default_font, create_timestamp}, journalmanage::systems::handle_sync_fragments};
+use crate::{typedef::{state::AppState, component::{NewPageContents, NewPageButton, FragmentContents, Fragment, EntityList}, event::{JumpToTop, JumpToNewPage, SyncFragments, SyncFragmentsDone}, resource::{NewPageState, FragmentClone}}, constants::style::*, utils::basic::{set_default_font, create_timestamp}, journalmanage::systems::handle_sync_fragments};
 
 use super::inner::*;
 
