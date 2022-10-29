@@ -11,7 +11,10 @@
         "nextsave",
         "nodeid",
         "Noto",
+        "notoemoji",
+        "notosans",
         "petgraph",
+        "Pickable",
         "reingold",
         "subapp",
         "subwindow",
@@ -20,6 +23,7 @@
         "TOPBTN",
         "Torajiro",
         "Vsync",
+        "wght",
         "winit"
     ]
 }
