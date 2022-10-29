@@ -2,6 +2,7 @@ pub mod component {
     //! Type definitions (Component).
     use bevy::{prelude::*, window::WindowId, utils::HashSet, reflect::FromReflect};
     use petgraph::graph::NodeIndex;
+    use petgraph::graph::EdgeIndex;
     use serde::{Serialize, Deserialize};
     use bevy::ecs::reflect::ReflectMapEntities;
     use bevy::ecs::entity::{MapEntities, EntityMap, MapEntitiesError};
@@ -47,6 +48,11 @@ pub mod component {
     pub struct ExploreCube {
         pub force_graph_index: NodeIndex,
         pub fragment_id: Entity
+    }
+
+    #[derive(Component)]
+    pub struct ExploreEdge {
+        pub force_edge_index: EdgeIndex
     }
 
     // A subwindow.
