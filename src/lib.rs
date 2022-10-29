@@ -62,6 +62,7 @@ pub fn run_the_journal() {
             resizable: false,
             ..default()
         })
+        .insert_resource(ClearColor(Color::rgb(57.0/256.0, 209.0/256.0, 239.0/256.0)))
         .register_type::<Entity>()
         .register_type::<FragmentContents>()
         .register_type_data::<FragmentContents, ReflectSerialize>()
@@ -246,6 +247,33 @@ fn save_scene_system(world: &mut World) {
 
     println!("Saving state...");
 
+    // Delete entities with no components
+
+    let parent_id = world.component_id::<Parent>().unwrap();
+
+    let mut q = world.query::<Entity>();
+    let empty_entities = q.iter(world).filter(|x| {
+        let cs = world.inspect_entity(x.clone());
+        if (cs.len() == 0 || (cs.len() == 1 && cs.get(0).unwrap().id() == parent_id)) {
+            return true
+        } else {
+            return false
+        }
+    }).collect::<Vec<_>>();
+    println!("Found {} empty entity. Deleting...", empty_entities.len());
+    for e in empty_entities {
+        world.despawn(e);
+    }
+    
+    /*
+
+    for archetype in world.archetypes().iter()
+    {
+        if archetype.entities().contains(entity) { return Some(archetype.components()) }
+    }*/
+
+    // Spawn dummy graph
+
     let graph = world.get_resource::<GameGraph>().unwrap();
 
     let dummy = GameGraphDummy {
@@ -254,6 +282,8 @@ fn save_scene_system(world: &mut World) {
     };
 
     world.spawn().insert(dummy);
+
+    // Register types for saving
 
     let type_registry = TypeRegistry::default();
     type_registry.write().register::<Entity>();
@@ -273,13 +303,15 @@ fn save_scene_system(world: &mut World) {
     type_registry.write().register::<TagEventAction>();
     type_registry.write().register::<GameGraphDummy>();
 
+    // generate serialized data
+
     let scene = DynamicScene::from_world(&world, &type_registry);
     let serialized_scene = match scene.serialize_ron(&type_registry) {Ok(x) => x, Err(x) => {println!("{:?}", x); return}};
 
     println!("Success! Cleaning...");
 
     let mut q = world.query::<(Entity, &GameGraphDummy)>();
-    world.despawn(q.single(world).0);
+    let result = world.despawn(q.single(world).0);
     
     #[cfg(not(target_arch = "wasm32"))]
     IoTaskPool::get()
