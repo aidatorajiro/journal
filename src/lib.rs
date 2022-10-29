@@ -41,6 +41,7 @@ pub fn run_the_journal() {
     let mut app = App::new();
 
     app
+        // App parameters
         .insert_resource(WindowDescriptor {
             title: "! Bevy Journal ! (c) 2022 Torajiro Aida".to_string(),
             width: 800.,
@@ -50,6 +51,8 @@ pub fn run_the_journal() {
             ..default()
         })
         .insert_resource(ClearColor(Color::rgb(57.0/256.0, 209.0/256.0, 239.0/256.0)))
+
+        // Type registration for loading: also look at journalmanage.rs for type registration for saving
         .register_type::<Entity>()
         .register_type::<FragmentContents>()
         .register_type_data::<FragmentContents, ReflectSerialize>()
@@ -64,10 +67,18 @@ pub fn run_the_journal() {
         .register_type::<TagEvent>()
         .register_type::<TagEventAction>()
         .register_type::<GameGraphDummy>()
+
+        // plugins
         .add_plugins(DefaultPlugins)
         .add_plugin(EguiPlugin)
+
+        // app state
         .add_state::<AppState>(AppState::LoadSaveData)
+
+        // designate itself as a desktop app
         .insert_resource(WinitSettings::desktop_app())
+
+        // register events
         .add_event::<AddFragments>()
         .add_event::<SyncFragments>()
         .add_event::<SyncFragmentsDone>()
@@ -76,10 +87,14 @@ pub fn run_the_journal() {
         .add_event::<JumpToLinear>()
         .add_event::<JumpToMigrate>()
         .add_event::<JumpToTop>()
-        .init_resource::<StartupManagement>()
+
+        // register asset loaders
         .add_asset::<RawData>()
-        .init_resource::<GameGraph>()
         .init_asset_loader::<RawDataLoader>()
+
+        // initialize global game state/database 
+        .init_resource::<StartupManagement>()
+        .init_resource::<GameGraph>()
 
         // Root systems
         .add_startup_system(load_scene_system.exclusive_system())
@@ -95,18 +110,22 @@ pub fn run_the_journal() {
         .add_system(subwindow_event)
         .add_system_set(subwindow_ui_set())
         .add_system(window_closed_handler)
+        
         // TopPage System
         .add_system_set(top_systems_enter())
         .add_system_set(top_systems_exit())
         .add_system_set(top_systems_update())
+
         // Newpage system
         .add_system_set(newpage_systems_enter())
         .add_system_set(newpage_systems_exit())
         .add_system_set(newpage_systems_update())
+
         // Migrate system
         .add_system_set(migrate_systems_enter())
         .add_system_set(migrate_systems_exit())
         .add_system_set(migrate_systems_update())
+
         // Explore system
         .add_system_set(explore_systems_enter())
         .add_system_set(explore_systems_exit())
