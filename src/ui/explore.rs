@@ -116,6 +116,7 @@ fn explore_update (mut q_cube: Query<(&mut Transform, &ExploreCube)>, mut page: 
         t.translation.y = node_data.location.y;
         t.translation.z = node_data.location.z;
 
+        // Add random numbers to t.rotation, but make sure not exceeding certain value!
         let apply_rand = |z: &mut f32| {*z +=  (random::<f32>() - 0.5)/10.0; *z = z.max(-0.5).min(0.5)};
         apply_rand(&mut t.rotation.x);
         apply_rand(&mut t.rotation.y);
