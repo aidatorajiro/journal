@@ -1,8 +1,11 @@
 //! UI definitions for explore
-use bevy::{prelude::*, utils::HashMap};
+use std::f32::consts::PI;
+
+use bevy::{prelude::*, utils::HashMap, render::camera::Projection};
+use bevy_mod_picking::{PickingCameraBundle, PickableBundle, Selection, PickingSystem};
 use petgraph::graph::NodeIndex;
 use rand::random;
-use crate::typedef::{state::AppState, event::JumpToExplore, resource::{ExploreState, GameGraph}, component::{ExploreContents, ExploreCube}};
+use crate::{typedef::{state::AppState, event::JumpToExplore, resource::{ExploreState, GameGraph}, component::{ExploreContents, ExploreCube, Fragment, FragmentContents}}, utils::graph::{make_force_graph_nodes, make_force_graph_edges}, constants::style::{EXPLORE_CUBE_CLICKED, EXPLORE_CUBE_HOVERED, EXPLORE_CUBE_NONE, EXPLORE_CUBE_SELECTED}};
 
 use fdg_sim::{ForceGraph, ForceGraphHelper, Simulation, SimulationParameters, Dimensions, force::{fruchterman_reingold_weighted}};
 
@@ -17,7 +20,9 @@ pub fn explore_systems_exit () -> SystemSet {
 }
 
 pub fn explore_systems_update () -> SystemSet {
-    return SystemSet::on_update(AppState::Explore).with_system(explore_update);
+    return SystemSet::on_update(AppState::Explore)
+        .with_system(explore_update_graph)
+        .with_system(explore_update_interaction.after(PickingSystem::Highlighting)); // to avoid 
 }
 
 fn explore_enter (
@@ -36,8 +41,12 @@ fn explore_enter (
 
     com.spawn_bundle(Camera3dBundle {
         transform: Transform::from_xyz(0.0, 0.0, 25.0).looking_at(Vec3::ZERO, Vec3::X),
+        projection: Projection::Perspective(PerspectiveProjection {
+            fov: PI / 2.0,
+            ..default()
+        }),
         ..default()
-    });
+    }).insert_bundle(PickingCameraBundle::default());
 
     let mut force_graph: ForceGraph<Entity, f32> = ForceGraph::default();
 
@@ -45,44 +54,37 @@ fn explore_enter (
 
     // ↓ START force-graph generation, combining many kinds of graphs into one force-graph to be visualized ↓
 
-    for e in game_graph.neighbor_graph.node_weights() {
-        let idx = force_graph.add_force_node(format!("{:?}", e.clone()), e.clone());
-        map_ent_idx.insert(e.clone(), idx);
-    }
+    make_force_graph_nodes(&mut force_graph, &game_graph.neighbor_graph, &mut map_ent_idx);
 
-    for i in game_graph.neighbor_graph.edge_indices() {
-        let (a_idx, b_idx) = game_graph.neighbor_graph.edge_endpoints(i).unwrap();
-        let a_wgt = game_graph.neighbor_graph.node_weight(a_idx).unwrap();
-        let b_wgt = game_graph.neighbor_graph.node_weight(b_idx).unwrap();
-        force_graph.add_edge(map_ent_idx.get(a_wgt).unwrap().clone(), map_ent_idx.get(b_wgt).unwrap().clone(), 1.0);
-    }
+    make_force_graph_nodes(&mut force_graph, &game_graph.history_graph, &mut map_ent_idx);
+
+    make_force_graph_edges(&mut force_graph, &game_graph.neighbor_graph, &map_ent_idx, |_, _, _, _| 1.0);
+
+    make_force_graph_edges(&mut force_graph, &game_graph.history_graph, &map_ent_idx, |_, _, _, _| 1.0);
 
     // ↑ END force-graph generation ↑
+
+    for e in force_graph.node_weights() {
+        com.spawn_bundle(PbrBundle {
+            mesh: meshes.add(Mesh::from(shape::Cube { size: 0.3 })),
+            material: materials.add(EXPLORE_CUBE_NONE.into()),
+            transform: Transform::from_xyz(0.0, 0.0, 0.0),
+            ..default()
+        }).insert(ExploreCube {
+            force_graph_index: map_ent_idx.get(&e.data).unwrap().clone(),
+            fragment_id: e.data.clone()
+        }).insert_bundle(PickableBundle { ..default()}).insert(ExploreContents {});
+    }
 
     let mut params = SimulationParameters::default();
     params.dimensions = Dimensions::Three;
     params.node_start_size = 1.0;
-    params.set_force(fruchterman_reingold_weighted(0.3, 0.975)); // tips: enlarging `scale` will diffuses graph, making nodes more equally distributed.
-    page_state.simulation = Some(Simulation::from_graph(force_graph, params));
+    params.set_force(fruchterman_reingold_weighted(0.25, 0.975)); // tips: increasing `scale` will diffuses graph, making nodes more equally distributed.
+    let simulation = Simulation::from_graph(force_graph, params);
 
-    for e in game_graph.neighbor_graph.node_weights() {
-        com.spawn_bundle(PbrBundle {
-            mesh: meshes.add(Mesh::from(shape::Cube { size: 0.3 })),
-            material: materials.add(Color::rgb(0.8, 0.7, 0.6).into()),
-            transform: Transform::from_xyz(0.0, 0.0, 0.0),
-            ..default()
-        }).insert(ExploreContents {}).insert(ExploreCube {
-            force_graph_index: map_ent_idx.get(&e).unwrap().clone(),
-            fragment_id: e.clone()
-        });
-    }
+    page_state.simulation = Some(simulation);
 
-    com.spawn_bundle(PbrBundle {
-        mesh: meshes.add(Mesh::from(shape::Plane { size: 10.0 })),
-        material: materials.add(Color::rgb(0.3, 0.5, 0.3).into()),
-        ..default()
-    }).insert(ExploreContents {});
-
+    /*
     com.spawn_bundle(PointLightBundle {
         point_light: PointLight {
             intensity: 1500.0,
@@ -91,7 +93,7 @@ fn explore_enter (
         },
         transform: Transform::from_xyz(0.0, 0.0, 80.0),
         ..default()
-    }).insert(ExploreContents {});
+    }).insert(ExploreContents {});*/
 
     com.insert_resource::<ExploreState>(page_state);
 }
@@ -104,7 +106,7 @@ fn explore_exit (q: Query<Entity, With<ExploreContents>>, mut com: Commands) {
     }
 }
 
-fn explore_update (mut q_cube: Query<(&mut Transform, &ExploreCube)>, mut page: ResMut<ExploreState>) {
+fn explore_update_graph (mut q_cube: Query<(&mut Transform, &ExploreCube)>, mut page: ResMut<ExploreState>) {
     let sim = page.simulation.as_mut().unwrap();
     sim.update(0.035);
     
@@ -119,5 +121,42 @@ fn explore_update (mut q_cube: Query<(&mut Transform, &ExploreCube)>, mut page: 
         apply_rand(&mut t.rotation.x);
         apply_rand(&mut t.rotation.y);
         apply_rand(&mut t.rotation.z);
+    }
+}
+
+fn explore_update_interaction(
+    mut q_cube: Query<(&Interaction, &ExploreCube, &Selection, &Handle<StandardMaterial>), Changed<Interaction>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
+    mut q_fragment: Query<&Fragment>
+) {
+    for (interaction, cube, selection, mat_handle) in q_cube.iter() {
+        match interaction {
+            Interaction::Clicked => {
+                let m = materials.get_mut(mat_handle).unwrap();
+                m.emissive = EXPLORE_CUBE_CLICKED;
+            },
+            Interaction::Hovered => {
+                let m = materials.get_mut(mat_handle).unwrap();
+                m.emissive = EXPLORE_CUBE_HOVERED;
+            },
+            Interaction::None => {
+                let m = materials.get_mut(mat_handle).unwrap();
+                m.base_color = EXPLORE_CUBE_NONE;
+            }
+        };
+        
+        if selection.selected() {
+            let m = materials.get_mut(mat_handle).unwrap();
+            m.emissive = EXPLORE_CUBE_SELECTED;
+        }
+
+        if let Ok(f) = q_fragment.get(cube.fragment_id) {
+            match f.contents.clone() {
+                FragmentContents::TextData { data } => {},
+                FragmentContents::Code { data, language } => todo!(),
+                FragmentContents::URL { data } => todo!(),
+                FragmentContents::Image { data } => todo!(),
+            }
+        }
     }
 }
