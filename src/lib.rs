@@ -7,7 +7,6 @@ pub mod assets;
 pub mod utils;
 pub mod journalmanage;
 pub mod ui;
-pub mod migration;
 pub mod tests;
 
 use assets::loader::RawData;
