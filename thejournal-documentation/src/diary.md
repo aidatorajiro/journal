@@ -1,8 +1,6 @@
 # Dev Diary: How I made this app?
 
-## Font
-
-The development of the app was full of constantly changing plans and technical obstacles. As it is note-taking app, I first thought of introducing fancy color fonts such as COLRv1. However, after playing with Rust libraries like [swash](https://github.com/dfrg/swash), I learned using COLRv1 in Rust is difficult, so I abandoned the idea.
+I'll explain some of the key concepts that I encountered during the development.
 
 ## Bevy and ECS
 
@@ -32,17 +30,3 @@ fn top_button_update_system(
     mut ev_migrate: EventWriter<JumpToMigrate>
 )
 ```
-
-### Resource
-
-Although you can store any data within Bevy using `Entity` and `Component`, you can also use `Resource`, which also works as a global data storage.
-
-### Parent-Children
-
-### Race Condition
-
-### Scene
-
-## Egui
-
-## Directed Graph

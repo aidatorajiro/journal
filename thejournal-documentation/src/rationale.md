@@ -1,2 +1,0 @@
-# Rationale: Why use Bevy?
-
