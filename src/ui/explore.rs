@@ -1,7 +1,7 @@
 //! UI definitions for explore
 use std::f32::consts::PI;
 
-use bevy::{prelude::*, utils::HashMap, render::camera::Projection, ui::FocusPolicy};
+use bevy::{prelude::*, utils::{HashMap, HashSet}, render::camera::Projection, ui::FocusPolicy};
 use bevy_mod_picking::{PickingCameraBundle, PickableBundle, Selection, PickingSystem};
 use petgraph::graph::NodeIndex;
 use rand::random;
@@ -45,7 +45,7 @@ fn explore_enter (
     //transform.rotate_local_x(2.0*PI*rand::random::<f32>());
     //transform.rotate_local_y(2.0*PI*rand::random::<f32>());
 
-    let transform = Transform::from_xyz(0.0, 0.0, 25.0).looking_at(Vec3::ZERO, Vec3::Y);
+    let transform = Transform::from_xyz(0.0, 0.0, 10.0).looking_at(Vec3::ZERO, Vec3::Y);
 
     com.spawn_bundle(Camera3dBundle {
         transform,
@@ -54,7 +54,7 @@ fn explore_enter (
             ..default()
         }),
         ..default()
-    }).insert_bundle(PickingCameraBundle::default());
+    }).insert_bundle(PickingCameraBundle::default()).insert(ExploreContents {});
 
     let mut force_graph: ForceGraph<Entity, f32> = ForceGraph::default();
 
@@ -225,21 +225,20 @@ q_entity_list: Query<&EntityList>) {
                         ev_tp.send(JumpToTop {});
                     },
                     ExploreButton::Merge => {
-                        let vec_entity = page.selections.iter().map(|e|{
+                        let vec_entity: HashSet<Entity> = page.selections.iter().map(|e|{
                             if let Ok(_) = q_fragment.get(e.clone()) {
-                                let inc = game.neighbor_graph.edges_directed(game.neighbor_graph_ids.get(e).unwrap().clone(), petgraph::Direction::Incoming);
-                                let out = game.neighbor_graph.edges_directed(game.neighbor_graph_ids.get(e).unwrap().clone(), petgraph::Direction::Outgoing);
-                                inc.chain(out).map(|x| {
-                                    let w = x.weight();
-                                    (w.clone(), q_entity_list.get(w.clone()).unwrap().timestamp)
-                                }).max_by(|a, b|a.1.cmp(&b.1)).map(|x|x.0)
+                                game.fragment_to_entry.get(&e).unwrap().iter().max_by(|a, b| {
+                                    q_entity_list.get(**a).unwrap().timestamp.cmp(
+                                        &q_entity_list.get(**b).unwrap().timestamp
+                                    )
+                                }).map(|x|x.clone())
                             } else if let Ok(_) = q_entry.get(e.clone()) {
                                 Some(e.clone())
                             } else {
                                 None
                             }
-                        }).flatten().collect::<Vec<_>>();
-                        ev_np.send(JumpToNewPage { entry_ids: vec_entity });
+                        }).flatten().collect();
+                        ev_np.send(JumpToNewPage { entry_ids: vec_entity.into_iter().collect() });
                     }
                 };
             },
