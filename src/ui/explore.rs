@@ -1,5 +1,6 @@
 //! UI definitions for explore.
 //! In this page, the player can explore the graph database, which represents how each pieces of texts are modified (the history database) or connected (the neighborhood database).
+//! It uses fdg-sim to calculate position of each node of the graph.
 
 use std::f32::consts::PI;
 
