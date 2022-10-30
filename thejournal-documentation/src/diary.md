@@ -18,7 +18,7 @@ To store various kinds of data, programmers can "tag" each entity with a custom 
 
 ### System
 
-`System` is a special type of Rust functions that can be registered 
+`System` is a special type of Rust functions that can be registered into 
 
 ### Resource
 
