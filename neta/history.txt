@@ -107,3 +107,10 @@ Wanted to use scene, but Vec<Entity> doesn't work well. → maybe use MapEntitie
 
 [2022-10-27]
 documentation - use mdbook, as well as rustdoc. It seemsa that these two are different documentation programs. The former is suited for describing "overview", "tutorial" or "example" things, and the latter is suited for API documentation?
+
+[2022-10-30]
+generate json schema from file → https://stackoverflow.com/questions/7341537/tool-to-generate-json-schema-from-json-data
+
+generate rust struct from schema → https://jsontypedef.com/docs/rust-codegen/
+
+こんなのもあった → https://crates.io/crates/json_typegen_cli
