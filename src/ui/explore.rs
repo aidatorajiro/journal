@@ -5,7 +5,7 @@ use bevy::{prelude::*, utils::HashMap, render::camera::Projection};
 use bevy_mod_picking::{PickingCameraBundle, PickableBundle, Selection, PickingSystem};
 use petgraph::graph::NodeIndex;
 use rand::random;
-use crate::{typedef::{state::AppState, event::JumpToExplore, resource::{ExploreState, GameGraph}, component::{ExploreContents, ExploreCube, Fragment, FragmentContents}}, utils::graph::{make_force_graph_nodes, make_force_graph_edges}, constants::style::{EXPLORE_CUBE_CLICKED, EXPLORE_CUBE_HOVERED, EXPLORE_CUBE_NONE, EXPLORE_CUBE_SELECTED}};
+use crate::{typedef::{state::AppState, event::JumpToExplore, resource::{ExploreState, GameGraph}, component::{ExploreContents, ExploreCube, Fragment, FragmentContents, ExploreFragmentText, EntityList, Entry}}, utils::graph::{make_force_graph_nodes, make_force_graph_edges}, constants::style::{EXPLORE_CUBE_CLICKED, EXPLORE_CUBE_HOVERED, EXPLORE_CUBE_NONE, EXPLORE_CUBE_SELECTED, TOPBTN_TEXT_COLOR, EXPLORE_TEXT_COLOR, EXPLORE_CUBE_SIZE}};
 
 use fdg_sim::{ForceGraph, ForceGraphHelper, Simulation, SimulationParameters, Dimensions, force::{fruchterman_reingold_weighted}};
 
@@ -22,7 +22,7 @@ pub fn explore_systems_exit () -> SystemSet {
 pub fn explore_systems_update () -> SystemSet {
     return SystemSet::on_update(AppState::Explore)
         .with_system(explore_update_graph)
-        .with_system(explore_update_interaction.after(PickingSystem::Highlighting)); // to avoid 
+        .with_system(explore_update_interaction);
 }
 
 fn explore_enter (
@@ -32,17 +32,24 @@ fn explore_enter (
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
     game_graph: Res<GameGraph>,
+    q_entry: Query<(Entity, &EntityList), With<Entry>>
 ) {
     let mut page_state = ExploreState::default();
 
     for _ in ev_explore.iter() {
-        // do some processing of page arguments
+        // TODO: do some processing of page arguments
     }
 
+    //let mut transform = Transform::from_xyz(0.0, 0.0, 0.0).looking_at(Vec3::X, Vec3::Z);
+    //transform.rotate_local_x(2.0*PI*rand::random::<f32>());
+    //transform.rotate_local_y(2.0*PI*rand::random::<f32>());
+
+    let transform = Transform::from_xyz(0.0, 0.0, 0.0).looking_at(Vec3::X, Vec3::Z);
+
     com.spawn_bundle(Camera3dBundle {
-        transform: Transform::from_xyz(0.0, 0.0, 25.0).looking_at(Vec3::ZERO, Vec3::X),
+        transform,
         projection: Projection::Perspective(PerspectiveProjection {
-            fov: PI / 2.0,
+            fov: PI / 1.5,
             ..default()
         }),
         ..default()
@@ -62,11 +69,17 @@ fn explore_enter (
 
     make_force_graph_edges(&mut force_graph, &game_graph.history_graph, &map_ent_idx, |_, _, _, _| 1.0);
 
+    for (entry_id, l) in q_entry.iter() {
+        for fragment_id in &l.entities {
+            force_graph.add_edge(map_ent_idx.get(&entry_id).unwrap().clone(), map_ent_idx.get(fragment_id).unwrap().clone(), 1.0);
+        }
+    }
+
     // ↑ END force-graph generation ↑
 
     for e in force_graph.node_weights() {
         com.spawn_bundle(PbrBundle {
-            mesh: meshes.add(Mesh::from(shape::Cube { size: 0.3 })),
+            mesh: meshes.add(Mesh::from(shape::Cube { size: EXPLORE_CUBE_SIZE })),
             material: materials.add(EXPLORE_CUBE_NONE.into()),
             transform: Transform::from_xyz(0.0, 0.0, 0.0),
             ..default()
@@ -83,6 +96,15 @@ fn explore_enter (
     let simulation = Simulation::from_graph(force_graph, params);
 
     page_state.simulation = Some(simulation);
+
+    com.spawn_bundle(TextBundle::from_section(
+        "hello".to_string(),
+        TextStyle {
+            font: asset_server.load("NotoSansJP-Bold.otf"),
+            font_size: 40.0,
+            color: EXPLORE_TEXT_COLOR,
+        }
+    )).insert(ExploreFragmentText {});
 
     /*
     com.spawn_bundle(PointLightBundle {
@@ -127,7 +149,8 @@ fn explore_update_graph (mut q_cube: Query<(&mut Transform, &ExploreCube)>, mut 
 fn explore_update_interaction(
     mut q_cube: Query<(&Interaction, &ExploreCube, &Selection, &Handle<StandardMaterial>), Changed<Interaction>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
-    mut q_fragment: Query<&Fragment>
+    mut q_fragment: Query<&Fragment>,
+    mut q_text: Query<&mut Text, With<ExploreFragmentText>>
 ) {
     for (interaction, cube, selection, mat_handle) in q_cube.iter() {
         match interaction {
@@ -152,7 +175,10 @@ fn explore_update_interaction(
 
         if let Ok(f) = q_fragment.get(cube.fragment_id) {
             match f.contents.clone() {
-                FragmentContents::TextData { data } => {},
+                FragmentContents::TextData { data } => {
+                    let mut txt = q_text.single_mut();
+                    txt.sections[0].value = data;
+                },
                 FragmentContents::Code { data, language } => todo!(),
                 FragmentContents::URL { data } => todo!(),
                 FragmentContents::Image { data } => todo!(),

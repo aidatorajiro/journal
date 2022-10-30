@@ -20,6 +20,8 @@ pub mod style {
     pub const EXPLORE_CUBE_HOVERED: Color = Color::rgb(216.0/256.0, 114.0/256.0, 194.0/256.0);
     pub const EXPLORE_CUBE_NONE: Color = Color::rgb(3.0/256.0, 30.0/256.0, 7.0/256.0);
     pub const EXPLORE_CUBE_SELECTED: Color = Color::rgb(138.0/256.0, 206.0/256.0, 153.0/256.0);
+    pub const EXPLORE_TEXT_COLOR: Color = Color::rgba(1.0, 1.0, 1.0, 0.4);
+    pub const EXPLORE_CUBE_SIZE: f32 = 0.3;
 }
 
 pub mod save {
