@@ -2,6 +2,10 @@
 name = "thejournal"
 version = "0.1.0"
 edition = "2021"
+authors = ["Torajiro Aida <kawarusosu@zoho.com>"]
+description = "Non-linear note-taking app using Rust and Bevy"
+documentation = "https://docs.rs/thejournal"
+readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
