@@ -51,7 +51,7 @@ pub fn run_the_journal() {
             resizable: false,
             ..default()
         })
-        .insert_resource(ClearColor(Color::rgb(57.0/256.0, 209.0/256.0, 239.0/256.0)))
+        .insert_resource(ClearColor(Color::rgb(37.0/256.0, 108.0/256.0, 122.0/256.0)))
 
         // Type registration for loading: also look at journalmanage.rs for type registration for saving
         .register_type::<Entity>()
