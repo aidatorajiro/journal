@@ -9,7 +9,7 @@ This is a non-linear note-taking app using Rust and Bevy.
 - assets - application assets
 - dev-memos - dev diary
 - src - source code
-- thejournal-documentation - mdbook documentation
+- thejournal-documentation - mdbook documentation (project report)
 - backup.sh - backup the save data to google drive using restic and rclone
 - generate_facebook.sh - automatically generate typedef from Facebook JSON backup files
 - mdbook.sh - generate mdbook documentation (different from rustdoc documentation)
