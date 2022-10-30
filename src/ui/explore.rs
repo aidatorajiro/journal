@@ -23,7 +23,8 @@ pub fn explore_systems_update () -> SystemSet {
     return SystemSet::on_update(AppState::Explore)
         .with_system(explore_update_graph)
         .with_system(explore_update_interaction)
-        .with_system(explore_update_buttons);
+        .with_system(explore_update_buttons)
+        .with_system(keyboard_input);
 }
 
 fn explore_enter (
@@ -340,4 +341,17 @@ fn explore_update_interaction(
 
     let mut txt = q_text.single_mut();
     txt.sections[0].value = chunk_string(hover_txt, 25);
+}
+
+fn keyboard_input(
+    keys: Res<Input<KeyCode>>,
+    mut q_cam: Query<&mut Transform, With<Camera3d>>
+) {
+    let mut tr = q_cam.single_mut();
+    if keys.pressed(KeyCode::Q) {
+        tr.translation.z += 0.1;
+    }
+    if keys.pressed(KeyCode::W) {
+        tr.translation.z -= 0.1;
+    }
 }
