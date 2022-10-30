@@ -26,6 +26,7 @@ pub fn newpage_systems_update () -> SystemSet {
     return SystemSet::on_update(AppState::NewPage).with_system(newpage_update).with_system(watch_sync_fragments_done.before(handle_sync_fragments));
 }
 
+/// Initialize this UI page.
 fn get_initial_state_with_ids (q_list: &Query<&EntityList>, entry_ids: Vec<Entity>) -> NewPageState {
     let entry_clone = entry_ids.iter().map(|entry| {
         match q_list.get(entry.clone()) {

@@ -3,7 +3,7 @@ pub mod systems {
 
     use std::{path::Path, fs::{self, File}, io::Write};
 
-    use bevy::{prelude::*, reflect::TypeRegistry, tasks::IoTaskPool};
+    use bevy::{prelude::*, reflect::TypeRegistry, tasks::IoTaskPool, utils::HashSet};
     use crate::{typedef::{event::*, resource::GameGraph, resource::{FragmentClone, StartupManagement}, state::AppState, component::{GameGraphDummy, FragmentContents, Fragment, EntityList, Entry, Tag, TagEvent, TagEventAction}}, utils::basic::*, constants::save::STATE_FILE, journalmanage::inner::{convert_encoded_to_graph, convert_graph_to_encoded}};
 
     use super::inner::{add_entry, add_fragment};
@@ -95,7 +95,8 @@ pub mod systems {
             neighbor_graph,
             neighbor_graph_ids,
             history_graph,
-            history_graph_ids
+            history_graph_ids,
+            fragment_to_entry: d.fragment_to_entry.clone()
         };
 
         commands.entity(e).despawn();
@@ -148,6 +149,7 @@ pub mod systems {
         let dummy = GameGraphDummy {
             neighbor_graph: convert_graph_to_encoded(graph.neighbor_graph.clone()),
             history_graph: convert_graph_to_encoded(graph.history_graph.clone()),
+            fragment_to_entry: graph.fragment_to_entry.clone()
         };
 
         world.spawn().insert(dummy);
@@ -155,6 +157,9 @@ pub mod systems {
         // Register types for saving
 
         let type_registry = TypeRegistry::default();
+        type_registry.write().register::<HashSet<Entity>>();
+        type_registry.write().register_type_data::<HashSet<Entity>, ReflectSerialize>();
+        type_registry.write().register_type_data::<HashSet<Entity>, ReflectDeserialize>();
         type_registry.write().register::<Entity>();
         type_registry.write().register_type_data::<Entity, ReflectSerialize>();
         type_registry.write().register_type_data::<Entity, ReflectDeserialize>();
@@ -199,7 +204,7 @@ pub mod systems {
 mod inner {
     //! Event and Data management for Journal data structure - utility functions for fragment data/graph
 
-    use bevy::{prelude::*, utils::HashMap};
+    use bevy::{prelude::*, utils::{HashMap, HashSet}};
     use petgraph::{Graph, graph::NodeIndex};
     use crate::typedef::{resource::*, component::*};
     use core::hash::Hash;
@@ -244,7 +249,15 @@ mod inner {
         graph.history_graph_ids.insert(id_entry, id_node);
 
         if let Some(mut id_from) = entities.get(0) {
+            if graph.fragment_to_entry.get(id_from).is_none() {
+                graph.fragment_to_entry.insert(id_from.clone(), HashSet::new());
+            }
+            graph.fragment_to_entry.get_mut(&id_from).unwrap().insert(id_entry);
             for id_to in entities.iter().skip(1) {
+                if graph.fragment_to_entry.get(id_to).is_none() {
+                    graph.fragment_to_entry.insert(id_to.clone(), HashSet::new());
+                }
+                graph.fragment_to_entry.get_mut(&id_to).unwrap().insert(id_entry);
                 let a = graph.neighbor_graph_ids[id_from];
                 let b = graph.neighbor_graph_ids[id_to];
                 graph.neighbor_graph.add_edge(a, b, id_entry);

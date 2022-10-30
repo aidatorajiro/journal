@@ -14,6 +14,7 @@ use assets::loader::RawDataLoader;
 
 use bevy::app::AppExit;
 use bevy::reflect::{ReflectSerialize, ReflectDeserialize};
+use bevy::utils::HashSet;
 use bevy::window::PresentMode;
 use bevy::window::WindowClosed;
 use bevy::winit::WinitSettings;
@@ -54,6 +55,9 @@ pub fn run_the_journal() {
 
         // Type registration for loading: also look at journalmanage.rs for type registration for saving
         .register_type::<Entity>()
+        .register_type::<HashSet<Entity>>()
+        .register_type_data::<HashSet<Entity>, ReflectSerialize>()
+        .register_type_data::<HashSet<Entity>, ReflectDeserialize>()
         .register_type::<FragmentContents>()
         .register_type_data::<FragmentContents, ReflectSerialize>()
         .register_type_data::<FragmentContents, ReflectDeserialize>()
@@ -80,7 +84,6 @@ pub fn run_the_journal() {
         .insert_resource(WinitSettings::desktop_app())
 
         // register events
-        .add_event::<AddFragments>()
         .add_event::<SyncFragments>()
         .add_event::<SyncFragmentsDone>()
         .add_event::<JumpToNewPage>()
@@ -101,7 +104,6 @@ pub fn run_the_journal() {
         .add_startup_system(load_scene_system.exclusive_system())
         .add_system(load_graph_system)
         .add_system(save_scene_system.exclusive_system())
-        .add_system(system_drag_and_drop)
         .add_system_set(ui_manage_systems())
 
         // journal manage
@@ -142,20 +144,6 @@ fn window_closed_handler(mut ev: EventReader<WindowClosed>, mut quit: EventWrite
     for e in ev.iter() {
         if e.id.is_primary() {
             quit.send(AppExit);
-        }
-    }
-}
-
-/// Event listener for file drag and drop event.
-fn system_drag_and_drop(
-    mut dnd_ev: EventReader<FileDragAndDrop>
-) {
-    for ev in dnd_ev.iter() {
-        println!("{:?}", ev);
-        match ev {
-            FileDragAndDrop::DroppedFile { .. } => {}
-            FileDragAndDrop::HoveredFile { .. } => {},
-            FileDragAndDrop::HoveredFileCancelled { .. } => {},
         }
     }
 }

@@ -1,4 +1,5 @@
 //! Type definitions (Component).
+use bevy::utils::HashMap;
 use bevy::{prelude::*, window::WindowId, utils::HashSet, reflect::FromReflect};
 use petgraph::graph::NodeIndex;
 use petgraph::graph::EdgeIndex;
@@ -32,6 +33,12 @@ pub enum NewPageButton {
     Save
 }
 
+#[derive(Component, PartialEq, Eq)]
+pub enum ExploreButton {
+    Return,
+    Merge
+}
+
 /// Contents on "new page" tab. Used to handle page switch.
 #[derive(Component)]
 pub struct NewPageContents {}
@@ -46,7 +53,7 @@ pub struct ExploreContents;
 #[derive(Component)]
 pub struct ExploreCube {
     pub force_graph_index: NodeIndex,
-    pub fragment_id: Entity
+    pub entity_id: Entity
 }
 
 #[derive(Component)]
@@ -151,7 +158,8 @@ pub enum TagEventAction { #[default] AddEntity, RemoveEntity }
 #[reflect(Component, MapEntities)]
 pub struct GameGraphDummy {
     pub neighbor_graph: EncodedGraph<Entity, Entity>,
-    pub history_graph: EncodedGraph<Entity, ()>
+    pub history_graph: EncodedGraph<Entity, ()>,
+    pub fragment_to_entry: HashMap<Entity, HashSet<Entity>>
 }
 
 pub type EncodedGraph<A, B> = (Vec<A>, Vec<(usize, usize, B)>);
@@ -168,6 +176,21 @@ impl MapEntities for GameGraphDummy {
         for e in &mut self.history_graph.0 {
             *e = entity_map.get(*e)?;
         }
+
+        let mut mapped_hm: HashMap<Entity, HashSet<Entity>> = HashMap::new();
+
+        for (entry, hs) in &self.fragment_to_entry {
+            let mapped_entry = entity_map.get(entry.clone())?;
+            let mut mapped_hs: HashSet<Entity> = HashSet::new();
+            for fragment in hs {
+                let mapped_fragment = entity_map.get(*fragment)?;
+                mapped_hs.insert(mapped_fragment);
+            }
+            mapped_hm.insert(mapped_entry, mapped_hs);
+        }
+
+        self.fragment_to_entry = mapped_hm;
+
         Ok(())
     }
 }

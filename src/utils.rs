@@ -3,6 +3,19 @@ pub mod basic {
 
     use egui::{Ui, FontTweak, FontFamily, FontData};
 
+    pub fn chunk_string(str: String, n: usize) -> String {
+        let mut v: String = String::new();
+
+        for (i, c) in str.chars().enumerate() {
+            if i != 0 && i % n == 0 {
+                v += "\n";
+            }
+            v += c.to_string().as_str();
+        }
+
+        return v;
+    }
+
     /// Returns current timestamp in second.
     pub fn create_timestamp() -> u64 {
         return SystemTime::now()

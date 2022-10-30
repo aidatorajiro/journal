@@ -1,6 +1,6 @@
 //! Type definitions (Resource).
 
-use bevy::{prelude::*, utils::HashMap};
+use bevy::{prelude::*, utils::{HashMap, HashSet}};
 use fdg_sim::Simulation;
 use petgraph::{Graph, graph::NodeIndex};
 
@@ -26,7 +26,9 @@ pub struct GameGraph {
     /// Must not have connection between Fragment and Entry, Entry and History, or Fragment and History, as this violates conceptual hierarchy.
     pub history_graph: Graph<Entity, ()>,
     /// entity id to node id
-    pub history_graph_ids: HashMap<Entity, NodeIndex>
+    pub history_graph_ids: HashMap<Entity, NodeIndex>,
+    /// fragment to entry map
+    pub fragment_to_entry: HashMap<Entity, HashSet<Entity>>
 }
 
 /// State for newpage Page.
@@ -41,7 +43,9 @@ pub struct NewPageState {
 #[derive(Default)]
 /// State for Explore Page.
 pub struct ExploreState {
-    pub simulation: Option<Simulation<Entity, f32>>
+    pub simulation: Option<Simulation<Entity, f32>>,
+    pub selections: HashSet<Entity>,
+    pub hover_id: Option<Entity>
 }
 
 /// A data structure that represents either (1) existing fragment or (2) modified fragment or (3) completely new fragment

@@ -3,16 +3,6 @@ use bevy::prelude::*;
 
 use super::{component::FragmentContents, resource::FragmentClone};
 
-/// This event will yield a new entry, from scratch or based on an existing entry.
-#[derive(Debug)]
-pub struct AddFragments {
-    /// List of texts to add.
-    pub contents: Vec<FragmentContents>,
-    /// None for creating a new entry from scratch. Some for append to an existing entry (please provide Entity ID for the entry).
-    /// In both cases, a new entry will be created, because entries should be immutable.
-    pub entry: Option<Entity>
-}
-
 /// Send a request to add a new entry.
 /// ID of the original entries and a list of FragmentClone, which is used to identify which fragment is modified from which, must be provided.
 #[derive(Debug)]

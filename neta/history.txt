@@ -114,3 +114,5 @@ generate json schema from file → https://stackoverflow.com/questions/7341537/t
 generate rust struct from schema → https://jsontypedef.com/docs/rust-codegen/
 
 こんなのもあった → https://crates.io/crates/json_typegen_cli
+
+https://stackoverflow.com/questions/50008296/facebook-json-badly-encoded
