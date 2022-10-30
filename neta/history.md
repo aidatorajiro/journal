@@ -1,18 +1,18 @@
 Journal History
 
 [TODO]
-🔺一旦諦め TODO: Looking for typesetting and hopefully COLR support...
+❌一旦諦め TODO: Looking for typesetting and hopefully COLR support...
     oh! that looks nice!  https://github.com/dfrg/swash
 ❌ TODO: 分解やタグ付けなどの、データを整える作業を一種のゲームとして楽しむ、みたいな...
 ❌ TODO: Making 3D atmosphere?
 ❌ TODO: id 付番 or 表示 => mozc dict をベースにする
     無機的なIDではなく、さまざまな文脈と繋がることのできるID。一方でuniquenessなどの用件も携えている
 ❌ TODO: タグづけゲーム
-❌ TODO: 分岐を作るゲーム　異なるjournalのfragment同士をくっつけるpathを作る。そうして新たなjournalが誕生する。
+🟢 TODO: 分岐を作るゲーム　異なるjournalのfragment同士をくっつけるpathを作る。そうして新たなjournalが誕生する。
     [そういえば、fragment自体にIDをつけなきゃね... fragment自体の分岐・合流・他のfragmentとの結合によって無数のpathができる仕組みを作りたい]
-❌ TODO: データserialize & deserialize保存メカニズム！これがないと始まらないよね...
-❌ TODO: addメモ 人力でメモを追加する
-❌ TODO: migrate facebookやicloudなどからデータを引っ張ってくる
+🟢 TODO: データserialize & deserialize保存メカニズム！これがないと始まらないよね...
+🟢 TODO: addメモ 人力でメモを追加する
+🟢 TODO: migrate facebookからデータを引っ張ってくる
 
 [2022-09-22]
 when i open VSCode i couldnt use extension...

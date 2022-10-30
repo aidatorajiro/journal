@@ -1,2 +1,2 @@
-# Motive & Rationale: Why use Bevy?
+# Rationale: Why use Bevy?
 

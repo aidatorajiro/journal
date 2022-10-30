@@ -1,5 +1,6 @@
 # Summary
 
 - [Introduction](./intro.md)
-- [Motive & Rationale](./rationale.md)
+- [Features](./features.md)
 - [Dev Diary](./diary.md)
+- [Conclusion](./conclusion.md)
