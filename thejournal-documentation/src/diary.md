@@ -35,7 +35,7 @@ fn top_button_update_system(
 
 ### Resource
 
-Although you can store any data within Bevy using `Entity` and `Component`, you can also use `Resource`, which is also a global data storage
+Although you can store any data within Bevy using `Entity` and `Component`, you can also use `Resource`, which also works as a global data storage.
 
 ### Parent-Children
 
