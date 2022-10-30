@@ -1,3 +1,5 @@
+//! Utils: small functions that helps the entire application!
+
 pub mod basic {
     use std::{time::{SystemTime, UNIX_EPOCH}, borrow::Cow};
 

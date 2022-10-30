@@ -1,4 +1,6 @@
 //! Type definitions (Events).
+//! Events are used when bevy systems communicate each other. For example, it is used for page transition.
+
 use bevy::prelude::*;
 
 use super::{component::FragmentContents, resource::FragmentClone};

@@ -1,4 +1,7 @@
-//! UI definitions for explore
+//! UI definitions for migrate
+//! This page will perform the operation that will import data from other service (such as Facebook)
+//! Currently, only Facebook backup data (in Json format) is supported.
+
 use std::{fs, path::{Path, PathBuf}, char::decode_utf16};
 
 use bevy::prelude::*;

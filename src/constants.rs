@@ -1,3 +1,5 @@
+//! Constants: constant definitions, such as color definitions.
+
 pub mod window {
     //! Constants Definition: Window
     pub const SECONDARY_EGUI_PASS: &str = "secondary_egui_pass";

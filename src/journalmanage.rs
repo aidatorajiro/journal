@@ -1,3 +1,5 @@
+//! Journalmanage: Manages the app's main database (graph database) and save/load feature.
+
 pub mod systems {
     //! Event and Data management for Journal data structure - systems
 

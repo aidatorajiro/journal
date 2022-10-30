@@ -1,3 +1,5 @@
+//! Router: handles page transition events.
+
 use bevy::prelude::*;
 
 use crate::typedef::{event::*, state::AppState};

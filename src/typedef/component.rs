@@ -1,4 +1,6 @@
 //! Type definitions (Component).
+//! Components are main bevy feature that allows each [`Entity`] to have different kinds of data, and tagging/filtering for [`Entity`].
+
 use bevy::utils::HashMap;
 use bevy::{prelude::*, window::WindowId, utils::HashSet, reflect::FromReflect};
 use petgraph::graph::NodeIndex;

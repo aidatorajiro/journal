@@ -1,3 +1,5 @@
+//! Asset loader and its data structures
+
 pub mod loader {
     //! Asset Loader Extension for Bevy
     

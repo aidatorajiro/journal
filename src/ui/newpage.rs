@@ -1,4 +1,6 @@
 //! UI definitions for newpage
+//! In this page, the player can create a new note entry or edit existing one.
+//! A note entry is separated into small pieces, called [`Fragment`], to track the history of modification, splitting or merging on different pieces from different notes.
 
 // TODO: "split" functionality
 

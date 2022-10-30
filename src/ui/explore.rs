@@ -1,4 +1,6 @@
-//! UI definitions for explore
+//! UI definitions for explore.
+//! In this page, the player can explore the graph database, which represents how each pieces of texts are modified (the history database) or connected (the neighborhood database).
+
 use std::f32::consts::PI;
 
 use bevy::{prelude::*, utils::{HashMap, HashSet}, render::camera::Projection, ui::FocusPolicy};

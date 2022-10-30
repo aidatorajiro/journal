@@ -1,4 +1,6 @@
 //! UI definitions for toppage
+//! The app's start page.
+
 use bevy::{prelude::*, ui::FocusPolicy};
 
 use crate::{constants::style::*, typedef::{component::*, event::*, state::*}};

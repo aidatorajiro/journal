@@ -1,4 +1,5 @@
 //! Type definitions (Resource).
+//! Resource is a bevy feature that act as a singleton global data storage.
 
 use bevy::{prelude::*, utils::{HashMap, HashSet}};
 use fdg_sim::Simulation;
