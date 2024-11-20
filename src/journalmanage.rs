@@ -158,6 +158,19 @@ pub mod systems {
 
         // Register types for saving
 
+        let mut builder = DynamicSceneBuilder::from_world(&world);
+
+        let scene =
+            builder
+            .allow::<Fragment>()
+            .allow::<Fragment>()
+            .allow::<EntityList>()
+            .allow::<Entry>()
+            .allow::<Tag>()
+            .allow::<GameGraphDummy>()
+            .extract_entities(world.iter_entities().map(|x| x.id()))
+            .build();
+
         let mut type_registry = TypeRegistry::default();
         type_registry.register::<HashSet<Entity>>();
         type_registry.register_type_data::<HashSet<Entity>, ReflectSerialize>();
@@ -181,7 +194,6 @@ pub mod systems {
 
         // generate serialized data
 
-        let scene = DynamicScene::from_world(&world);
         let serialized_scene = match scene.serialize(&type_registry) {Ok(x) => x, Err(x) => {println!("{:?}", x); return}};
 
         println!("Success! Cleaning...");
