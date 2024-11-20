@@ -12,27 +12,15 @@ use crate::typedef::{state::AppState, migration::facebook::{comments, self}, eve
 
 use super::inner::use_default_2d_camera;
 
-pub fn migrate_systems_enter () -> SystemSet {
-    return SystemSet::on_enter(AppState::Migrate).with_system(use_default_2d_camera).with_system(migrate_enter);
-}
-
-pub fn migrate_systems_exit () -> SystemSet {
-    return SystemSet::on_exit(AppState::Migrate).with_system(migrate_exit);
-}
-
-pub fn migrate_systems_update () -> SystemSet {
-    return SystemSet::on_update(AppState::Migrate).with_system(migrate_update).with_system(system_drag_and_drop);
-}
-
-fn migrate_enter () {
+pub fn migrate_enter () {
 
 }
 
-fn migrate_exit () {
+pub fn migrate_exit () {
 
 }
 
-fn migrate_update () {
+pub fn migrate_update () {
 
 }
 
@@ -56,15 +44,15 @@ fn hello (str: Vec<u8>) -> String {
 }
 
 /// Event listener for file drag and drop event.
-fn system_drag_and_drop(
+pub fn system_drag_and_drop(
     mut dnd_ev: EventReader<FileDragAndDrop>,
     mut frag_ev: EventWriter<SyncFragments>
 ) {
-    for ev in dnd_ev.iter() {
+    for ev in dnd_ev.read() {
         println!("{:?}", ev);
         match ev {
-            FileDragAndDrop::DroppedFile { id, path_buf  } => {
-                if let Some((path_comments, path_posts)) = try_facebook(path_buf) {
+            FileDragAndDrop::DroppedFile { window, path_buf  } => {
+                if let Some((path_comments, path_posts)) = try_facebook(&path_buf) {
                     let str_comment = hello(fs::read(path_comments).unwrap());
                     fs::write(PathBuf::new().join("hellohello"), str_comment.clone());
                     let res_comment: Result<facebook::comments::Root, serde_json::Error> = serde_json::from_str(&str_comment);
@@ -107,12 +95,12 @@ fn system_drag_and_drop(
                     }
                 }
             }
-            FileDragAndDrop::HoveredFile { id, path_buf  } => {
-                if try_facebook(path_buf).is_some() {
+            FileDragAndDrop::HoveredFile { window, path_buf  } => {
+                if try_facebook(&path_buf).is_some() {
                     println!("Facebook detected!");
                 }
             },
-            FileDragAndDrop::HoveredFileCancelled { .. } => {},
+            FileDragAndDrop::HoveredFileCanceled { .. } => {},
         }
     }
 }

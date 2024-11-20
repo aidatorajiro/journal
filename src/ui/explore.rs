@@ -5,7 +5,7 @@
 use std::f32::consts::PI;
 
 use bevy::{prelude::*, utils::{HashMap, HashSet}, render::camera::Projection, ui::FocusPolicy};
-use bevy_mod_picking::{PickingCameraBundle, PickableBundle, Selection, PickingSystem};
+use bevy_mod_picking::{prelude::PickSelection, PickableBundle};
 use petgraph::graph::NodeIndex;
 use rand::random;
 use crate::{typedef::{state::AppState, event::{JumpToExplore, JumpToNewPage, JumpToTop}, resource::{ExploreState, GameGraph}, component::{ExploreContents, ExploreCube, Fragment, FragmentContents, ExploreFragmentText, EntityList, Entry, ExploreButton}}, utils::{graph::{make_force_graph_nodes, make_force_graph_edges}, basic::chunk_string}, constants::style::{EXPLORE_CUBE_CLICKED, EXPLORE_CUBE_HOVERED, EXPLORE_CUBE_NONE, EXPLORE_CUBE_SELECTED, TOPBTN_TEXT_COLOR, EXPLORE_TEXT_COLOR, EXPLORE_CUBE_SIZE, EXPLORE_NORMAL, TOPBTN_IMG_OVERLAY, EXPLORE_CLICK, EXPLORE_HOVER}};
@@ -14,23 +14,7 @@ use fdg_sim::{ForceGraph, ForceGraphHelper, Simulation, SimulationParameters, Di
 
 use super::inner::delete_all_camera;
 
-pub fn explore_systems_enter () -> SystemSet {
-    return SystemSet::on_enter(AppState::Explore).with_system(delete_all_camera).with_system(explore_enter);
-}
-
-pub fn explore_systems_exit () -> SystemSet {
-    return SystemSet::on_exit(AppState::Explore).with_system(explore_exit);
-}
-
-pub fn explore_systems_update () -> SystemSet {
-    return SystemSet::on_update(AppState::Explore)
-        .with_system(explore_update_graph)
-        .with_system(explore_update_interaction)
-        .with_system(explore_update_buttons)
-        .with_system(keyboard_input);
-}
-
-fn explore_enter (
+pub fn explore_enter (
     mut com: Commands,
     mut ev_explore: EventReader<JumpToExplore>,
     asset_server: Res<AssetServer>,
@@ -41,7 +25,7 @@ fn explore_enter (
 ) {
     let mut page_state = ExploreState::default();
 
-    for _ in ev_explore.iter() {
+    for _ in ev_explore.read() {
         // TODO: do some processing of page arguments
     }
 
@@ -51,14 +35,14 @@ fn explore_enter (
 
     let transform = Transform::from_xyz(0.0, 0.0, 10.0).looking_at(Vec3::ZERO, Vec3::Y);
 
-    com.spawn_bundle(Camera3dBundle {
+    com.spawn(Camera3dBundle {
         transform,
         projection: Projection::Perspective(PerspectiveProjection {
             fov: PI / 1.5,
             ..default()
         }),
         ..default()
-    }).insert_bundle(PickingCameraBundle::default()).insert(ExploreContents {});
+    }).insert(ExploreContents {});
 
     let mut force_graph: ForceGraph<Entity, f32> = ForceGraph::default();
 
@@ -82,18 +66,18 @@ fn explore_enter (
 
     // ↑ END force-graph generation ↑
 
-    let handle = materials.add(EXPLORE_CUBE_NONE.into());
+    let handle = materials.add(EXPLORE_CUBE_NONE);
 
     for e in force_graph.node_weights() {
-        com.spawn_bundle(PbrBundle {
-            mesh: meshes.add(Mesh::from(shape::Cube { size: EXPLORE_CUBE_SIZE })),
+        com.spawn(PbrBundle {
+            mesh: meshes.add(Mesh::from(Cuboid { half_size: EXPLORE_CUBE_SIZE })),
             material: handle.clone(),
             transform: Transform::from_xyz(0.0, 0.0, 0.0),
             ..default()
         }).insert(ExploreCube {
             force_graph_index: map_ent_idx.get(&e.data).unwrap().clone(),
             entity_id: e.data.clone()
-        }).insert_bundle(PickableBundle { ..default()}).insert(ExploreContents {});
+        }).insert(PickableBundle { ..default()}).insert(ExploreContents {});
     }
 
     let mut params = SimulationParameters::default();
@@ -115,21 +99,23 @@ fn explore_enter (
 
     txt.style.position_type = PositionType::Absolute;
 
-    com.spawn_bundle(txt).insert(ExploreFragmentText {}).insert(ExploreContents {});;
+    com.spawn(txt).insert(ExploreFragmentText {}).insert(ExploreContents {});;
 
-    com.spawn_bundle(NodeBundle {
+    com.spawn(NodeBundle {
         style: Style {
-            size: Size::new(Val::Percent(100.0), Val::Percent(5.0)),
+            width: Val::Percent(100.0),
+            height: Val::Percent(5.0),
             justify_content: JustifyContent::FlexEnd,
             align_items: AlignItems::FlexEnd,
             align_content: AlignContent::FlexEnd,
             flex_wrap: FlexWrap::Wrap,
             flex_direction: FlexDirection::Row,
-            position: UiRect{ left: Val::Percent(0.0), top: Val::Percent(0.0), ..default() },
+            left: Val::Percent(0.0),
+            top: Val::Percent(0.0),
             position_type: PositionType::Absolute,
             ..default()
         },
-        color: Color::NONE.into(),
+        background_color: Color::NONE.into(),
         ..default()
     }).with_children(|parent|{
         let base_w = 20.0;
@@ -138,18 +124,17 @@ fn explore_enter (
         let tags = [ExploreButton::Return, ExploreButton::Merge];
 
         for tag in tags {
-            parent.spawn_bundle(ButtonBundle {
+            parent.spawn(ButtonBundle {
                 style: Style {
-                    size: Size::new(Val::Percent(base_w), Val::Percent(base_h)),
-                    // auto position
-                    position: UiRect::all(Val::Auto),
+                    width: Val::Percent(base_w),
+                    height: Val::Percent(base_h),
                     // horizontally center child text
                     justify_content: JustifyContent::Center,
                     // vertically center child text
                     align_items: AlignItems::Center,
                     ..default()
                 },
-                color: EXPLORE_NORMAL.into(),
+                background_color: EXPLORE_NORMAL.into(),
                 ..default()
             }).with_children(|parent| {
 
@@ -158,21 +143,22 @@ fn explore_enter (
                     ExploreButton::Merge => asset_server.load("explore.png").into(),
                 };
 
-                parent.spawn_bundle(ImageBundle {
+                parent.spawn(ImageBundle {
                     style: Style {
-                        size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
-                        position: UiRect{ left: Val::Percent(0.0), top: Val::Percent(0.0), ..default() },
+                        // size: Size::new(Val::Percent(100.0), Val::Percent(100.0)), MIGRATION_TODO
+                        left: Val::Percent(0.0),
+                        top: Val::Percent(0.0),
                         position_type: PositionType::Absolute,
                         
                         ..default()
                     },
-                    color: TOPBTN_IMG_OVERLAY.into(),
+                    background_color: TOPBTN_IMG_OVERLAY.into(),
                     focus_policy: FocusPolicy::Pass,
                     image,
                     ..default()
                 });
 
-                parent.spawn_bundle(TextBundle::from_section(
+                parent.spawn(TextBundle::from_section(
                     match tag {
                         ExploreButton::Return => "Return",
                         ExploreButton::Merge => "Merge"
@@ -201,7 +187,7 @@ fn explore_enter (
     com.insert_resource::<ExploreState>(page_state);
 }
 
-fn explore_exit (q: Query<Entity, With<ExploreContents>>, mut com: Commands) {
+pub fn explore_exit (q: Query<Entity, With<ExploreContents>>, mut com: Commands) {
     com.remove_resource::<ExploreState>();
 
     for i in q.iter() {
@@ -209,8 +195,8 @@ fn explore_exit (q: Query<Entity, With<ExploreContents>>, mut com: Commands) {
     }
 }
 
-fn explore_update_buttons(mut interaction_query: Query<
-    (&Interaction, &ExploreButton, &mut UiColor),
+pub fn explore_update_buttons(mut interaction_query: Query<
+    (&Interaction, &ExploreButton, &mut BackgroundColor),
     Changed<Interaction>,
 >,
 mut ev_np: EventWriter<JumpToNewPage>,
@@ -222,7 +208,7 @@ mut q_entry: Query<&Entry, With<EntityList>>,
 q_entity_list: Query<&EntityList>) {
     for (inter, btn_attr, mut color) in interaction_query.iter_mut() {
         match *inter {
-            Interaction::Clicked => {
+            Interaction::Pressed => {
                 *color = EXPLORE_CLICK.into();
                 match btn_attr {
                     ExploreButton::Return => {
@@ -231,7 +217,7 @@ q_entity_list: Query<&EntityList>) {
                     ExploreButton::Merge => {
                         let vec_entity: HashSet<Entity> = page.selections.iter().map(|e|{
                             if let Ok(_) = q_fragment.get(e.clone()) {
-                                game.fragment_to_entry.get(&e).unwrap().iter().max_by(|a, b| {
+                                game.fragment_to_entry.get(e).unwrap().iter().max_by(|a, b| {
                                     q_entity_list.get(**a).unwrap().timestamp.cmp(
                                         &q_entity_list.get(**b).unwrap().timestamp
                                     )
@@ -256,7 +242,7 @@ q_entity_list: Query<&EntityList>) {
     }
 }
 
-fn explore_update_graph (mut q_cube: Query<(&mut Transform, &ExploreCube)>, mut page: ResMut<ExploreState>) {
+pub fn explore_update_graph (mut q_cube: Query<(&mut Transform, &ExploreCube)>, mut page: ResMut<ExploreState>) {
     if page.selections.is_empty() {
         let sim = page.simulation.as_mut().unwrap();
         sim.update(0.035);
@@ -276,8 +262,8 @@ fn explore_update_graph (mut q_cube: Query<(&mut Transform, &ExploreCube)>, mut 
     }
 }
 
-fn explore_update_interaction(
-    mut q_cube: Query<(&Interaction, &ExploreCube, &Selection)>,
+pub fn explore_update_interaction(
+    mut q_cube: Query<(&Interaction, &ExploreCube, &PickSelection)>,
     mut materials: ResMut<Assets<StandardMaterial>>,
     mut q_fragment: Query<&Fragment>,
     mut q_entry: Query<&EntityList, With<Entry>>,
@@ -291,7 +277,7 @@ fn explore_update_interaction(
 
     for (interaction, cube, selection) in q_cube.iter() {
         match interaction {
-            Interaction::Clicked => {
+            Interaction::Pressed => {
                 //let m = materials.get_mut(mat_handle).unwrap();
                 //m.emissive = EXPLORE_CUBE_CLICKED;
             },
@@ -306,7 +292,7 @@ fn explore_update_interaction(
             }
         };
         
-        if selection.selected() {
+        if selection.is_selected {
             //let m = materials.get_mut(mat_handle).unwrap();
             //m.emissive = EXPLORE_CUBE_SELECTED;
             page.selections.insert(cube.entity_id);
@@ -346,15 +332,15 @@ fn explore_update_interaction(
     txt.sections[0].value = chunk_string(hover_txt, 25);
 }
 
-fn keyboard_input(
-    keys: Res<Input<KeyCode>>,
+pub fn keyboard_input(
+    keys: Res<ButtonInput<KeyCode>>,
     mut q_cam: Query<&mut Transform, With<Camera3d>>
 ) {
     let mut tr = q_cam.single_mut();
-    if keys.pressed(KeyCode::Q) {
+    if keys.pressed(KeyCode::KeyQ) {
         tr.translation.z += 0.1;
     }
-    if keys.pressed(KeyCode::W) {
+    if keys.pressed(KeyCode::KeyW) {
         tr.translation.z -= 0.1;
     }
 }

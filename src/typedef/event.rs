@@ -7,7 +7,7 @@ use super::{component::FragmentContents, resource::FragmentClone};
 
 /// Send a request to add a new entry.
 /// ID of the original entries and a list of FragmentClone, which is used to identify which fragment is modified from which, must be provided.
-#[derive(Debug)]
+#[derive(Debug, Event)]
 pub struct SyncFragments {
     /// id of the original entries
     pub original_entries: Vec<Entity>,
@@ -15,28 +15,28 @@ pub struct SyncFragments {
     pub entry_clone: Vec<FragmentClone>
 }
 
-#[derive(Debug)]
+#[derive(Debug, Event)]
 pub struct SyncFragmentsDone {
     pub entry_id: Entity
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Event)]
 pub struct JumpToNewPage {
     pub entry_ids: Vec<Entity>
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Event)]
 pub struct JumpToExplore {
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Event)]
 pub struct JumpToLinear {
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Event)]
 pub struct JumpToMigrate {
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Event)]
 pub struct JumpToTop {
 }

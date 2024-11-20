@@ -1,9 +1,11 @@
 //! App State definitions
 //! App State is a bevy feature that helps the management of the conditions when systems are allowed to run.
 
-#[derive(Debug, Clone, Eq, PartialEq, Hash)]
+use bevy::prelude::States;
+
+#[derive(Debug, Clone, Eq, PartialEq, Hash, Default, States)]
 pub enum AppState {
-    LoadSaveData,
+    #[default] LoadSaveData,
     TopPage,
     NewPage,
     Explore,

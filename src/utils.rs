@@ -37,6 +37,7 @@ pub mod basic {
                 scale: 2.0,
                 y_offset_factor: 0.0,
                 y_offset: -6.0,
+                baseline_offset_factor: 0.0
             },
         });
         
@@ -47,6 +48,7 @@ pub mod basic {
                 scale: 2.0,
                 y_offset_factor: 0.0,
                 y_offset: -6.0,
+                baseline_offset_factor: 0.0
             },
         });
 

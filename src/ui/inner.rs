@@ -10,7 +10,7 @@ pub fn use_default_2d_camera (mut commands: Commands, q_2d: Query<Entity, With<M
         commands.entity(x).despawn_recursive()
     }
     if q_2d.is_empty() {
-        commands.spawn_bundle(Camera2dBundle::default()).insert(MainCamera2D {});
+        commands.spawn(Camera2dBundle::default()).insert(MainCamera2D {});
     }
 }
 

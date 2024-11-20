@@ -2,12 +2,12 @@
 //! Components are main bevy feature that allows each [`Entity`] to have different kinds of data, and tagging/filtering for [`Entity`].
 
 use bevy::utils::HashMap;
-use bevy::{prelude::*, window::WindowId, utils::HashSet, reflect::FromReflect};
+use bevy::{prelude::*, utils::HashSet, reflect::FromReflect};
 use petgraph::graph::NodeIndex;
 use petgraph::graph::EdgeIndex;
 use serde::{Serialize, Deserialize};
 use bevy::ecs::reflect::ReflectMapEntities;
-use bevy::ecs::entity::{MapEntities, EntityMap, MapEntitiesError};
+use bevy::ecs::entity::{MapEntities};
 
 #[derive(Component)]
 pub struct MainCamera2D;
@@ -70,7 +70,7 @@ pub struct ExploreFragmentText;
 #[derive(Component, Default)]
 pub struct SubWindow {
     pub initialized: bool,
-    pub window_id: Option<WindowId>
+    pub window_id: Option<Entity>
 }
 
 // A subwindow with memo field.
@@ -123,11 +123,10 @@ pub struct EntityList {
 }
 
 impl MapEntities for EntityList {
-    fn map_entities(&mut self, entity_map: &bevy::ecs::entity::EntityMap) -> Result<(), bevy::ecs::entity::MapEntitiesError> {
+    fn map_entities<M: EntityMapper>(&mut self, entity_mapper: &mut M) {
         for t in &mut self.entities {
-            *t=entity_map.get(*t)?
+            *t=entity_mapper.map_entity(*t)
         }
-        Ok(())
     }
 }
 
@@ -145,14 +144,14 @@ pub struct Tag {
     pub events: Vec<TagEvent>
 }
 
-#[derive(Reflect, Debug, FromReflect)]
+#[derive(Reflect, Debug)]
 pub struct TagEvent {
     pub timestamp: u64,
     pub entity: Entity,
     pub action: TagEventAction
 }
 
-#[derive(Reflect, Default, Debug, Clone, FromReflect)]
+#[derive(Reflect, Default, Debug, Clone)]
 pub enum TagEventAction { #[default] AddEntity, RemoveEntity }
 
 /// dummy hack for saving/loading GameGraph
@@ -167,32 +166,31 @@ pub struct GameGraphDummy {
 pub type EncodedGraph<A, B> = (Vec<A>, Vec<(usize, usize, B)>);
 
 impl MapEntities for GameGraphDummy {
-    fn map_entities(&mut self, entity_map: &EntityMap) -> Result<(), MapEntitiesError> {
+    fn map_entities<M: EntityMapper>(&mut self, entity_mapper: &mut M) {
         for e in &mut self.neighbor_graph.0 {
-            *e = entity_map.get(*e)?;
+            *e = entity_mapper.map_entity(*e);
         }
+
         for (_, _, e) in &mut self.neighbor_graph.1 {
-            *e = entity_map.get(*e)?;
+            *e = entity_mapper.map_entity(*e);
         }
 
         for e in &mut self.history_graph.0 {
-            *e = entity_map.get(*e)?;
+            *e = entity_mapper.map_entity(*e);
         }
 
         let mut mapped_hm: HashMap<Entity, HashSet<Entity>> = HashMap::new();
 
         for (entry, hs) in &self.fragment_to_entry {
-            let mapped_entry = entity_map.get(entry.clone())?;
+            let mapped_entry = entity_mapper.map_entity(entry.clone());
             let mut mapped_hs: HashSet<Entity> = HashSet::new();
             for fragment in hs {
-                let mapped_fragment = entity_map.get(*fragment)?;
+                let mapped_fragment = entity_mapper.map_entity(*fragment);
                 mapped_hs.insert(mapped_fragment);
             }
             mapped_hm.insert(mapped_entry, mapped_hs);
         }
 
         self.fragment_to_entry = mapped_hm;
-
-        Ok(())
     }
 }

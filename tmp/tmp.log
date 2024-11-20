@@ -1,0 +1,1104 @@
+thejournal v0.1.0 (/home/ta/externals/journal)
+├── anyhow v1.0.93
+├── bevy v0.14.2
+│   └── bevy_internal v0.14.2
+│       ├── bevy_a11y v0.14.2
+│       │   ├── accesskit v0.14.0
+│       │   ├── bevy_app v0.14.2
+│       │   │   ├── bevy_derive v0.14.2 (proc-macro)
+│       │   │   │   ├── bevy_macro_utils v0.14.2
+│       │   │   │   │   ├── proc-macro2 v1.0.89
+│       │   │   │   │   │   └── unicode-ident v1.0.14
+│       │   │   │   │   ├── quote v1.0.37
+│       │   │   │   │   │   └── proc-macro2 v1.0.89 (*)
+│       │   │   │   │   ├── syn v2.0.87
+│       │   │   │   │   │   ├── proc-macro2 v1.0.89 (*)
+│       │   │   │   │   │   ├── quote v1.0.37 (*)
+│       │   │   │   │   │   └── unicode-ident v1.0.14
+│       │   │   │   │   └── toml_edit v0.22.22
+│       │   │   │   │       ├── indexmap v2.3.0
+│       │   │   │   │       │   ├── equivalent v1.0.1
+│       │   │   │   │       │   └── hashbrown v0.14.5
+│       │   │   │   │       ├── toml_datetime v0.6.8
+│       │   │   │   │       └── winnow v0.6.20
+│       │   │   │   ├── quote v1.0.37 (*)
+│       │   │   │   └── syn v2.0.87 (*)
+│       │   │   ├── bevy_ecs v0.14.2
+│       │   │   │   ├── arrayvec v0.7.6
+│       │   │   │   ├── bevy_ecs_macros v0.14.2 (proc-macro)
+│       │   │   │   │   ├── bevy_macro_utils v0.14.2 (*)
+│       │   │   │   │   ├── proc-macro2 v1.0.89 (*)
+│       │   │   │   │   ├── quote v1.0.37 (*)
+│       │   │   │   │   └── syn v2.0.87 (*)
+│       │   │   │   ├── bevy_ptr v0.14.2
+│       │   │   │   ├── bevy_reflect v0.14.2
+│       │   │   │   │   ├── bevy_ptr v0.14.2
+│       │   │   │   │   ├── bevy_reflect_derive v0.14.2 (proc-macro)
+│       │   │   │   │   │   ├── bevy_macro_utils v0.14.2 (*)
+│       │   │   │   │   │   ├── proc-macro2 v1.0.89 (*)
+│       │   │   │   │   │   ├── quote v1.0.37 (*)
+│       │   │   │   │   │   ├── syn v2.0.87 (*)
+│       │   │   │   │   │   └── uuid v1.11.0
+│       │   │   │   │   │       └── getrandom v0.2.15
+│       │   │   │   │   │           ├── cfg-if v1.0.0
+│       │   │   │   │   │           └── libc v0.2.164
+│       │   │   │   │   ├── bevy_utils v0.14.2
+│       │   │   │   │   │   ├── ahash v0.8.11
+│       │   │   │   │   │   │   ├── cfg-if v1.0.0
+│       │   │   │   │   │   │   ├── getrandom v0.2.15
+│       │   │   │   │   │   │   │   ├── cfg-if v1.0.0
+│       │   │   │   │   │   │   │   └── libc v0.2.164
+│       │   │   │   │   │   │   ├── once_cell v1.20.2
+│       │   │   │   │   │   │   └── zerocopy v0.7.35
+│       │   │   │   │   │   │       ├── byteorder v1.5.0
+│       │   │   │   │   │   │       └── zerocopy-derive v0.7.35 (proc-macro)
+│       │   │   │   │   │   │           ├── proc-macro2 v1.0.89 (*)
+│       │   │   │   │   │   │           ├── quote v1.0.37 (*)
+│       │   │   │   │   │   │           └── syn v2.0.87 (*)
+│       │   │   │   │   │   │   [build-dependencies]
+│       │   │   │   │   │   │   └── version_check v0.9.5
+│       │   │   │   │   │   ├── bevy_utils_proc_macros v0.14.2 (proc-macro)
+│       │   │   │   │   │   │   ├── proc-macro2 v1.0.89 (*)
+│       │   │   │   │   │   │   ├── quote v1.0.37 (*)
+│       │   │   │   │   │   │   └── syn v2.0.87 (*)
+│       │   │   │   │   │   ├── hashbrown v0.14.5
+│       │   │   │   │   │   │   ├── ahash v0.8.11 (*)
+│       │   │   │   │   │   │   ├── allocator-api2 v0.2.20
+│       │   │   │   │   │   │   └── serde v1.0.215
+│       │   │   │   │   │   │       └── serde_derive v1.0.215 (proc-macro)
+│       │   │   │   │   │   │           ├── proc-macro2 v1.0.89 (*)
+│       │   │   │   │   │   │           ├── quote v1.0.37 (*)
+│       │   │   │   │   │   │           └── syn v2.0.87 (*)
+│       │   │   │   │   │   ├── thread_local v1.1.8
+│       │   │   │   │   │   │   ├── cfg-if v1.0.0
+│       │   │   │   │   │   │   └── once_cell v1.20.2
+│       │   │   │   │   │   ├── tracing v0.1.40
+│       │   │   │   │   │   │   ├── pin-project-lite v0.2.15
+│       │   │   │   │   │   │   ├── tracing-attributes v0.1.27 (proc-macro)
+│       │   │   │   │   │   │   │   ├── proc-macro2 v1.0.89 (*)
+│       │   │   │   │   │   │   │   ├── quote v1.0.37 (*)
+│       │   │   │   │   │   │   │   └── syn v2.0.87 (*)
+│       │   │   │   │   │   │   └── tracing-core v0.1.32
+│       │   │   │   │   │   │       └── once_cell v1.20.2
+│       │   │   │   │   │   └── web-time v1.1.0
+│       │   │   │   │   ├── downcast-rs v1.2.1
+│       │   │   │   │   ├── erased-serde v0.4.5
+│       │   │   │   │   │   ├── serde v1.0.215 (*)
+│       │   │   │   │   │   └── typeid v1.0.2
+│       │   │   │   │   ├── glam v0.27.0
+│       │   │   │   │   │   ├── bytemuck v1.20.0
+│       │   │   │   │   │   │   └── bytemuck_derive v1.8.0 (proc-macro)
+│       │   │   │   │   │   │       ├── proc-macro2 v1.0.89 (*)
+│       │   │   │   │   │   │       ├── quote v1.0.37 (*)
+│       │   │   │   │   │   │       └── syn v2.0.87 (*)
+│       │   │   │   │   │   ├── rand v0.8.5
+│       │   │   │   │   │   │   ├── libc v0.2.164
+│       │   │   │   │   │   │   ├── rand_chacha v0.3.1
+│       │   │   │   │   │   │   │   ├── ppv-lite86 v0.2.20
+│       │   │   │   │   │   │   │   │   └── zerocopy v0.7.35 (*)
+│       │   │   │   │   │   │   │   └── rand_core v0.6.4
+│       │   │   │   │   │   │   │       └── getrandom v0.2.15 (*)
+│       │   │   │   │   │   │   └── rand_core v0.6.4 (*)
+│       │   │   │   │   │   └── serde v1.0.215 (*)
+│       │   │   │   │   ├── petgraph v0.6.5
+│       │   │   │   │   │   ├── fixedbitset v0.4.2
+│       │   │   │   │   │   ├── indexmap v2.3.0 (*)
+│       │   │   │   │   │   ├── serde v1.0.215 (*)
+│       │   │   │   │   │   └── serde_derive v1.0.215 (proc-macro) (*)
+│       │   │   │   │   ├── serde v1.0.215 (*)
+│       │   │   │   │   ├── smallvec v1.13.2
+│       │   │   │   │   ├── smol_str v0.2.2
+│       │   │   │   │   ├── thiserror v1.0.69
+│       │   │   │   │   │   └── thiserror-impl v1.0.69 (proc-macro)
+│       │   │   │   │   │       ├── proc-macro2 v1.0.89 (*)
+│       │   │   │   │   │       ├── quote v1.0.37 (*)
+│       │   │   │   │   │       └── syn v2.0.87 (*)
+│       │   │   │   │   └── uuid v1.11.0
+│       │   │   │   │       ├── getrandom v0.2.15 (*)
+│       │   │   │   │       └── serde v1.0.215 (*)
+│       │   │   │   ├── bevy_tasks v0.14.2
+│       │   │   │   │   ├── async-channel v2.3.1
+│       │   │   │   │   │   ├── concurrent-queue v2.5.0
+│       │   │   │   │   │   │   └── crossbeam-utils v0.8.20
+│       │   │   │   │   │   ├── event-listener-strategy v0.5.2
+│       │   │   │   │   │   │   ├── event-listener v5.3.1
+│       │   │   │   │   │   │   │   ├── concurrent-queue v2.5.0 (*)
+│       │   │   │   │   │   │   │   ├── parking v2.2.1
+│       │   │   │   │   │   │   │   └── pin-project-lite v0.2.15
+│       │   │   │   │   │   │   └── pin-project-lite v0.2.15
+│       │   │   │   │   │   ├── futures-core v0.3.31
+│       │   │   │   │   │   └── pin-project-lite v0.2.15
+│       │   │   │   │   ├── async-executor v1.13.1
+│       │   │   │   │   │   ├── async-task v4.7.1
+│       │   │   │   │   │   ├── concurrent-queue v2.5.0 (*)
+│       │   │   │   │   │   ├── fastrand v2.2.0
+│       │   │   │   │   │   ├── futures-lite v2.5.0
+│       │   │   │   │   │   │   ├── fastrand v2.2.0
+│       │   │   │   │   │   │   ├── futures-core v0.3.31
+│       │   │   │   │   │   │   ├── futures-io v0.3.31
+│       │   │   │   │   │   │   ├── parking v2.2.1
+│       │   │   │   │   │   │   └── pin-project-lite v0.2.15
+│       │   │   │   │   │   └── slab v0.4.9
+│       │   │   │   │   │       [build-dependencies]
+│       │   │   │   │   │       └── autocfg v1.4.0
+│       │   │   │   │   ├── concurrent-queue v2.5.0 (*)
+│       │   │   │   │   └── futures-lite v2.5.0 (*)
+│       │   │   │   ├── bevy_utils v0.14.2 (*)
+│       │   │   │   ├── bitflags v2.6.0
+│       │   │   │   │   └── serde v1.0.215 (*)
+│       │   │   │   ├── concurrent-queue v2.5.0 (*)
+│       │   │   │   ├── fixedbitset v0.5.7
+│       │   │   │   ├── nonmax v0.5.5
+│       │   │   │   ├── petgraph v0.6.5 (*)
+│       │   │   │   ├── serde v1.0.215 (*)
+│       │   │   │   └── thiserror v1.0.69 (*)
+│       │   │   ├── bevy_reflect v0.14.2 (*)
+│       │   │   ├── bevy_tasks v0.14.2 (*)
+│       │   │   ├── bevy_utils v0.14.2 (*)
+│       │   │   ├── downcast-rs v1.2.1
+│       │   │   └── thiserror v1.0.69 (*)
+│       │   ├── bevy_derive v0.14.2 (proc-macro) (*)
+│       │   └── bevy_ecs v0.14.2 (*)
+│       ├── bevy_animation v0.14.2
+│       │   ├── bevy_app v0.14.2 (*)
+│       │   ├── bevy_asset v0.14.2
+│       │   │   ├── async-broadcast v0.5.1
+│       │   │   │   ├── event-listener v2.5.3
+│       │   │   │   └── futures-core v0.3.31
+│       │   │   ├── async-fs v2.1.2
+│       │   │   │   ├── async-lock v3.4.0
+│       │   │   │   │   ├── event-listener v5.3.1 (*)
+│       │   │   │   │   ├── event-listener-strategy v0.5.2 (*)
+│       │   │   │   │   └── pin-project-lite v0.2.15
+│       │   │   │   ├── blocking v1.6.1
+│       │   │   │   │   ├── async-channel v2.3.1 (*)
+│       │   │   │   │   ├── async-task v4.7.1
+│       │   │   │   │   ├── futures-io v0.3.31
+│       │   │   │   │   ├── futures-lite v2.5.0 (*)
+│       │   │   │   │   └── piper v0.2.4
+│       │   │   │   │       ├── atomic-waker v1.1.2
+│       │   │   │   │       ├── fastrand v2.2.0
+│       │   │   │   │       └── futures-io v0.3.31
+│       │   │   │   └── futures-lite v2.5.0 (*)
+│       │   │   ├── async-lock v3.4.0 (*)
+│       │   │   ├── bevy_app v0.14.2 (*)
+│       │   │   ├── bevy_asset_macros v0.14.2 (proc-macro)
+│       │   │   │   ├── bevy_macro_utils v0.14.2 (*)
+│       │   │   │   ├── proc-macro2 v1.0.89 (*)
+│       │   │   │   ├── quote v1.0.37 (*)
+│       │   │   │   └── syn v2.0.87 (*)
+│       │   │   ├── bevy_ecs v0.14.2 (*)
+│       │   │   ├── bevy_reflect v0.14.2 (*)
+│       │   │   ├── bevy_tasks v0.14.2 (*)
+│       │   │   ├── bevy_utils v0.14.2 (*)
+│       │   │   ├── blake3 v1.5.4
+│       │   │   │   ├── arrayref v0.3.9
+│       │   │   │   ├── arrayvec v0.7.6
+│       │   │   │   ├── cfg-if v1.0.0
+│       │   │   │   └── constant_time_eq v0.3.1
+│       │   │   │   [build-dependencies]
+│       │   │   │   └── cc v1.2.1
+│       │   │   │       ├── jobserver v0.1.32
+│       │   │   │       │   └── libc v0.2.164
+│       │   │   │       ├── libc v0.2.164
+│       │   │   │       └── shlex v1.3.0
+│       │   │   ├── crossbeam-channel v0.5.13
+│       │   │   │   └── crossbeam-utils v0.8.20
+│       │   │   ├── downcast-rs v1.2.1
+│       │   │   ├── futures-io v0.3.31
+│       │   │   ├── futures-lite v2.5.0 (*)
+│       │   │   ├── parking_lot v0.12.3
+│       │   │   │   ├── lock_api v0.4.12
+│       │   │   │   │   └── scopeguard v1.2.0
+│       │   │   │   │   [build-dependencies]
+│       │   │   │   │   └── autocfg v1.4.0
+│       │   │   │   └── parking_lot_core v0.9.10
+│       │   │   │       ├── cfg-if v1.0.0
+│       │   │   │       ├── libc v0.2.164
+│       │   │   │       └── smallvec v1.13.2
+│       │   │   ├── ron v0.8.1
+│       │   │   │   ├── base64 v0.21.7
+│       │   │   │   ├── bitflags v2.6.0 (*)
+│       │   │   │   ├── serde v1.0.215 (*)
+│       │   │   │   └── serde_derive v1.0.215 (proc-macro) (*)
+│       │   │   ├── serde v1.0.215 (*)
+│       │   │   ├── thiserror v1.0.69 (*)
+│       │   │   └── uuid v1.11.0 (*)
+│       │   ├── bevy_color v0.14.3
+│       │   │   ├── bevy_math v0.14.2
+│       │   │   │   ├── bevy_reflect v0.14.2 (*)
+│       │   │   │   ├── glam v0.27.0 (*)
+│       │   │   │   ├── rand v0.8.5 (*)
+│       │   │   │   ├── serde v1.0.215 (*)
+│       │   │   │   ├── smallvec v1.13.2
+│       │   │   │   └── thiserror v1.0.69 (*)
+│       │   │   ├── bevy_reflect v0.14.2 (*)
+│       │   │   ├── bytemuck v1.20.0 (*)
+│       │   │   ├── encase v0.8.0
+│       │   │   │   ├── const_panic v0.2.10
+│       │   │   │   ├── encase_derive v0.8.0 (proc-macro)
+│       │   │   │   │   └── encase_derive_impl v0.8.0
+│       │   │   │   │       ├── proc-macro2 v1.0.89 (*)
+│       │   │   │   │       ├── quote v1.0.37 (*)
+│       │   │   │   │       └── syn v2.0.87 (*)
+│       │   │   │   ├── glam v0.27.0 (*)
+│       │   │   │   └── thiserror v1.0.69 (*)
+│       │   │   ├── serde v1.0.215 (*)
+│       │   │   ├── thiserror v1.0.69 (*)
+│       │   │   └── wgpu-types v0.20.0
+│       │   │       └── bitflags v2.6.0 (*)
+│       │   ├── bevy_core v0.14.2
+│       │   │   ├── bevy_app v0.14.2 (*)
+│       │   │   ├── bevy_ecs v0.14.2 (*)
+│       │   │   ├── bevy_reflect v0.14.2 (*)
+│       │   │   ├── bevy_tasks v0.14.2 (*)
+│       │   │   ├── bevy_utils v0.14.2 (*)
+│       │   │   └── uuid v1.11.0 (*)
+│       │   ├── bevy_derive v0.14.2 (proc-macro) (*)
+│       │   ├── bevy_ecs v0.14.2 (*)
+│       │   ├── bevy_hierarchy v0.14.2
+│       │   │   ├── bevy_app v0.14.2 (*)
+│       │   │   ├── bevy_core v0.14.2 (*)
+│       │   │   ├── bevy_ecs v0.14.2 (*)
+│       │   │   ├── bevy_reflect v0.14.2 (*)
+│       │   │   ├── bevy_utils v0.14.2 (*)
+│       │   │   └── smallvec v1.13.2
+│       │   ├── bevy_log v0.14.2
+│       │   │   ├── bevy_app v0.14.2 (*)
+│       │   │   ├── bevy_ecs v0.14.2 (*)
+│       │   │   ├── bevy_utils v0.14.2 (*)
+│       │   │   ├── tracing-log v0.2.0
+│       │   │   │   ├── log v0.4.22
+│       │   │   │   ├── once_cell v1.20.2
+│       │   │   │   └── tracing-core v0.1.32 (*)
+│       │   │   └── tracing-subscriber v0.3.18
+│       │   │       ├── matchers v0.1.0
+│       │   │       │   └── regex-automata v0.1.10
+│       │   │       │       └── regex-syntax v0.6.29
+│       │   │       ├── nu-ansi-term v0.46.0
+│       │   │       │   └── overload v0.1.1
+│       │   │       ├── once_cell v1.20.2
+│       │   │       ├── regex v1.11.1
+│       │   │       │   ├── aho-corasick v1.1.3
+│       │   │       │   │   └── memchr v2.7.4
+│       │   │       │   ├── memchr v2.7.4
+│       │   │       │   ├── regex-automata v0.4.9
+│       │   │       │   │   ├── aho-corasick v1.1.3 (*)
+│       │   │       │   │   ├── memchr v2.7.4
+│       │   │       │   │   └── regex-syntax v0.8.5
+│       │   │       │   └── regex-syntax v0.8.5
+│       │   │       ├── sharded-slab v0.1.7
+│       │   │       │   └── lazy_static v1.5.0
+│       │   │       ├── smallvec v1.13.2
+│       │   │       ├── thread_local v1.1.8 (*)
+│       │   │       ├── tracing v0.1.40 (*)
+│       │   │       ├── tracing-core v0.1.32 (*)
+│       │   │       └── tracing-log v0.2.0 (*)
+│       │   ├── bevy_math v0.14.2 (*)
+│       │   ├── bevy_reflect v0.14.2 (*)
+│       │   ├── bevy_render v0.14.2
+│       │   │   ├── async-channel v2.3.1 (*)
+│       │   │   ├── bevy_app v0.14.2 (*)
+│       │   │   ├── bevy_asset v0.14.2 (*)
+│       │   │   ├── bevy_color v0.14.3 (*)
+│       │   │   ├── bevy_core v0.14.2 (*)
+│       │   │   ├── bevy_derive v0.14.2 (proc-macro) (*)
+│       │   │   ├── bevy_diagnostic v0.14.2
+│       │   │   │   ├── bevy_app v0.14.2 (*)
+│       │   │   │   ├── bevy_core v0.14.2 (*)
+│       │   │   │   ├── bevy_ecs v0.14.2 (*)
+│       │   │   │   ├── bevy_tasks v0.14.2 (*)
+│       │   │   │   ├── bevy_time v0.14.2
+│       │   │   │   │   ├── bevy_app v0.14.2 (*)
+│       │   │   │   │   ├── bevy_ecs v0.14.2 (*)
+│       │   │   │   │   ├── bevy_reflect v0.14.2 (*)
+│       │   │   │   │   ├── bevy_utils v0.14.2 (*)
+│       │   │   │   │   ├── crossbeam-channel v0.5.13 (*)
+│       │   │   │   │   └── thiserror v1.0.69 (*)
+│       │   │   │   ├── bevy_utils v0.14.2 (*)
+│       │   │   │   ├── const-fnv1a-hash v1.1.0
+│       │   │   │   └── sysinfo v0.30.13
+│       │   │   │       ├── cfg-if v1.0.0
+│       │   │   │       ├── libc v0.2.164
+│       │   │   │       └── once_cell v1.20.2
+│       │   │   ├── bevy_ecs v0.14.2 (*)
+│       │   │   ├── bevy_encase_derive v0.14.2 (proc-macro)
+│       │   │   │   ├── bevy_macro_utils v0.14.2 (*)
+│       │   │   │   └── encase_derive_impl v0.8.0 (*)
+│       │   │   ├── bevy_hierarchy v0.14.2 (*)
+│       │   │   ├── bevy_math v0.14.2 (*)
+│       │   │   ├── bevy_mikktspace v0.14.2
+│       │   │   │   └── glam v0.27.0 (*)
+│       │   │   ├── bevy_reflect v0.14.2 (*)
+│       │   │   ├── bevy_render_macros v0.14.2 (proc-macro)
+│       │   │   │   ├── bevy_macro_utils v0.14.2 (*)
+│       │   │   │   ├── proc-macro2 v1.0.89 (*)
+│       │   │   │   ├── quote v1.0.37 (*)
+│       │   │   │   └── syn v2.0.87 (*)
+│       │   │   ├── bevy_tasks v0.14.2 (*)
+│       │   │   ├── bevy_time v0.14.2 (*)
+│       │   │   ├── bevy_transform v0.14.2
+│       │   │   │   ├── bevy_app v0.14.2 (*)
+│       │   │   │   ├── bevy_ecs v0.14.2 (*)
+│       │   │   │   ├── bevy_hierarchy v0.14.2 (*)
+│       │   │   │   ├── bevy_math v0.14.2 (*)
+│       │   │   │   ├── bevy_reflect v0.14.2 (*)
+│       │   │   │   └── thiserror v1.0.69 (*)
+│       │   │   ├── bevy_utils v0.14.2 (*)
+│       │   │   ├── bevy_window v0.14.2
+│       │   │   │   ├── bevy_a11y v0.14.2 (*)
+│       │   │   │   ├── bevy_app v0.14.2 (*)
+│       │   │   │   ├── bevy_ecs v0.14.2 (*)
+│       │   │   │   ├── bevy_math v0.14.2 (*)
+│       │   │   │   ├── bevy_reflect v0.14.2 (*)
+│       │   │   │   ├── bevy_utils v0.14.2 (*)
+│       │   │   │   ├── raw-window-handle v0.6.2
+│       │   │   │   └── smol_str v0.2.2
+│       │   │   ├── bitflags v2.6.0 (*)
+│       │   │   ├── bytemuck v1.20.0 (*)
+│       │   │   ├── codespan-reporting v0.11.1
+│       │   │   │   ├── termcolor v1.4.1
+│       │   │   │   └── unicode-width v0.1.14
+│       │   │   ├── downcast-rs v1.2.1
+│       │   │   ├── encase v0.8.0 (*)
+│       │   │   ├── futures-lite v2.5.0 (*)
+│       │   │   ├── hexasphere v12.0.0
+│       │   │   │   ├── constgebra v0.1.4
+│       │   │   │   │   └── const_soft_float v0.1.4
+│       │   │   │   └── glam v0.27.0 (*)
+│       │   │   ├── image v0.25.5
+│       │   │   │   ├── bytemuck v1.20.0 (*)
+│       │   │   │   ├── byteorder-lite v0.1.0
+│       │   │   │   ├── num-traits v0.2.19
+│       │   │   │   │   [build-dependencies]
+│       │   │   │   │   └── autocfg v1.4.0
+│       │   │   │   └── png v0.17.14
+│       │   │   │       ├── bitflags v1.3.2
+│       │   │   │       ├── crc32fast v1.4.2
+│       │   │   │       │   └── cfg-if v1.0.0
+│       │   │   │       ├── fdeflate v0.3.6
+│       │   │   │       │   └── simd-adler32 v0.3.7
+│       │   │   │       ├── flate2 v1.0.35
+│       │   │   │       │   ├── crc32fast v1.4.2 (*)
+│       │   │   │       │   └── miniz_oxide v0.8.0
+│       │   │   │       │       ├── adler2 v2.0.0
+│       │   │   │       │       └── simd-adler32 v0.3.7
+│       │   │   │       └── miniz_oxide v0.8.0 (*)
+│       │   │   ├── ktx2 v0.3.0
+│       │   │   │   └── bitflags v1.3.2
+│       │   │   ├── naga v0.20.0
+│       │   │   │   ├── arrayvec v0.7.6
+│       │   │   │   ├── bit-set v0.5.3
+│       │   │   │   │   └── bit-vec v0.6.3
+│       │   │   │   ├── bitflags v2.6.0 (*)
+│       │   │   │   ├── codespan-reporting v0.11.1 (*)
+│       │   │   │   ├── hexf-parse v0.2.1
+│       │   │   │   ├── indexmap v2.3.0 (*)
+│       │   │   │   ├── log v0.4.22
+│       │   │   │   ├── num-traits v0.2.19 (*)
+│       │   │   │   ├── rustc-hash v1.1.0
+│       │   │   │   ├── spirv v0.3.0+sdk-1.3.268.0
+│       │   │   │   │   └── bitflags v2.6.0 (*)
+│       │   │   │   ├── termcolor v1.4.1
+│       │   │   │   ├── thiserror v1.0.69 (*)
+│       │   │   │   └── unicode-xid v0.2.6
+│       │   │   ├── naga_oil v0.14.0
+│       │   │   │   ├── bit-set v0.5.3 (*)
+│       │   │   │   ├── codespan-reporting v0.11.1 (*)
+│       │   │   │   ├── data-encoding v2.6.0
+│       │   │   │   ├── indexmap v2.3.0 (*)
+│       │   │   │   ├── naga v0.20.0 (*)
+│       │   │   │   ├── once_cell v1.20.2
+│       │   │   │   ├── regex v1.11.1 (*)
+│       │   │   │   ├── regex-syntax v0.8.5
+│       │   │   │   ├── rustc-hash v1.1.0
+│       │   │   │   ├── thiserror v1.0.69 (*)
+│       │   │   │   ├── tracing v0.1.40 (*)
+│       │   │   │   └── unicode-ident v1.0.14
+│       │   │   ├── nonmax v0.5.5
+│       │   │   ├── ruzstd v0.7.2
+│       │   │   │   └── twox-hash v1.6.3
+│       │   │   │       ├── cfg-if v1.0.0
+│       │   │   │       └── static_assertions v1.1.0
+│       │   │   ├── serde v1.0.215 (*)
+│       │   │   ├── smallvec v1.13.2
+│       │   │   ├── thiserror v1.0.69 (*)
+│       │   │   └── wgpu v0.20.1
+│       │   │       ├── arrayvec v0.7.6
+│       │   │       ├── cfg-if v1.0.0
+│       │   │       ├── document-features v0.2.10 (proc-macro)
+│       │   │       │   └── litrs v0.4.1
+│       │   │       ├── log v0.4.22
+│       │   │       ├── naga v0.20.0 (*)
+│       │   │       ├── parking_lot v0.12.3 (*)
+│       │   │       ├── profiling v1.0.16
+│       │   │       ├── raw-window-handle v0.6.2
+│       │   │       ├── smallvec v1.13.2
+│       │   │       ├── static_assertions v1.1.0
+│       │   │       ├── wgpu-core v0.21.1
+│       │   │       │   ├── arrayvec v0.7.6
+│       │   │       │   ├── bit-vec v0.6.3
+│       │   │       │   ├── bitflags v2.6.0 (*)
+│       │   │       │   ├── codespan-reporting v0.11.1 (*)
+│       │   │       │   ├── document-features v0.2.10 (proc-macro) (*)
+│       │   │       │   ├── indexmap v2.3.0 (*)
+│       │   │       │   ├── log v0.4.22
+│       │   │       │   ├── naga v0.20.0 (*)
+│       │   │       │   ├── once_cell v1.20.2
+│       │   │       │   ├── parking_lot v0.12.3 (*)
+│       │   │       │   ├── profiling v1.0.16
+│       │   │       │   ├── raw-window-handle v0.6.2
+│       │   │       │   ├── rustc-hash v1.1.0
+│       │   │       │   ├── smallvec v1.13.2
+│       │   │       │   ├── thiserror v1.0.69 (*)
+│       │   │       │   ├── wgpu-hal v0.21.1
+│       │   │       │   │   ├── arrayvec v0.7.6
+│       │   │       │   │   ├── ash v0.37.3+1.3.251
+│       │   │       │   │   │   └── libloading v0.7.4
+│       │   │       │   │   │       └── cfg-if v1.0.0
+│       │   │       │   │   ├── bitflags v2.6.0 (*)
+│       │   │       │   │   ├── glow v0.13.1
+│       │   │       │   │   ├── gpu-alloc v0.6.0
+│       │   │       │   │   │   ├── bitflags v2.6.0 (*)
+│       │   │       │   │   │   └── gpu-alloc-types v0.3.0
+│       │   │       │   │   │       └── bitflags v2.6.0 (*)
+│       │   │       │   │   ├── gpu-descriptor v0.3.0
+│       │   │       │   │   │   ├── bitflags v2.6.0 (*)
+│       │   │       │   │   │   ├── gpu-descriptor-types v0.2.0
+│       │   │       │   │   │   │   └── bitflags v2.6.0 (*)
+│       │   │       │   │   │   └── hashbrown v0.14.5 (*)
+│       │   │       │   │   ├── khronos-egl v6.0.0
+│       │   │       │   │   │   ├── libc v0.2.164
+│       │   │       │   │   │   └── libloading v0.8.5
+│       │   │       │   │   │       └── cfg-if v1.0.0
+│       │   │       │   │   ├── libc v0.2.164
+│       │   │       │   │   ├── libloading v0.8.5 (*)
+│       │   │       │   │   ├── log v0.4.22
+│       │   │       │   │   ├── naga v0.20.0 (*)
+│       │   │       │   │   ├── once_cell v1.20.2
+│       │   │       │   │   ├── parking_lot v0.12.3 (*)
+│       │   │       │   │   ├── profiling v1.0.16
+│       │   │       │   │   ├── raw-window-handle v0.6.2
+│       │   │       │   │   ├── renderdoc-sys v1.1.0
+│       │   │       │   │   ├── rustc-hash v1.1.0
+│       │   │       │   │   ├── smallvec v1.13.2
+│       │   │       │   │   ├── thiserror v1.0.69 (*)
+│       │   │       │   │   └── wgpu-types v0.20.0 (*)
+│       │   │       │   │   [build-dependencies]
+│       │   │       │   │   └── cfg_aliases v0.1.1
+│       │   │       │   └── wgpu-types v0.20.0 (*)
+│       │   │       │   [build-dependencies]
+│       │   │       │   └── cfg_aliases v0.1.1
+│       │   │       ├── wgpu-hal v0.21.1 (*)
+│       │   │       └── wgpu-types v0.20.0 (*)
+│       │   │       [build-dependencies]
+│       │   │       └── cfg_aliases v0.1.1
+│       │   ├── bevy_time v0.14.2 (*)
+│       │   ├── bevy_transform v0.14.2 (*)
+│       │   ├── bevy_utils v0.14.2 (*)
+│       │   ├── blake3 v1.5.4 (*)
+│       │   ├── fixedbitset v0.5.7
+│       │   ├── petgraph v0.6.5 (*)
+│       │   ├── ron v0.8.1 (*)
+│       │   ├── serde v1.0.215 (*)
+│       │   ├── thiserror v1.0.69 (*)
+│       │   ├── thread_local v1.1.8 (*)
+│       │   └── uuid v1.11.0 (*)
+│       ├── bevy_app v0.14.2 (*)
+│       ├── bevy_asset v0.14.2 (*)
+│       ├── bevy_audio v0.14.2
+│       │   ├── bevy_app v0.14.2 (*)
+│       │   ├── bevy_asset v0.14.2 (*)
+│       │   ├── bevy_derive v0.14.2 (proc-macro) (*)
+│       │   ├── bevy_ecs v0.14.2 (*)
+│       │   ├── bevy_hierarchy v0.14.2 (*)
+│       │   ├── bevy_math v0.14.2 (*)
+│       │   ├── bevy_reflect v0.14.2 (*)
+│       │   ├── bevy_transform v0.14.2 (*)
+│       │   ├── bevy_utils v0.14.2 (*)
+│       │   └── rodio v0.18.1
+│       │       ├── cpal v0.15.3
+│       │       │   ├── alsa v0.9.1
+│       │       │   │   ├── alsa-sys v0.3.1
+│       │       │   │   │   └── libc v0.2.164
+│       │       │   │   │   [build-dependencies]
+│       │       │   │   │   └── pkg-config v0.3.31
+│       │       │   │   ├── bitflags v2.6.0 (*)
+│       │       │   │   ├── cfg-if v1.0.0
+│       │       │   │   └── libc v0.2.164
+│       │       │   ├── dasp_sample v0.11.0
+│       │       │   └── libc v0.2.164
+│       │       ├── lewton v0.10.2
+│       │       │   ├── byteorder v1.5.0
+│       │       │   ├── ogg v0.8.0
+│       │       │   │   └── byteorder v1.5.0
+│       │       │   └── tinyvec v1.8.0
+│       │       │       └── tinyvec_macros v0.1.1
+│       │       └── thiserror v1.0.69 (*)
+│       ├── bevy_color v0.14.3 (*)
+│       ├── bevy_core v0.14.2 (*)
+│       ├── bevy_core_pipeline v0.14.2
+│       │   ├── bevy_app v0.14.2 (*)
+│       │   ├── bevy_asset v0.14.2 (*)
+│       │   ├── bevy_color v0.14.3 (*)
+│       │   ├── bevy_core v0.14.2 (*)
+│       │   ├── bevy_derive v0.14.2 (proc-macro) (*)
+│       │   ├── bevy_ecs v0.14.2 (*)
+│       │   ├── bevy_math v0.14.2 (*)
+│       │   ├── bevy_reflect v0.14.2 (*)
+│       │   ├── bevy_render v0.14.2 (*)
+│       │   ├── bevy_transform v0.14.2 (*)
+│       │   ├── bevy_utils v0.14.2 (*)
+│       │   ├── bitflags v2.6.0 (*)
+│       │   ├── nonmax v0.5.5
+│       │   ├── radsort v0.1.1
+│       │   ├── serde v1.0.215 (*)
+│       │   ├── smallvec v1.13.2
+│       │   └── thiserror v1.0.69 (*)
+│       ├── bevy_derive v0.14.2 (proc-macro) (*)
+│       ├── bevy_diagnostic v0.14.2 (*)
+│       ├── bevy_ecs v0.14.2 (*)
+│       ├── bevy_gilrs v0.14.2
+│       │   ├── bevy_app v0.14.2 (*)
+│       │   ├── bevy_ecs v0.14.2 (*)
+│       │   ├── bevy_input v0.14.2
+│       │   │   ├── bevy_app v0.14.2 (*)
+│       │   │   ├── bevy_ecs v0.14.2 (*)
+│       │   │   ├── bevy_math v0.14.2 (*)
+│       │   │   ├── bevy_reflect v0.14.2 (*)
+│       │   │   ├── bevy_utils v0.14.2 (*)
+│       │   │   ├── smol_str v0.2.2
+│       │   │   └── thiserror v1.0.69 (*)
+│       │   ├── bevy_time v0.14.2 (*)
+│       │   ├── bevy_utils v0.14.2 (*)
+│       │   ├── gilrs v0.10.10
+│       │   │   ├── fnv v1.0.7
+│       │   │   ├── gilrs-core v0.5.15
+│       │   │   │   ├── inotify v0.10.2
+│       │   │   │   │   ├── bitflags v1.3.2
+│       │   │   │   │   ├── inotify-sys v0.1.5
+│       │   │   │   │   │   └── libc v0.2.164
+│       │   │   │   │   └── libc v0.2.164
+│       │   │   │   ├── libc v0.2.164
+│       │   │   │   ├── libudev-sys v0.1.4
+│       │   │   │   │   └── libc v0.2.164
+│       │   │   │   │   [build-dependencies]
+│       │   │   │   │   └── pkg-config v0.3.31
+│       │   │   │   ├── log v0.4.22
+│       │   │   │   ├── nix v0.29.0
+│       │   │   │   │   ├── bitflags v2.6.0 (*)
+│       │   │   │   │   ├── cfg-if v1.0.0
+│       │   │   │   │   └── libc v0.2.164
+│       │   │   │   │   [build-dependencies]
+│       │   │   │   │   └── cfg_aliases v0.2.1
+│       │   │   │   ├── uuid v1.11.0 (*)
+│       │   │   │   └── vec_map v0.8.2
+│       │   │   ├── log v0.4.22
+│       │   │   ├── uuid v1.11.0 (*)
+│       │   │   └── vec_map v0.8.2
+│       │   └── thiserror v1.0.69 (*)
+│       ├── bevy_gizmos v0.14.2
+│       │   ├── bevy_app v0.14.2 (*)
+│       │   ├── bevy_asset v0.14.2 (*)
+│       │   ├── bevy_color v0.14.3 (*)
+│       │   ├── bevy_core_pipeline v0.14.2 (*)
+│       │   ├── bevy_ecs v0.14.2 (*)
+│       │   ├── bevy_gizmos_macros v0.14.2 (proc-macro)
+│       │   │   ├── bevy_macro_utils v0.14.2 (*)
+│       │   │   ├── proc-macro2 v1.0.89 (*)
+│       │   │   ├── quote v1.0.37 (*)
+│       │   │   └── syn v2.0.87 (*)
+│       │   ├── bevy_math v0.14.2 (*)
+│       │   ├── bevy_pbr v0.14.2
+│       │   │   ├── bevy_app v0.14.2 (*)
+│       │   │   ├── bevy_asset v0.14.2 (*)
+│       │   │   ├── bevy_color v0.14.3 (*)
+│       │   │   ├── bevy_core_pipeline v0.14.2 (*)
+│       │   │   ├── bevy_derive v0.14.2 (proc-macro) (*)
+│       │   │   ├── bevy_ecs v0.14.2 (*)
+│       │   │   ├── bevy_math v0.14.2 (*)
+│       │   │   ├── bevy_reflect v0.14.2 (*)
+│       │   │   ├── bevy_render v0.14.2 (*)
+│       │   │   ├── bevy_transform v0.14.2 (*)
+│       │   │   ├── bevy_utils v0.14.2 (*)
+│       │   │   ├── bevy_window v0.14.2 (*)
+│       │   │   ├── bitflags v2.6.0 (*)
+│       │   │   ├── bytemuck v1.20.0 (*)
+│       │   │   ├── fixedbitset v0.5.7
+│       │   │   ├── nonmax v0.5.5
+│       │   │   ├── radsort v0.1.1
+│       │   │   ├── smallvec v1.13.2
+│       │   │   └── static_assertions v1.1.0
+│       │   ├── bevy_reflect v0.14.2 (*)
+│       │   ├── bevy_render v0.14.2 (*)
+│       │   ├── bevy_sprite v0.14.2
+│       │   │   ├── bevy_app v0.14.2 (*)
+│       │   │   ├── bevy_asset v0.14.2 (*)
+│       │   │   ├── bevy_color v0.14.3 (*)
+│       │   │   ├── bevy_core_pipeline v0.14.2 (*)
+│       │   │   ├── bevy_derive v0.14.2 (proc-macro) (*)
+│       │   │   ├── bevy_ecs v0.14.2 (*)
+│       │   │   ├── bevy_math v0.14.2 (*)
+│       │   │   ├── bevy_reflect v0.14.2 (*)
+│       │   │   ├── bevy_render v0.14.2 (*)
+│       │   │   ├── bevy_transform v0.14.2 (*)
+│       │   │   ├── bevy_utils v0.14.2 (*)
+│       │   │   ├── bitflags v2.6.0 (*)
+│       │   │   ├── bytemuck v1.20.0 (*)
+│       │   │   ├── fixedbitset v0.5.7
+│       │   │   ├── guillotiere v0.6.2
+│       │   │   │   ├── euclid v0.22.11
+│       │   │   │   │   └── num-traits v0.2.19 (*)
+│       │   │   │   └── svg_fmt v0.4.4
+│       │   │   ├── radsort v0.1.1
+│       │   │   ├── rectangle-pack v0.4.2
+│       │   │   └── thiserror v1.0.69 (*)
+│       │   ├── bevy_time v0.14.2 (*)
+│       │   ├── bevy_transform v0.14.2 (*)
+│       │   ├── bevy_utils v0.14.2 (*)
+│       │   └── bytemuck v1.20.0 (*)
+│       ├── bevy_gltf v0.14.2
+│       │   ├── base64 v0.22.1
+│       │   ├── bevy_animation v0.14.2 (*)
+│       │   ├── bevy_app v0.14.2 (*)
+│       │   ├── bevy_asset v0.14.2 (*)
+│       │   ├── bevy_color v0.14.3 (*)
+│       │   ├── bevy_core v0.14.2 (*)
+│       │   ├── bevy_core_pipeline v0.14.2 (*)
+│       │   ├── bevy_ecs v0.14.2 (*)
+│       │   ├── bevy_hierarchy v0.14.2 (*)
+│       │   ├── bevy_math v0.14.2 (*)
+│       │   ├── bevy_pbr v0.14.2 (*)
+│       │   ├── bevy_reflect v0.14.2 (*)
+│       │   ├── bevy_render v0.14.2 (*)
+│       │   ├── bevy_scene v0.14.2
+│       │   │   ├── bevy_app v0.14.2 (*)
+│       │   │   ├── bevy_asset v0.14.2 (*)
+│       │   │   ├── bevy_derive v0.14.2 (proc-macro) (*)
+│       │   │   ├── bevy_ecs v0.14.2 (*)
+│       │   │   ├── bevy_hierarchy v0.14.2 (*)
+│       │   │   ├── bevy_reflect v0.14.2 (*)
+│       │   │   ├── bevy_render v0.14.2 (*)
+│       │   │   ├── bevy_transform v0.14.2 (*)
+│       │   │   ├── bevy_utils v0.14.2 (*)
+│       │   │   ├── serde v1.0.215 (*)
+│       │   │   ├── thiserror v1.0.69 (*)
+│       │   │   └── uuid v1.11.0 (*)
+│       │   ├── bevy_tasks v0.14.2 (*)
+│       │   ├── bevy_transform v0.14.2 (*)
+│       │   ├── bevy_utils v0.14.2 (*)
+│       │   ├── gltf v1.4.1
+│       │   │   ├── byteorder v1.5.0
+│       │   │   ├── gltf-json v1.4.1
+│       │   │   │   ├── gltf-derive v1.4.1 (proc-macro)
+│       │   │   │   │   ├── inflections v1.1.1
+│       │   │   │   │   ├── proc-macro2 v1.0.89 (*)
+│       │   │   │   │   ├── quote v1.0.37 (*)
+│       │   │   │   │   └── syn v2.0.87 (*)
+│       │   │   │   ├── serde v1.0.215 (*)
+│       │   │   │   ├── serde_derive v1.0.215 (proc-macro) (*)
+│       │   │   │   └── serde_json v1.0.133
+│       │   │   │       ├── itoa v1.0.12
+│       │   │   │       ├── memchr v2.7.4
+│       │   │   │       ├── ryu v1.0.18
+│       │   │   │       └── serde v1.0.215 (*)
+│       │   │   ├── lazy_static v1.5.0
+│       │   │   └── serde_json v1.0.133 (*)
+│       │   ├── percent-encoding v2.3.1
+│       │   ├── serde v1.0.215 (*)
+│       │   ├── serde_json v1.0.133 (*)
+│       │   ├── smallvec v1.13.2
+│       │   └── thiserror v1.0.69 (*)
+│       ├── bevy_hierarchy v0.14.2 (*)
+│       ├── bevy_input v0.14.2 (*)
+│       ├── bevy_log v0.14.2 (*)
+│       ├── bevy_math v0.14.2 (*)
+│       ├── bevy_pbr v0.14.2 (*)
+│       ├── bevy_ptr v0.14.2
+│       ├── bevy_reflect v0.14.2 (*)
+│       ├── bevy_render v0.14.2 (*)
+│       ├── bevy_scene v0.14.2 (*)
+│       ├── bevy_sprite v0.14.2 (*)
+│       ├── bevy_state v0.14.2
+│       │   ├── bevy_app v0.14.2 (*)
+│       │   ├── bevy_ecs v0.14.2 (*)
+│       │   ├── bevy_hierarchy v0.14.2 (*)
+│       │   ├── bevy_reflect v0.14.2 (*)
+│       │   ├── bevy_state_macros v0.14.2 (proc-macro)
+│       │   │   ├── bevy_macro_utils v0.14.2 (*)
+│       │   │   ├── proc-macro2 v1.0.89 (*)
+│       │   │   ├── quote v1.0.37 (*)
+│       │   │   └── syn v2.0.87 (*)
+│       │   └── bevy_utils v0.14.2 (*)
+│       ├── bevy_tasks v0.14.2 (*)
+│       ├── bevy_text v0.14.2
+│       │   ├── ab_glyph v0.2.29
+│       │   │   ├── ab_glyph_rasterizer v0.1.8
+│       │   │   └── owned_ttf_parser v0.25.0
+│       │   │       └── ttf-parser v0.25.0
+│       │   ├── bevy_app v0.14.2 (*)
+│       │   ├── bevy_asset v0.14.2 (*)
+│       │   ├── bevy_color v0.14.3 (*)
+│       │   ├── bevy_ecs v0.14.2 (*)
+│       │   ├── bevy_math v0.14.2 (*)
+│       │   ├── bevy_reflect v0.14.2 (*)
+│       │   ├── bevy_render v0.14.2 (*)
+│       │   ├── bevy_sprite v0.14.2 (*)
+│       │   ├── bevy_transform v0.14.2 (*)
+│       │   ├── bevy_utils v0.14.2 (*)
+│       │   ├── bevy_window v0.14.2 (*)
+│       │   ├── glyph_brush_layout v0.2.4
+│       │   │   ├── ab_glyph v0.2.29 (*)
+│       │   │   ├── approx v0.5.1
+│       │   │   │   └── num-traits v0.2.19 (*)
+│       │   │   └── xi-unicode v0.3.0
+│       │   ├── serde v1.0.215 (*)
+│       │   └── thiserror v1.0.69 (*)
+│       ├── bevy_time v0.14.2 (*)
+│       ├── bevy_transform v0.14.2 (*)
+│       ├── bevy_ui v0.14.2
+│       │   ├── bevy_a11y v0.14.2 (*)
+│       │   ├── bevy_app v0.14.2 (*)
+│       │   ├── bevy_asset v0.14.2 (*)
+│       │   ├── bevy_color v0.14.3 (*)
+│       │   ├── bevy_core_pipeline v0.14.2 (*)
+│       │   ├── bevy_derive v0.14.2 (proc-macro) (*)
+│       │   ├── bevy_ecs v0.14.2 (*)
+│       │   ├── bevy_hierarchy v0.14.2 (*)
+│       │   ├── bevy_input v0.14.2 (*)
+│       │   ├── bevy_math v0.14.2 (*)
+│       │   ├── bevy_reflect v0.14.2 (*)
+│       │   ├── bevy_render v0.14.2 (*)
+│       │   ├── bevy_sprite v0.14.2 (*)
+│       │   ├── bevy_text v0.14.2 (*)
+│       │   ├── bevy_transform v0.14.2 (*)
+│       │   ├── bevy_utils v0.14.2 (*)
+│       │   ├── bevy_window v0.14.2 (*)
+│       │   ├── bytemuck v1.20.0 (*)
+│       │   ├── nonmax v0.5.5
+│       │   ├── smallvec v1.13.2
+│       │   ├── taffy v0.5.2
+│       │   │   ├── arrayvec v0.7.6
+│       │   │   ├── grid v0.14.0
+│       │   │   ├── num-traits v0.2.19 (*)
+│       │   │   └── slotmap v1.0.7
+│       │   │       [build-dependencies]
+│       │   │       └── version_check v0.9.5
+│       │   └── thiserror v1.0.69 (*)
+│       ├── bevy_utils v0.14.2 (*)
+│       ├── bevy_window v0.14.2 (*)
+│       └── bevy_winit v0.14.2
+│           ├── accesskit_winit v0.20.4
+│           │   ├── accesskit v0.14.0
+│           │   ├── raw-window-handle v0.6.2
+│           │   └── winit v0.30.5
+│           │       ├── bitflags v2.6.0 (*)
+│           │       ├── bytemuck v1.20.0 (*)
+│           │       ├── calloop v0.13.0
+│           │       │   ├── bitflags v2.6.0 (*)
+│           │       │   ├── log v0.4.22
+│           │       │   ├── polling v3.7.4
+│           │       │   │   ├── cfg-if v1.0.0
+│           │       │   │   ├── rustix v0.38.41
+│           │       │   │   │   ├── bitflags v2.6.0 (*)
+│           │       │   │   │   └── linux-raw-sys v0.4.14
+│           │       │   │   └── tracing v0.1.40 (*)
+│           │       │   ├── rustix v0.38.41 (*)
+│           │       │   ├── slab v0.4.9 (*)
+│           │       │   └── thiserror v1.0.69 (*)
+│           │       ├── cursor-icon v1.1.0
+│           │       ├── dpi v0.1.1
+│           │       ├── libc v0.2.164
+│           │       ├── percent-encoding v2.3.1
+│           │       ├── raw-window-handle v0.6.2
+│           │       ├── rustix v0.38.41 (*)
+│           │       ├── smol_str v0.2.2
+│           │       ├── tracing v0.1.40 (*)
+│           │       ├── x11-dl v2.21.0
+│           │       │   ├── libc v0.2.164
+│           │       │   └── once_cell v1.20.2
+│           │       │   [build-dependencies]
+│           │       │   └── pkg-config v0.3.31
+│           │       ├── x11rb v0.13.1
+│           │       │   ├── as-raw-xcb-connection v1.0.1
+│           │       │   ├── libc v0.2.164
+│           │       │   ├── libloading v0.8.5 (*)
+│           │       │   ├── once_cell v1.20.2
+│           │       │   ├── rustix v0.38.41 (*)
+│           │       │   └── x11rb-protocol v0.13.1
+│           │       └── xkbcommon-dl v0.4.2
+│           │           ├── bitflags v2.6.0 (*)
+│           │           ├── dlib v0.5.2
+│           │           │   └── libloading v0.8.5 (*)
+│           │           ├── log v0.4.22
+│           │           ├── once_cell v1.20.2
+│           │           └── xkeysym v0.2.1
+│           │       [build-dependencies]
+│           │       └── cfg_aliases v0.2.1
+│           ├── approx v0.5.1 (*)
+│           ├── bevy_a11y v0.14.2 (*)
+│           ├── bevy_app v0.14.2 (*)
+│           ├── bevy_derive v0.14.2 (proc-macro) (*)
+│           ├── bevy_ecs v0.14.2 (*)
+│           ├── bevy_hierarchy v0.14.2 (*)
+│           ├── bevy_input v0.14.2 (*)
+│           ├── bevy_log v0.14.2 (*)
+│           ├── bevy_math v0.14.2 (*)
+│           ├── bevy_reflect v0.14.2 (*)
+│           ├── bevy_tasks v0.14.2 (*)
+│           ├── bevy_utils v0.14.2 (*)
+│           ├── bevy_window v0.14.2 (*)
+│           ├── cfg-if v1.0.0
+│           ├── raw-window-handle v0.6.2
+│           └── winit v0.30.5 (*)
+├── bevy_egui v0.30.1
+│   ├── arboard v3.4.1
+│   │   ├── image v0.25.5 (*)
+│   │   ├── log v0.4.22
+│   │   ├── parking_lot v0.12.3 (*)
+│   │   └── x11rb v0.13.1 (*)
+│   ├── bevy_app v0.14.2 (*)
+│   ├── bevy_asset v0.14.2 (*)
+│   ├── bevy_derive v0.14.2 (proc-macro) (*)
+│   ├── bevy_ecs v0.14.2 (*)
+│   ├── bevy_input v0.14.2 (*)
+│   ├── bevy_log v0.14.2 (*)
+│   ├── bevy_math v0.14.2 (*)
+│   ├── bevy_reflect v0.14.2 (*)
+│   ├── bevy_render v0.14.2 (*)
+│   ├── bevy_time v0.14.2 (*)
+│   ├── bevy_utils v0.14.2 (*)
+│   ├── bevy_window v0.14.2 (*)
+│   ├── bevy_winit v0.14.2 (*)
+│   ├── bytemuck v1.20.0 (*)
+│   ├── egui v0.29.1
+│   │   ├── ahash v0.8.11 (*)
+│   │   ├── emath v0.29.1
+│   │   │   └── bytemuck v1.20.0 (*)
+│   │   ├── epaint v0.29.1
+│   │   │   ├── ab_glyph v0.2.29 (*)
+│   │   │   ├── ahash v0.8.11 (*)
+│   │   │   ├── bytemuck v1.20.0 (*)
+│   │   │   ├── ecolor v0.29.1
+│   │   │   │   ├── bytemuck v1.20.0 (*)
+│   │   │   │   └── emath v0.29.1 (*)
+│   │   │   ├── emath v0.29.1 (*)
+│   │   │   ├── epaint_default_fonts v0.29.1
+│   │   │   ├── nohash-hasher v0.2.0
+│   │   │   └── parking_lot v0.12.3 (*)
+│   │   └── nohash-hasher v0.2.0
+│   ├── encase v0.8.0 (*)
+│   ├── thread_local v1.1.8 (*)
+│   ├── webbrowser v1.0.2
+│   │   ├── home v0.5.9
+│   │   ├── log v0.4.22
+│   │   └── url v2.5.3
+│   │       ├── form_urlencoded v1.2.1
+│   │       │   └── percent-encoding v2.3.1
+│   │       ├── idna v1.0.3
+│   │       │   ├── idna_adapter v1.2.0
+│   │       │   │   ├── icu_normalizer v1.5.0
+│   │       │   │   │   ├── displaydoc v0.2.5 (proc-macro)
+│   │       │   │   │   │   ├── proc-macro2 v1.0.89 (*)
+│   │       │   │   │   │   ├── quote v1.0.37 (*)
+│   │       │   │   │   │   └── syn v2.0.87 (*)
+│   │       │   │   │   ├── icu_collections v1.5.0
+│   │       │   │   │   │   ├── displaydoc v0.2.5 (proc-macro) (*)
+│   │       │   │   │   │   ├── yoke v0.7.4
+│   │       │   │   │   │   │   ├── stable_deref_trait v1.2.0
+│   │       │   │   │   │   │   ├── yoke-derive v0.7.4 (proc-macro)
+│   │       │   │   │   │   │   │   ├── proc-macro2 v1.0.89 (*)
+│   │       │   │   │   │   │   │   ├── quote v1.0.37 (*)
+│   │       │   │   │   │   │   │   ├── syn v2.0.87 (*)
+│   │       │   │   │   │   │   │   └── synstructure v0.13.1
+│   │       │   │   │   │   │   │       ├── proc-macro2 v1.0.89 (*)
+│   │       │   │   │   │   │   │       ├── quote v1.0.37 (*)
+│   │       │   │   │   │   │   │       └── syn v2.0.87 (*)
+│   │       │   │   │   │   │   └── zerofrom v0.1.4
+│   │       │   │   │   │   │       └── zerofrom-derive v0.1.4 (proc-macro)
+│   │       │   │   │   │   │           ├── proc-macro2 v1.0.89 (*)
+│   │       │   │   │   │   │           ├── quote v1.0.37 (*)
+│   │       │   │   │   │   │           ├── syn v2.0.87 (*)
+│   │       │   │   │   │   │           └── synstructure v0.13.1 (*)
+│   │       │   │   │   │   ├── zerofrom v0.1.4 (*)
+│   │       │   │   │   │   └── zerovec v0.10.4
+│   │       │   │   │   │       ├── yoke v0.7.4 (*)
+│   │       │   │   │   │       ├── zerofrom v0.1.4 (*)
+│   │       │   │   │   │       └── zerovec-derive v0.10.3 (proc-macro)
+│   │       │   │   │   │           ├── proc-macro2 v1.0.89 (*)
+│   │       │   │   │   │           ├── quote v1.0.37 (*)
+│   │       │   │   │   │           └── syn v2.0.87 (*)
+│   │       │   │   │   ├── icu_normalizer_data v1.5.0
+│   │       │   │   │   ├── icu_properties v1.5.1
+│   │       │   │   │   │   ├── displaydoc v0.2.5 (proc-macro) (*)
+│   │       │   │   │   │   ├── icu_collections v1.5.0 (*)
+│   │       │   │   │   │   ├── icu_locid_transform v1.5.0
+│   │       │   │   │   │   │   ├── displaydoc v0.2.5 (proc-macro) (*)
+│   │       │   │   │   │   │   ├── icu_locid v1.5.0
+│   │       │   │   │   │   │   │   ├── displaydoc v0.2.5 (proc-macro) (*)
+│   │       │   │   │   │   │   │   ├── litemap v0.7.3
+│   │       │   │   │   │   │   │   ├── tinystr v0.7.6
+│   │       │   │   │   │   │   │   │   ├── displaydoc v0.2.5 (proc-macro) (*)
+│   │       │   │   │   │   │   │   │   └── zerovec v0.10.4 (*)
+│   │       │   │   │   │   │   │   ├── writeable v0.5.5
+│   │       │   │   │   │   │   │   └── zerovec v0.10.4 (*)
+│   │       │   │   │   │   │   ├── icu_locid_transform_data v1.5.0
+│   │       │   │   │   │   │   ├── icu_provider v1.5.0
+│   │       │   │   │   │   │   │   ├── displaydoc v0.2.5 (proc-macro) (*)
+│   │       │   │   │   │   │   │   ├── icu_locid v1.5.0 (*)
+│   │       │   │   │   │   │   │   ├── icu_provider_macros v1.5.0 (proc-macro)
+│   │       │   │   │   │   │   │   │   ├── proc-macro2 v1.0.89 (*)
+│   │       │   │   │   │   │   │   │   ├── quote v1.0.37 (*)
+│   │       │   │   │   │   │   │   │   └── syn v2.0.87 (*)
+│   │       │   │   │   │   │   │   ├── stable_deref_trait v1.2.0
+│   │       │   │   │   │   │   │   ├── tinystr v0.7.6 (*)
+│   │       │   │   │   │   │   │   ├── writeable v0.5.5
+│   │       │   │   │   │   │   │   ├── yoke v0.7.4 (*)
+│   │       │   │   │   │   │   │   ├── zerofrom v0.1.4 (*)
+│   │       │   │   │   │   │   │   └── zerovec v0.10.4 (*)
+│   │       │   │   │   │   │   ├── tinystr v0.7.6 (*)
+│   │       │   │   │   │   │   └── zerovec v0.10.4 (*)
+│   │       │   │   │   │   ├── icu_properties_data v1.5.0
+│   │       │   │   │   │   ├── icu_provider v1.5.0 (*)
+│   │       │   │   │   │   ├── tinystr v0.7.6 (*)
+│   │       │   │   │   │   └── zerovec v0.10.4 (*)
+│   │       │   │   │   ├── icu_provider v1.5.0 (*)
+│   │       │   │   │   ├── smallvec v1.13.2
+│   │       │   │   │   ├── utf16_iter v1.0.5
+│   │       │   │   │   ├── utf8_iter v1.0.4
+│   │       │   │   │   ├── write16 v1.0.0
+│   │       │   │   │   └── zerovec v0.10.4 (*)
+│   │       │   │   └── icu_properties v1.5.1 (*)
+│   │       │   ├── smallvec v1.13.2
+│   │       │   └── utf8_iter v1.0.4
+│   │       └── percent-encoding v2.3.1
+│   └── wgpu-types v0.20.0 (*)
+├── bevy_mod_picking v0.20.1
+│   ├── bevy_app v0.14.2 (*)
+│   ├── bevy_color v0.14.3 (*)
+│   ├── bevy_core v0.14.2 (*)
+│   ├── bevy_core_pipeline v0.14.2 (*)
+│   ├── bevy_ecs v0.14.2 (*)
+│   ├── bevy_eventlistener v0.8.1
+│   │   ├── bevy_app v0.14.2 (*)
+│   │   ├── bevy_ecs v0.14.2 (*)
+│   │   ├── bevy_eventlistener_derive v0.8.1 (proc-macro)
+│   │   │   ├── proc-macro2 v1.0.89 (*)
+│   │   │   ├── quote v1.0.37 (*)
+│   │   │   └── syn v2.0.87 (*)
+│   │   ├── bevy_hierarchy v0.14.2 (*)
+│   │   └── bevy_utils v0.14.2 (*)
+│   ├── bevy_math v0.14.2 (*)
+│   ├── bevy_picking_core v0.20.0
+│   │   ├── bevy_app v0.14.2 (*)
+│   │   ├── bevy_derive v0.14.2 (proc-macro) (*)
+│   │   ├── bevy_ecs v0.14.2 (*)
+│   │   ├── bevy_eventlistener v0.8.1 (*)
+│   │   ├── bevy_math v0.14.2 (*)
+│   │   ├── bevy_reflect v0.14.2 (*)
+│   │   ├── bevy_render v0.14.2 (*)
+│   │   ├── bevy_transform v0.14.2 (*)
+│   │   ├── bevy_utils v0.14.2 (*)
+│   │   ├── bevy_window v0.14.2 (*)
+│   │   └── uuid v1.11.0 (*)
+│   ├── bevy_picking_highlight v0.20.0
+│   │   ├── bevy_app v0.14.2 (*)
+│   │   ├── bevy_asset v0.14.2 (*)
+│   │   ├── bevy_color v0.14.3 (*)
+│   │   ├── bevy_ecs v0.14.2 (*)
+│   │   ├── bevy_pbr v0.14.2 (*)
+│   │   ├── bevy_picking_core v0.20.0 (*)
+│   │   ├── bevy_picking_selection v0.20.0
+│   │   │   ├── bevy_app v0.14.2 (*)
+│   │   │   ├── bevy_ecs v0.14.2 (*)
+│   │   │   ├── bevy_eventlistener v0.8.1 (*)
+│   │   │   ├── bevy_input v0.14.2 (*)
+│   │   │   ├── bevy_picking_core v0.20.0 (*)
+│   │   │   ├── bevy_reflect v0.14.2 (*)
+│   │   │   └── bevy_utils v0.14.2 (*)
+│   │   ├── bevy_reflect v0.14.2 (*)
+│   │   ├── bevy_render v0.14.2 (*)
+│   │   └── bevy_sprite v0.14.2 (*)
+│   ├── bevy_picking_input v0.20.0
+│   │   ├── bevy_app v0.14.2 (*)
+│   │   ├── bevy_ecs v0.14.2 (*)
+│   │   ├── bevy_hierarchy v0.14.2 (*)
+│   │   ├── bevy_input v0.14.2 (*)
+│   │   ├── bevy_math v0.14.2 (*)
+│   │   ├── bevy_picking_core v0.20.0 (*)
+│   │   ├── bevy_picking_selection v0.20.0 (*)
+│   │   ├── bevy_reflect v0.14.2 (*)
+│   │   ├── bevy_render v0.14.2 (*)
+│   │   ├── bevy_utils v0.14.2 (*)
+│   │   └── bevy_window v0.14.2 (*)
+│   ├── bevy_picking_raycast v0.20.2
+│   │   ├── bevy_app v0.14.2 (*)
+│   │   ├── bevy_ecs v0.14.2 (*)
+│   │   ├── bevy_mod_raycast v0.18.0
+│   │   │   ├── bevy_app v0.14.2 (*)
+│   │   │   ├── bevy_asset v0.14.2 (*)
+│   │   │   ├── bevy_color v0.14.3 (*)
+│   │   │   ├── bevy_derive v0.14.2 (proc-macro) (*)
+│   │   │   ├── bevy_ecs v0.14.2 (*)
+│   │   │   ├── bevy_math v0.14.2 (*)
+│   │   │   ├── bevy_reflect v0.14.2 (*)
+│   │   │   ├── bevy_render v0.14.2 (*)
+│   │   │   ├── bevy_transform v0.14.2 (*)
+│   │   │   ├── bevy_utils v0.14.2 (*)
+│   │   │   ├── bevy_window v0.14.2 (*)
+│   │   │   └── crossbeam-channel v0.5.13 (*)
+│   │   ├── bevy_picking_core v0.20.0 (*)
+│   │   ├── bevy_reflect v0.14.2 (*)
+│   │   ├── bevy_render v0.14.2 (*)
+│   │   ├── bevy_transform v0.14.2 (*)
+│   │   └── bevy_window v0.14.2 (*)
+│   ├── bevy_picking_selection v0.20.0 (*)
+│   ├── bevy_picking_sprite v0.20.0
+│   │   ├── bevy_app v0.14.2 (*)
+│   │   ├── bevy_asset v0.14.2 (*)
+│   │   ├── bevy_ecs v0.14.2 (*)
+│   │   ├── bevy_math v0.14.2 (*)
+│   │   ├── bevy_picking_core v0.20.0 (*)
+│   │   ├── bevy_render v0.14.2 (*)
+│   │   ├── bevy_sprite v0.14.2 (*)
+│   │   ├── bevy_transform v0.14.2 (*)
+│   │   └── bevy_window v0.14.2 (*)
+│   ├── bevy_picking_ui v0.20.0
+│   │   ├── bevy_app v0.14.2 (*)
+│   │   ├── bevy_ecs v0.14.2 (*)
+│   │   ├── bevy_hierarchy v0.14.2 (*)
+│   │   ├── bevy_math v0.14.2 (*)
+│   │   ├── bevy_picking_core v0.20.0 (*)
+│   │   ├── bevy_render v0.14.2 (*)
+│   │   ├── bevy_transform v0.14.2 (*)
+│   │   ├── bevy_ui v0.14.2 (*)
+│   │   ├── bevy_utils v0.14.2 (*)
+│   │   └── bevy_window v0.14.2 (*)
+│   ├── bevy_reflect v0.14.2 (*)
+│   ├── bevy_render v0.14.2 (*)
+│   ├── bevy_text v0.14.2 (*)
+│   ├── bevy_ui v0.14.2 (*)
+│   ├── bevy_utils v0.14.2 (*)
+│   └── bevy_window v0.14.2 (*)
+├── egui v0.29.1 (*)
+├── fdg-sim v0.9.1
+│   ├── glam v0.21.3
+│   ├── hashlink v0.8.4
+│   │   └── hashbrown v0.14.5 (*)
+│   ├── petgraph v0.6.5 (*)
+│   └── quad-rand v0.2.3
+├── hex v0.4.3
+├── indexmap v2.3.0 (*)
+├── petgraph v0.6.5 (*)
+├── rand v0.8.5 (*)
+├── regex v1.11.1 (*)
+├── ron v0.8.1 (*)
+├── serde v1.0.215 (*)
+├── serde_derive v1.0.215 (proc-macro) (*)
+├── serde_json v1.0.133 (*)
+└── zstd v0.13.2
+    └── zstd-safe v7.2.1
+        └── zstd-sys v2.0.13+zstd.1.5.6
+            [build-dependencies]
+            ├── cc v1.2.1 (*)
+            └── pkg-config v0.3.31

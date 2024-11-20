@@ -8,7 +8,7 @@ use petgraph::{Graph, graph::NodeIndex};
 use super::component::{Fragment};
 
 /// Data for startup management
-#[derive(Default, Debug)]
+#[derive(Default, Debug, Resource)]
 pub struct StartupManagement {
     pub state_file_checked: bool,
     pub load_graph_done: bool,
@@ -16,7 +16,7 @@ pub struct StartupManagement {
 }
 
 /// Graph data structures for the Journal.
-#[derive(Default, Debug)]
+#[derive(Default, Debug, Resource)]
 pub struct GameGraph {
     /// A graph with Fragment entity as a node, and Entry entity as a edge. Represents spacial continuation among fragments.
     pub neighbor_graph: Graph<Entity, Entity>,
@@ -33,7 +33,7 @@ pub struct GameGraph {
 }
 
 /// State for newpage Page.
-#[derive(Default, Debug)]
+#[derive(Default, Debug, Resource)]
 pub struct NewPageState {
     /// Entry id which the user is currently working on. If it is None, it means that the user is creating a new entry. Used in "new page".
     pub page_entry_ids: Vec<Entity>,
@@ -41,7 +41,7 @@ pub struct NewPageState {
     pub entry_clone: Vec<FragmentClone>
 }
 
-#[derive(Default)]
+#[derive(Default, Resource)]
 /// State for Explore Page.
 pub struct ExploreState {
     pub simulation: Option<Simulation<Entity, f32>>,

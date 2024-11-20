@@ -10,28 +10,31 @@ readme = "README.md"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bevy = "0.8.1"
-bevy_egui = "0.16.1"
-egui = "0.19.0"
-serde = { version = "1.0.147", features = ["derive"] }
-petgraph = { version = "0.6.2", features = ["serde-1"] }
+bevy = "0.14.0"
+bevy_egui = "0.30.1"
+egui = "0.29.1"
+serde = { version = "1.0.215", features = ["derive"] }
+petgraph = { version = "0.6.5", features = ["serde-1"] }
 fdg-sim = "0.9.0"
-ron = "0.8.0"
-serde_json = "1.0.87"
+ron = "0.8.1"
+serde_json = "1.0.133"
 rand = "0.8.5"
-bevy_mod_picking = "0.9.0"
-serde_derive = "1.0.147"
-zstd = "0.11.2"
-regex = "1.6.0"
+bevy_mod_picking = "0.20.1"
+serde_derive = "1.0.215"
+zstd = "0.13.2"
+regex = "1.11.1"
 hex = "0.4.3"
+anyhow = "1.0.93"
+indexmap = "=2.3.0"
+hashbrown = "0.14.5"
 
-[dev-dependencies]
-json_typegen_cli = "0.7.0"
+# [dev-dependencies]
+# json_typegen_cli = "0.7.0"
 
 [features]
-# default = ["dynamic"]
-default = []
-dynamic = ["bevy/dynamic"]
+# default = ["dynamic_linking"]
+# default = []
+# dynamic_linking = ["bevy/dynamic_linking"]
 
 [workspace]
 resolver = "2" # Important! wgpu/Bevy needs this!
@@ -43,3 +46,23 @@ opt-level = 1
 # Enable high optimizations for dependencies (incl. Bevy), but not for our code:
 [profile.dev.package."*"]
 opt-level = 3
+
+# Enable more optimization in the release profile at the cost of compile time.
+[profile.release]
+# Compile the entire crate as one unit.
+# Slows compile times, marginal improvements.
+codegen-units = 1
+# Do a second optimization pass over the entire program, including dependencies.
+# Slows compile times, marginal improvements.
+lto = "thin"
+
+# Optimize for size in the wasm-release profile to reduce load times and bandwidth usage on web.
+[profile.wasm-release]
+# Default to release profile values.
+inherits = "release"
+# Optimize with size in mind (also try "z", sometimes it is better).
+# Slightly slows compile times, great improvements to file size and runtime performance.
+opt-level = "s"
+# Strip all debugging information from the binary to slightly reduce file size.
+strip = "debuginfo"
+

@@ -19,7 +19,7 @@ pub mod systems {
         mut graph: ResMut<GameGraph>,
         mut ev_done: EventWriter<SyncFragmentsDone>
     ) {
-        for ev in events.iter() {
+        for ev in events.read() {
             let ts = create_timestamp();
 
             let ents: Vec<Entity> =
@@ -58,20 +58,20 @@ pub mod systems {
             //let mut spawner =  SceneSpawner::default();
             //let res = spawner.spawn_sync(world, handle);
             //println!("{:?}", res);
-            let id = world.spawn().insert_bundle(DynamicSceneBundle {
+            let id = world.spawn(DynamicSceneBundle {
                 scene: handle,
                 ..default()
             }).id();
             println!("Root entity id: {:?}", id);
         } else {
-            let id = world.spawn().id();
+            let id = world.spawn_empty().id();
             println!("Root entity id: {:?}", id);
             
             let mut startup = world.resource_mut::<StartupManagement>();
             startup.state_file_nonexistent = true;
 
-            let mut stat = world.resource_mut::<State<AppState>>();
-            stat.overwrite_set(AppState::TopPage).unwrap();
+            let mut stat = world.resource_mut::<NextState<AppState>>();
+            stat.set(AppState::TopPage);
         }
         let mut startup = world.resource_mut::<StartupManagement>();
         startup.state_file_checked = true;
@@ -79,7 +79,7 @@ pub mod systems {
 
     /// Load scene, additional steps for the graph
     pub fn load_graph_system(
-        mut stat: ResMut<State<AppState>>,
+        mut stat: ResMut<NextState<AppState>>,
         mut r: ResMut<GameGraph>,
         mut startup: ResMut<StartupManagement>,
         mut commands: Commands,
@@ -107,14 +107,12 @@ pub mod systems {
 
         println!("{:?}", q_test.iter().collect::<Vec<_>>());
         
-        stat.overwrite_set(AppState::TopPage).unwrap();
+        stat.set(AppState::TopPage)
     }
 
     /// Save scene
     pub fn save_scene_system(world: &mut World) {
-
-        if world.resource::<State<AppState>>().current().clone() == AppState::LoadSaveData { return; }
-
+        if world.resource::<State<AppState>>().get().clone() == AppState::LoadSaveData { return; }
         if !world.is_resource_changed::<GameGraph>() { return; }
 
         println!("Saving state...");
@@ -132,7 +130,9 @@ pub mod systems {
                 return false
             }
         }).collect::<Vec<_>>();
+
         println!("Found {} empty entity. Deleting...", empty_entities.len());
+        
         for e in empty_entities {
             world.despawn(e);
         }
@@ -154,35 +154,35 @@ pub mod systems {
             fragment_to_entry: graph.fragment_to_entry.clone()
         };
 
-        world.spawn().insert(dummy);
+        world.spawn(dummy);
 
         // Register types for saving
 
-        let type_registry = TypeRegistry::default();
-        type_registry.write().register::<HashSet<Entity>>();
-        type_registry.write().register_type_data::<HashSet<Entity>, ReflectSerialize>();
-        type_registry.write().register_type_data::<HashSet<Entity>, ReflectDeserialize>();
-        type_registry.write().register::<Entity>();
-        type_registry.write().register_type_data::<Entity, ReflectSerialize>();
-        type_registry.write().register_type_data::<Entity, ReflectDeserialize>();
-        type_registry.write().register::<FragmentContents>();
-        type_registry.write().register_type_data::<FragmentContents, ReflectSerialize>();
-        type_registry.write().register_type_data::<FragmentContents, ReflectDeserialize>();
-        type_registry.write().register::<String>();
-        type_registry.write().register_type_data::<String, ReflectSerialize>();
-        type_registry.write().register_type_data::<String, ReflectDeserialize>();
-        type_registry.write().register::<Fragment>();
-        type_registry.write().register::<EntityList>();
-        type_registry.write().register::<Entry>();
-        type_registry.write().register::<Tag>();
-        type_registry.write().register::<TagEvent>();
-        type_registry.write().register::<TagEventAction>();
-        type_registry.write().register::<GameGraphDummy>();
+        let mut type_registry = TypeRegistry::default();
+        type_registry.register::<HashSet<Entity>>();
+        type_registry.register_type_data::<HashSet<Entity>, ReflectSerialize>();
+        type_registry.register_type_data::<HashSet<Entity>, ReflectDeserialize>();
+        type_registry.register::<Entity>();
+        type_registry.register_type_data::<Entity, ReflectSerialize>();
+        type_registry.register_type_data::<Entity, ReflectDeserialize>();
+        type_registry.register::<FragmentContents>();
+        type_registry.register_type_data::<FragmentContents, ReflectSerialize>();
+        type_registry.register_type_data::<FragmentContents, ReflectDeserialize>();
+        type_registry.register::<String>();
+        type_registry.register_type_data::<String, ReflectSerialize>();
+        type_registry.register_type_data::<String, ReflectDeserialize>();
+        type_registry.register::<Fragment>();
+        type_registry.register::<EntityList>();
+        type_registry.register::<Entry>();
+        type_registry.register::<Tag>();
+        type_registry.register::<TagEvent>();
+        type_registry.register::<TagEventAction>();
+        type_registry.register::<GameGraphDummy>();
 
         // generate serialized data
 
-        let scene = DynamicScene::from_world(&world, &type_registry);
-        let serialized_scene = match scene.serialize_ron(&type_registry) {Ok(x) => x, Err(x) => {println!("{:?}", x); return}};
+        let scene = DynamicScene::from_world(&world);
+        let serialized_scene = match scene.serialize(&type_registry) {Ok(x) => x, Err(x) => {println!("{:?}", x); return}};
 
         println!("Success! Cleaning...");
 
@@ -218,7 +218,7 @@ mod inner {
         graph: &mut ResMut<GameGraph>,
         original_id: Option<Entity>
     ) -> Entity {
-        let entid = commands.spawn().insert(Fragment {
+        let entid = commands.spawn(Fragment {
             timestamp: ts,
             contents: fragment_contents.clone()
         }).id();
@@ -244,7 +244,7 @@ mod inner {
         ts: u64,
         graph: &mut ResMut<GameGraph>
     ) -> Entity {
-        let id_entry = commands.spawn().insert(Entry {}).insert(EntityList { timestamp: ts, entities: entities.clone() }).id();
+        let id_entry = commands.spawn(Entry {}).insert(EntityList { timestamp: ts, entities: entities.clone() }).id();
 
         // add the entry as a subject of history
         let id_node = graph.history_graph.add_node(id_entry);
@@ -254,12 +254,12 @@ mod inner {
             if graph.fragment_to_entry.get(id_from).is_none() {
                 graph.fragment_to_entry.insert(id_from.clone(), HashSet::new());
             }
-            graph.fragment_to_entry.get_mut(&id_from).unwrap().insert(id_entry);
+            graph.fragment_to_entry.get_mut(id_from).unwrap().insert(id_entry);
             for id_to in entities.iter().skip(1) {
                 if graph.fragment_to_entry.get(id_to).is_none() {
                     graph.fragment_to_entry.insert(id_to.clone(), HashSet::new());
                 }
-                graph.fragment_to_entry.get_mut(&id_to).unwrap().insert(id_entry);
+                graph.fragment_to_entry.get_mut(id_to).unwrap().insert(id_entry);
                 let a = graph.neighbor_graph_ids[id_from];
                 let b = graph.neighbor_graph_ids[id_to];
                 graph.neighbor_graph.add_edge(a, b, id_entry);
