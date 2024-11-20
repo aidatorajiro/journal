@@ -2,7 +2,7 @@
 name = "thejournal"
 version = "0.1.0"
 edition = "2021"
-authors = ["Torajiro Aida <kawarusosu@zoho.com>"]
+authors = ["tora <kawarusosu@zoho.com>"]
 description = "Non-linear note-taking app using Rust and Bevy"
 documentation = "https://docs.rs/thejournal"
 readme = "README.md"
