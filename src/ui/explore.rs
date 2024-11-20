@@ -145,7 +145,8 @@ pub fn explore_enter (
 
                 parent.spawn(ImageBundle {
                     style: Style {
-                        // size: Size::new(Val::Percent(100.0), Val::Percent(100.0)), MIGRATION_TODO
+                        width: Val::Percent(100.0),
+                        height: Val::Percent(100.0),
                         left: Val::Percent(0.0),
                         top: Val::Percent(0.0),
                         position_type: PositionType::Absolute,
