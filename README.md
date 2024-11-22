@@ -2,6 +2,10 @@
 
 This is a non-linear note-taking app using Rust and Bevy.
 
+# Introduction: What is this App?
+
+I build an note-taking app that keeps my everyday thoughts. The application has a non-linear experience, allowing me to look back what I have written in past, and connecting different ideas in different time. Thus, it has features to help me not only keep note as a digital data, but also track modification and connect different pieces of existing note pages to create a new one. The app is written in Rust and uses a game development framework called Bevy. Bevy employs a peculiar data management called ECS.
+
 ## Project structure
 
 - .cargo - build configuration
