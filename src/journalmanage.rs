@@ -163,7 +163,6 @@ pub mod systems {
         let scene =
             builder
             .allow::<Fragment>()
-            .allow::<Fragment>()
             .allow::<EntityList>()
             .allow::<Entry>()
             .allow::<Tag>()

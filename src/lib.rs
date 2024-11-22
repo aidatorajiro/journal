@@ -148,12 +148,3 @@ pub fn run_the_journal() {
 
     app.run();
 }
-
-/// When the main window is closed, quit the application
-fn window_closed_handler(mut ev: EventReader<WindowClosed>, mut quit: EventWriter<AppExit>) {
-    for e in ev.read() {
-/*         if e.window.is_primary() {
-            quit.send(AppExit::Success);
-        } MIGRATION_TODO */
-    }
-}
